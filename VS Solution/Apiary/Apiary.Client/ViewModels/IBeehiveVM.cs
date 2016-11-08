@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Apiary.Client.ViewModels
+﻿namespace Apiary.Client.ViewModels
 {
-    class IBeehiveVM
+    using System.ComponentModel;
+
+    using Apiary.Interfaces;
+
+    /// <summary>
+    /// Модель представления улья.
+    /// </summary>
+    public interface IBeehiveVM : IBeehiveState, INotifyPropertyChanged
     {
     }
 }

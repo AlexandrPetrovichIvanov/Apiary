@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Apiary.Client
+﻿namespace Apiary.Client.ViewModels
 {
-    class IMainVM
+    using System.Collections.ObjectModel;
+
+    /// <summary>
+    /// Модель представления пасеки.
+    /// </summary>
+    public interface IApiaryVM
     {
+        /// <summary>
+        /// Все ульи на пасеке.
+        /// </summary>
+        ObservableCollection<IBeehiveVM> Beehives { get; }
     }
 }
