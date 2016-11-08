@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Apiary.Interfaces;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
 namespace Apiary.Tests.subfolder
@@ -13,8 +14,6 @@ namespace Apiary.Tests.subfolder
         [TestMethod]
         public void fdfdfd()
         {
-            string str = new Apiary.Class1().GetString();
-            Assert.AreEqual("String from model", str);
         }
     }
 }

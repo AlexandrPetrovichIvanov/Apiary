@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apiary
+namespace Apiary.Client
 {
-    public class Class1
+    class IMainVM
     {
-        public string GetString()
-        {
-            return "String from model";
-        }
     }
 }
