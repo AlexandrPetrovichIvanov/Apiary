@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Apiary.Interfaces;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -26,12 +27,6 @@ namespace Apiary.Client
         public MainPage()
         {
             this.InitializeComponent();
-            this.DataContext = new ViewModel();
         }
-    }
-
-    public class ViewModel
-    {
-        public string Str => new Apiary.Class1().GetString();
     }
 }
