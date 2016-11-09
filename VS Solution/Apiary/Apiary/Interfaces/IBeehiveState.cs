@@ -1,9 +1,5 @@
 ﻿namespace Apiary.Interfaces
 {
-    using System;
-
-    using Apiary.Interfaces.Events;
-
     /// <summary>
     /// Состояние улья.
     /// </summary>
@@ -43,10 +39,5 @@
         /// Количество пчёл-охранников.
         /// </summary>
         int GuardsCount { get; }
-
-        /// <summary>
-        /// Событие изменения состояния улья.
-        /// </summary>
-        event EventHandler<BeehiveStateChangedEventArgs> StateChanged;
     }
 }

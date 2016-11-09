@@ -109,9 +109,8 @@
   <ItemGroup>
     <Compile Include="Implementation\Beehive.cs" />
     <Compile Include="Implementation\BeehiveState.cs" />
-    <Compile Include="Interfaces\Events\BeehiveStateChangedEventArgs.cs" />
-    <Compile Include="Interfaces\IBeehiveState.cs" />
     <Compile Include="Interfaces\IBeehive.cs" />
+    <Compile Include="Interfaces\IBeehiveState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Apiary.rd.xml" />
   </ItemGroup>

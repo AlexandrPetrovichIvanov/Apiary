@@ -1,24 +1,10 @@
 ﻿namespace Apiary.Interfaces
 {
-    using System;
-
-    using Apiary.Interfaces.Events;
-
     /// <summary>
     /// Пчелиный улей.
     /// </summary>
-    public interface IBeehive
+    public interface IBeehive : IBeehiveState
     {
-        /// <summary>
-        /// Информация о состоянии улья на данный момент.
-        /// </summary>
-        IBeehiveState State { get; }
-
-        /// <summary>
-        /// Событие изменения состояния улья.
-        /// </summary>
-        event EventHandler<BeehiveStateChangedEventArgs> StateChanged;
-
         /// <summary>
         /// Начать работу улья.
         /// </summary>

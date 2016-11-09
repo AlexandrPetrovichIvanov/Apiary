@@ -15,11 +15,6 @@
         /// </summary>
         public IBeehiveState State { get; private set; }
 
-        /// <summary>
-        /// Событие изменения состояния улья.
-        /// </summary>
-        public event EventHandler<BeehiveStateChangedEventArgs> StateChanged;
-
         public void Start(IBeehiveState state)
         {
             throw new NotImplementedException();

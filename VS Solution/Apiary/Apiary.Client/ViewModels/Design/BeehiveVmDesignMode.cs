@@ -3,67 +3,36 @@
     using System;
     using System.ComponentModel;
 
-    using Apiary.Interfaces.Events;
+    using Apiary.Interfaces;
 
     public class BeehiveVmDesignMode : IBeehiveVM
     {
-        public int BeehiveNumber
+        internal BeehiveVmDesignMode(
+            IBeehiveState state)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            this.BeehiveNumber = state.BeehiveNumber;
+            this.BeesInsideCount = state.BeesInsideCount;
+            this.GuardsCount = state.GuardsCount;
+            this.HoneyCount = state.HoneyCount;
+            this.QueensCount = state.QueensCount;
+            this.TotalBeesCount = state.TotalBeesCount;
+            this.WorkersCount = state.WorkersCount;
         }
 
-        public int BeesInsideCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int BeehiveNumber { get; private set; }
 
-        public int GuardsCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int BeesInsideCount { get; private set; }
 
-        public int HoneyCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int GuardsCount { get; private set; }
 
-        public int QueensCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int HoneyCount { get; private set; }
 
-        public int TotalBeesCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int QueensCount { get; private set; }
 
-        public int WorkersCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int TotalBeesCount { get; private set; }
+
+        public int WorkersCount { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler<BeehiveStateChangedEventArgs> StateChanged;
     }
 }

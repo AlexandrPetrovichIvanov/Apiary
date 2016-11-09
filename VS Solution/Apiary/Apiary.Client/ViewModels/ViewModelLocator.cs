@@ -10,6 +10,9 @@
     /// </summary>
     public class ViewModelLocator
     {
+        /// <summary>
+        /// Получить модель представления пасеки.
+        /// </summary>
         public IApiaryVM ApiaryVM
         {
             get
