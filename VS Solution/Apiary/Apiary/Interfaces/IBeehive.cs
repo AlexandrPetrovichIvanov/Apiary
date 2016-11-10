@@ -3,8 +3,13 @@
     /// <summary>
     /// Пчелиный улей.
     /// </summary>
-    public interface IBeehive : IBeehiveState
+    public interface IBeehive
     {
+        /// <summary>
+        /// Текущее состояние улья.
+        /// </summary>
+        IBeehiveState State { get; }
+
         /// <summary>
         /// Начать работу улья.
         /// </summary>

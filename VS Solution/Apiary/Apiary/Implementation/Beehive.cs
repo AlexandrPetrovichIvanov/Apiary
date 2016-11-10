@@ -3,7 +3,6 @@
     using System;
 
     using Apiary.Interfaces;
-    using Apiary.Interfaces.Events;
 
     /// <summary>
     /// Пчелиный улей.

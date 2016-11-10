@@ -8,5 +8,6 @@
     /// Интерфейс модели представления улья.
     /// </summary>
     public interface IBeehiveVM : IBeehiveState, INotifyPropertyChanged
-    {}
+    {
+    }
 }

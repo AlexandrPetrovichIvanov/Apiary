@@ -1,38 +1,95 @@
-﻿namespace Apiary.Client.ViewModels.Design
+﻿using System.Threading;
+
+namespace Apiary.Client.ViewModels.Design
 {
     using System;
     using System.ComponentModel;
+    using System.Threading.Tasks;
 
-    using Apiary.Interfaces;
-
+    /// <summary>
+    /// Модель представления улья (тестовая, для разработки UI).
+    /// </summary>
     public class BeehiveVmDesignMode : IBeehiveVM
     {
-        internal BeehiveVmDesignMode(
-            IBeehiveState state)
+        private readonly SynchronizationContext context;
+
+        /// <summary>
+        /// Создать модель представления улья.
+        /// </summary>
+        /// <param name="number">Номер улья.</param>
+        internal BeehiveVmDesignMode(int number)
         {
-            this.BeehiveNumber = state.BeehiveNumber;
-            this.BeesInsideCount = state.BeesInsideCount;
-            this.GuardsCount = state.GuardsCount;
-            this.HoneyCount = state.HoneyCount;
-            this.QueensCount = state.QueensCount;
-            this.TotalBeesCount = state.TotalBeesCount;
-            this.WorkersCount = state.WorkersCount;
+            context = SynchronizationContext.Current;
+
+            BeehiveNumber = number;
+
+            Random rand = new Random(number);
+
+            Task.Factory.StartNew(async () =>
+            {
+                while (true)
+                {
+                    int nextRandom = rand.Next(0, 1000);
+
+                    GuardsCount = nextRandom;
+                    HoneyCount = nextRandom;
+
+                    if (PropertyChanged == null)
+                    {
+                        await Task.Delay(500);
+                        continue;
+                    }
+
+                    context.Post(o =>
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(nameof(GuardsCount)));
+                        PropertyChanged(this, new PropertyChangedEventArgs(nameof(HoneyCount)));
+                    },
+                    null);
+
+                    await Task.Delay(500);
+                }
+            });
         }
 
-        public int BeehiveNumber { get; private set; }
+        /// <summary>
+        /// Номер улья.
+        /// </summary>
+        public int BeehiveNumber { get; }
 
-        public int BeesInsideCount { get; private set; }
+        /// <summary>
+        /// Общее количество пчёл внутри улья.
+        /// </summary>
+        public int BeesInsideCount { get; } = 30;
 
-        public int GuardsCount { get; private set; }
+        /// <summary>
+        /// Количество охранников.
+        /// </summary>
+        public int GuardsCount { get; private set; } = 10;
 
-        public int HoneyCount { get; private set; }
+        /// <summary>
+        /// Количество мёда.
+        /// </summary>
+        public int HoneyCount { get; private set; } = 500;
 
-        public int QueensCount { get; private set; }
+        /// <summary>
+        /// Количество пчёл-маток.
+        /// </summary>
+        public int QueensCount { get; } = 3;
 
-        public int TotalBeesCount { get; private set; }
+        /// <summary>
+        /// Общее количество пчёл.
+        /// </summary>
+        public int TotalBeesCount { get; } = 15;
 
-        public int WorkersCount { get; private set; }
+        /// <summary>
+        /// Количество рабочих пчёл.
+        /// </summary>
+        public int WorkersCount { get; } = 25;
 
+        /// <summary>
+        /// Событие изменения значения свойства.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }
