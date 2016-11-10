@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using Windows.UI.Core;
+using Windows.UI.Xaml;
 
 namespace Apiary.Client.ViewModels.Design
 {
@@ -11,45 +12,52 @@ namespace Apiary.Client.ViewModels.Design
     /// </summary>
     public class BeehiveVmDesignMode : IBeehiveVM
     {
-        private readonly SynchronizationContext context;
-
         /// <summary>
         /// Создать модель представления улья.
         /// </summary>
         /// <param name="number">Номер улья.</param>
         internal BeehiveVmDesignMode(int number)
         {
-            context = SynchronizationContext.Current;
-
             BeehiveNumber = number;
+            Task.Factory.StartNew(PermanentChangePropertiesAsync);
+        }
 
-            Random rand = new Random(number);
+        private async void PermanentChangePropertiesAsync()
+        {
+            Random rand = new Random(BeehiveNumber);
 
-            Task.Factory.StartNew(async () =>
+            while (true)
             {
-                while (true)
+                int nextRandom = rand.Next(0, 1000);
+
+                GuardsCount = nextRandom;
+                HoneyCount = nextRandom;
+
+                if (PropertyChanged == null)
                 {
-                    int nextRandom = rand.Next(0, 1000);
-
-                    GuardsCount = nextRandom;
-                    HoneyCount = nextRandom;
-
-                    if (PropertyChanged == null)
-                    {
-                        await Task.Delay(500);
-                        continue;
-                    }
-
-                    context.Post(o =>
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs(nameof(GuardsCount)));
-                        PropertyChanged(this, new PropertyChangedEventArgs(nameof(HoneyCount)));
-                    },
-                    null);
-
                     await Task.Delay(500);
+                    continue;
                 }
-            });
+
+                //                CoreDispatcher disp1 = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
+                //                CoreDispatcher disp2 = Window.Current.Dispatcher;
+
+                //#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                //                App.CoreDispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                //                 {
+                //                     PropertyChanged(this, new PropertyChangedEventArgs(nameof(GuardsCount)));
+                //                     PropertyChanged(this, new PropertyChangedEventArgs(nameof(HoneyCount)));
+                //                 });
+                //#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+                App.Dispatcher.BeginInvoke(() =>
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(GuardsCount)));
+                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(HoneyCount)));
+                });
+
+                await Task.Delay(500);
+            }
         }
 
         /// <summary>
