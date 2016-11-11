@@ -3,7 +3,6 @@
     using System;
 
     using Apiary.Interfaces;
-    using Apiary.Interfaces.Events;
 
     /// <summary>
     /// Пчелиный улей.
@@ -14,11 +13,6 @@
         /// Состояние улья на данный момент.
         /// </summary>
         public IBeehiveState State { get; private set; }
-
-        /// <summary>
-        /// Событие изменения состояния улья.
-        /// </summary>
-        public event EventHandler<BeehiveStateChangedEventArgs> StateChanged;
 
         public void Start(IBeehiveState state)
         {

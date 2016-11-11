@@ -5,7 +5,7 @@
     using Apiary.Interfaces;
 
     /// <summary>
-    /// Модель представления улья.
+    /// Интерфейс модели представления улья.
     /// </summary>
     public interface IBeehiveVM : IBeehiveState, INotifyPropertyChanged
     {

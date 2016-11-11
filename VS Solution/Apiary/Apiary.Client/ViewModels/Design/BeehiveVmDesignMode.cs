@@ -2,68 +2,98 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Threading.Tasks;
 
-    using Apiary.Interfaces.Events;
+    using Apiary.Client.Mvvm;
 
+    /// <summary>
+    /// Модель представления улья (тестовая, для разработки UI).
+    /// </summary>
     public class BeehiveVmDesignMode : IBeehiveVM
     {
-        public int BeehiveNumber
+        /// <summary>
+        /// Создать модель представления улья.
+        /// </summary>
+        /// <param name="number">Номер улья.</param>
+        internal BeehiveVmDesignMode(int number)
         {
-            get
+            this.BeehiveNumber = number;
+            Task.Factory.StartNew(PermanentChangePropertiesAsync);
+        }
+
+        /// <summary>
+        /// Бесконечное случайное изменение свойств.
+        /// </summary>
+        private async void PermanentChangePropertiesAsync()
+        {
+            Random rand = new Random(BeehiveNumber);
+
+            while (true)
             {
-                throw new NotImplementedException();
+                int nextRandom = rand.Next(0, 1000);
+
+                this.GuardsCount = nextRandom;
+                this.HoneyCount = nextRandom;
+
+                if (PropertyChanged == null)
+                {
+                    await Task.Delay(500);
+                    continue;
+                }
+
+                Dispatcher.BeginInvoke(() =>
+                {
+                    this.PropertyChanged(
+                        this, 
+                        new PropertyChangedEventArgs(nameof(GuardsCount)));
+                    
+                    this.PropertyChanged(
+                        this, 
+                        new PropertyChangedEventArgs(nameof(HoneyCount)));
+                });
+
+                await Task.Delay(500);
             }
         }
 
-        public int BeesInsideCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Номер улья.
+        /// </summary>
+        public int BeehiveNumber { get; }
 
-        public int GuardsCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Общее количество пчёл внутри улья.
+        /// </summary>
+        public int BeesInsideCount { get; } = 30;
 
-        public int HoneyCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Количество охранников.
+        /// </summary>
+        public int GuardsCount { get; private set; } = 10;
 
-        public int QueensCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Количество мёда.
+        /// </summary>
+        public int HoneyCount { get; private set; } = 500;
 
-        public int TotalBeesCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Количество пчёл-маток.
+        /// </summary>
+        public int QueensCount { get; } = 3;
 
-        public int WorkersCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Общее количество пчёл.
+        /// </summary>
+        public int TotalBeesCount { get; } = 15;
 
+        /// <summary>
+        /// Количество рабочих пчёл.
+        /// </summary>
+        public int WorkersCount { get; } = 25;
+
+        /// <summary>
+        /// Событие изменения значения свойства.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler<BeehiveStateChangedEventArgs> StateChanged;
     }
 }

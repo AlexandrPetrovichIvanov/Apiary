@@ -1,7 +1,8 @@
-﻿namespace Apiary.Client.ViewModels
+﻿namespace Apiary.Client.Mvvm
 {
     using System;
 
+    using Apiary.Client.ViewModels;
     using Apiary.Client.ViewModels.Design;
 
     /// <summary>
@@ -10,6 +11,9 @@
     /// </summary>
     public class ViewModelLocator
     {
+        /// <summary>
+        /// Получить модель представления пасеки.
+        /// </summary>
         public IApiaryVM ApiaryVM
         {
             get
