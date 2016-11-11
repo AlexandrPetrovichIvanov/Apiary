@@ -27,13 +27,6 @@ namespace Apiary.Client
         }
 
         /// <summary>
-        /// Синхронизирует доступ к потоку UI.
-        /// </summary>
-        internal static Dispatcher Dispatcher { get; set; }
-
-        internal static CoreDispatcher CoreDispatcher { get; set; }
-
-        /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>

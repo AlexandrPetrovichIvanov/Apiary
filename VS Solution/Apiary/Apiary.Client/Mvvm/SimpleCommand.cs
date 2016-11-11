@@ -1,22 +1,22 @@
-﻿namespace Apiary.Client.Commands
+﻿namespace Apiary.Client.Mvvm
 {
     using System;
     using System.Windows.Input;
 
     /// <summary>
-    /// Простая реализация команды.
+    /// Простая реализация команды (без параметров).
     /// </summary>
-    public class SimpleCommand : ICommand
+    public abstract class SimpleCommand : ICommand
     {
         /// <summary>
         /// Делегат проверки доступности команды.
         /// </summary>
-        private readonly Func<object, bool> canExecute;
+        private readonly Func<bool> canExecute;
 
         /// <summary>
         /// Делегат выполнения команды.
         /// </summary>
-        private readonly Action<object> execute;
+        private readonly Action execute;
 
         /// <summary>
         /// Событие изменения возможности выполнения команды.
@@ -29,8 +29,8 @@
         /// <param name="execute">Выполнение команды.</param>
         /// <param name="canExecute">Проверка доступности команды.</param>
         protected SimpleCommand(
-            Action<object> execute,
-            Func<object, bool> canExecute = null)
+            Action execute,
+            Func<bool> canExecute = null)
         {
             if (execute == null)
             {
@@ -39,7 +39,7 @@
                     "Необходимо указать функцию выполнения команды.");
             }
 
-            this.canExecute = canExecute ?? (obj => true);
+            this.canExecute = canExecute ?? (() => true);
             this.execute = execute;
         }
 
@@ -50,7 +50,7 @@
         /// <returns>True - команду можно выполнить, false - нет.</returns>
         public bool CanExecute(object parameter)
         {
-            return this.canExecute(parameter);
+            return this.canExecute();
         }
 
         /// <summary>
@@ -59,13 +59,15 @@
         /// <param name="parameter">Параметр команды.</param>
         public void Execute(object parameter)
         {
-            if (this.canExecute(parameter))
+            if (this.canExecute())
             {
-                this.execute(parameter);
+                this.execute();
             }
             else
             {
-                this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                this.CanExecuteChanged?.Invoke(
+                    this, 
+                    EventArgs.Empty);
             }
         }
     }
