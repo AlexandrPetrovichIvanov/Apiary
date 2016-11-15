@@ -6,14 +6,59 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" 
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ApiaryVM}">
-
+    
     <Page.Resources>
+        <Style x:Key="BeehiveNumberText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Foreground" Value="#DB4545" />
+        </Style>
 
-        <ItemsPanelTemplate x:Key="ItemsPanelTemplate1">
-            <VirtualizingStackPanel />
-        </ItemsPanelTemplate>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="12" />
+            <Setter Property="Background" Value="#A9A9A9"></Setter>
+        </Style>
 
+        <DataTemplate x:Key="BeehiveTemplate">
+            <Grid Background="#A9A9A9" 
+                  Margin="12" 
+                  Padding="10" 
+                  MinWidth="210">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="-5 0 0 0">
+                        <TextBlock Style="{StaticResource BeehiveNumberText}" 
+                                   Text="Улей №" />
+                        <TextBlock Style="{StaticResource BeehiveNumberText}" 
+                                   Text="{Binding BeehiveNumber, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Кол-во мёда в улье:" />
+                        <TextBlock Text="{Binding HoneyCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Общее кол-во пчёл:" />
+                        <TextBlock Text="{Binding TotalBeesCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Кол-во пчёл в улье:" />
+                        <TextBlock Text="{Binding BeesInsideCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Рабочие пчелы:" />
+                        <TextBlock Text="{Binding WorkersCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Матки:" />
+                        <TextBlock Text="{Binding QueensCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Охранники:" />
+                        <TextBlock Text="{Binding GuardsCount, Mode=OneWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -21,51 +66,45 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <Button Command="{Binding StartCommand}">Старт</Button>
-            <Button Command="{Binding StopCommand}">Стоп</Button>
-            <Button Command="{Binding HarvestHoneyCommand}">Собрать мёд</Button>
-            <TextBlock Text="Количество мёда:" />
-            <TextBlock Text="{Binding HoneyCount, Mode=OneWay}" />
-        </StackPanel>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+            <Grid Background="#D3D3D3">
+                <Grid.Resources>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <ListBox Grid.Row="2" ItemsSource="{Binding Beehives, Mode=OneWay}" ItemsPanel="{StaticResource ItemsPanelTemplate1}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Background="LightBlue">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Номер улья:" />
-                                <TextBlock Text="{Binding BeehiveNumber, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Количество мёда:" />
-                                <TextBlock Text="{Binding HoneyCount, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Общее количество пчёл:" />
-                                <TextBlock Text="{Binding TotalBeesCount, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Пчёл внути улья:" />
-                                <TextBlock Text="{Binding BeesInsideCount, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Рабочие пчелы:" />
-                                <TextBlock Text="{Binding WorkersCount, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Матки:" />
-                                <TextBlock Text="{Binding QueensCount, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Охранники:" />
-                                <TextBlock Text="{Binding GuardsCount, Mode=OneWay}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button Command="{Binding StartCommand}">Старт</Button>
+                    <Button Command="{Binding StopCommand}">Стоп</Button>
+                    <Button Command="{Binding HarvestHoneyCommand}">Собрать мёд</Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Text="Количество пчёл:" />
+                    <TextBlock Margin="5 0 10 0"  Text="{Binding BeesCount, Mode=OneWay}" />
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <TextBlock Text="Количество ульев:" />
+                    <TextBlock Margin="5 0 10 0" Text="{Binding BeehivesCount, Mode=OneWay}" />
+                </StackPanel>
+                
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                    <TextBlock Text="Количество мёда:" />
+                    <TextBlock Margin="5 0 10 0" Text="{Binding HoneyCount, Mode=OneWay}" />
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        
+        <GridView Grid.Row="2" ItemsSource="{Binding Beehives, Mode=OneWay}"
+                  ItemTemplate="{StaticResource BeehiveTemplate}" />
     </Grid>
 </Page>

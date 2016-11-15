@@ -1,4 +1,6 @@
-﻿namespace Apiary.Client.ViewModels.Design
+﻿using System.Linq;
+
+namespace Apiary.Client.ViewModels.Design
 {
     using System;
     using System.Collections.ObjectModel;
@@ -40,6 +42,13 @@
             this.HarvestHoneyCommand = new HarvestHoneyCommand(
                 this.HarvestHoney,
                 this.CanHarvestHoney);
+
+            this.PropertyChanged?.Invoke(
+                this, 
+                new PropertyChangedEventArgs(nameof(this.BeehivesCount)));
+            this.PropertyChanged?.Invoke(
+                this, 
+                new PropertyChangedEventArgs(nameof(this.BeesCount)));
         }
 
         /// <summary>
@@ -59,6 +68,16 @@
                 throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Количество ульев.
+        /// </summary>
+        public int BeehivesCount => this.Beehives.Count;
+
+        /// <summary>
+        /// Общее количество пчёл.
+        /// </summary>
+        public int BeesCount => this.Beehives.Sum(beehive => beehive.TotalBeesCount);
 
         /// <summary>
         /// Команда запуска работы пасеки.
@@ -89,6 +108,7 @@
         /// <returns>True - можно запустить.</returns>
         private bool CanStart()
         {
+            return false;
             throw new NotImplementedException();
         }
 
@@ -106,6 +126,7 @@
         /// <returns>True - пасеку можно остановить.</returns>
         private bool CanStop()
         {
+            return false;
             throw new NotImplementedException();
         }
 
@@ -123,6 +144,7 @@
         /// <returns>True - можно собрать мёд.</returns>
         private bool CanHarvestHoney()
         {
+            return false;
             throw new NotImplementedException();
         }
     }

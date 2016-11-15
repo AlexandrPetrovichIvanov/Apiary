@@ -20,6 +20,16 @@
         int HoneyCount { get; }
 
         /// <summary>
+        /// Количество ульев.
+        /// </summary>
+        int BeehivesCount { get; }
+
+        /// <summary>
+        /// Количество пчёл.
+        /// </summary>
+        int BeesCount { get; }
+
+        /// <summary>
         /// Команда "Старт".
         /// </summary>
         ICommand StartCommand { get; }
