@@ -88,18 +88,18 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <TextBlock Text="Количество пчёл:" />
+                    <TextBlock Text="Всего пчёл:" />
                     <TextBlock Margin="5 0 10 0"  Text="{Binding BeesCount, Mode=OneWay}" />
                 </StackPanel>
                 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
-                    <TextBlock Text="Количество ульев:" />
+                    <TextBlock Text="Всего ульев:" />
                     <TextBlock Margin="5 0 10 0" Text="{Binding BeehivesCount, Mode=OneWay}" />
                 </StackPanel>
                 
                 <StackPanel Grid.Column="3" Orientation="Horizontal">
-                    <TextBlock Text="Количество мёда:" />
-                    <TextBlock Margin="5 0 10 0" Text="{Binding HoneyCount, Mode=OneWay}" />
+                    <TextBlock Text="Собрано мёда:" />
+                    <TextBlock Margin="5 0 100 0" Text="{Binding HoneyCount, Mode=OneWay}" />
                 </StackPanel>
             </Grid>
         </ScrollViewer>
