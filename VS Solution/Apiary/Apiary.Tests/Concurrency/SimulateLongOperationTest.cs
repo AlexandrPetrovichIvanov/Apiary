@@ -1,4 +1,8 @@
-﻿namespace Apiary.Tests.Concurrency
+﻿using System.Collections.Concurrent;
+using System.Linq;
+using Windows.System.Threading;
+
+namespace Apiary.Tests.Concurrency
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +21,7 @@
         /// <summary>
         /// Количество пчел.
         /// </summary>
-        private const int BeesCount = 25000;
+        private const int BeesCount = 700000;
 
         /// <summary>
         /// Погрешность по времени сбора всего мёда всеми
@@ -43,9 +47,10 @@
             {
                 BeeTestDouble bee = new BeeTestDouble();
                 bee.OneHoneyHarvested += this.BeeOnOneHoneyHarvested;
-                bee.StartWork();
                 bees.Add(bee);
             }
+
+            bees.ForEach(bee => bee.StartWork());
 
             DateTime startTime = DateTime.Now;
 
@@ -85,17 +90,10 @@
         private class BeeTestDouble
         {
             /// <summary>
-            /// Общий имитатор выполнения длительных операций.
-            /// </summary>
-            private static readonly LongOperationSimulator simulator 
-                = new LongOperationSimulator();
-
-            /// <summary>
             /// Сколько мёда должна собрать одна пчела.
             /// </summary>
-            /// <remarks>Не влияет на предельно допустимое 
-            /// количество пчёл.</remarks>
-            internal const int HoneyFromSingleBee = 5;
+            internal const int HoneyFromSingleBee = 100; 
+            // 100 - для проверки длительной стабильной работы больше полутора минут
 
             /// <summary>
             /// Продолжительность сбора одной порции мёда в 
@@ -118,15 +116,23 @@
             /// </summary>
             internal void StartWork()
             {
-                //Task.Factory.StartNew(this.Harvest);
+                // 10 000 пчёл
+                //Task.Factory.StartNew(this.HarvestWithDelay);
+
+                // 300 000 пчёл
+                //Task.Factory.StartNew(this.HarvestWithTimer);
+
+                // 700 000 пчёл
                 Task.Factory.StartNew(this.HarvestWithSimulator);
             }
 
+            #region UsingDelay
+            
             /// <summary>
             /// Сбор мёда. Cтандартная симуляция с помощью Task.Delay.
             /// максимальное количество пчёл при этом - 20000.
             /// </summary>
-            private async void Harvest()
+            private async void HarvestWithDelay()
             {
                 for (int i = 0; i < HoneyFromSingleBee; i++)
                 {
@@ -137,6 +143,46 @@
                         EventArgs.Empty);
                 }
             }
+
+            #endregion
+
+            #region UsingTimer
+
+            /// <summary>
+            /// Собрать мёд с использованием таймера.
+            /// </summary>
+            private void HarvestWithTimer()
+            {
+                ThreadPoolTimer timer = ThreadPoolTimer.CreatePeriodicTimer(
+                    this.TimerElapsed,
+                    TimeSpan.FromMilliseconds(HarvestHoneyDurationMs));
+            }
+
+            /// <summary>
+            /// Одна итерация таймера.
+            /// </summary>
+            /// <param name="timer">Таймер.</param>
+            private void TimerElapsed(ThreadPoolTimer timer)
+            {
+                if (this.currentHoney == HoneyFromSingleBee)
+                {
+                    timer.Cancel();
+                    return;
+                }
+
+                Interlocked.Add(ref this.currentHoney, 1);
+                this.OneHoneyHarvested?.Invoke(this, EventArgs.Empty);
+            }
+
+            #endregion
+
+            #region UsingSpecialSimulator
+
+            /// <summary>
+            /// Общий имитатор выполнения длительных операций.
+            /// </summary>
+            private static readonly LongOperationSimulator simulator
+                = new LongOperationSimulator(BeeTestDouble.HarvestHoneyDurationMs);
 
             /// <summary>
             /// Сбор мёда. Симуляция с помощью специального класса.
@@ -149,7 +195,6 @@
                 }
 
                 BeeTestDouble.simulator.SimulateAsync(
-                    HarvestHoneyDurationMs,
                     this.EndHarvestSinglePortion,
                     this.HarvestWithSimulator);
             }
@@ -159,9 +204,16 @@
             /// </summary>
             private void EndHarvestSinglePortion()
             {
+                if (this.currentHoney == HoneyFromSingleBee)
+                {
+                    return;
+                }
+
                 this.OneHoneyHarvested?.Invoke(this, EventArgs.Empty);
                 Interlocked.Add(ref this.currentHoney, 1);
             }
+
+            #endregion
         }
 
         /// <summary>
@@ -170,19 +222,63 @@
         private class LongOperationSimulator
         {
             /// <summary>
+            /// Очередь действий для выполнения.
+            /// </summary>
+            /// <remarks>Именно ОЧЕРЕДЬ - первый пришел - первым обслужен!
+            /// Чтобы пчелы, пришедшие раньше, получали мёд раньше.</remarks>
+            private ConcurrentQueue<KeyValuePair<Action, Action>> queue
+                = new ConcurrentQueue<KeyValuePair<Action, Action>>();
+
+            /// <summary>
+            /// Создать имитатор длительных операций.
+            /// </summary>
+            /// <param name="delayTimeMs">Время выполнения операции.</param>
+            internal LongOperationSimulator(int delayTimeMs)
+            {
+                ThreadPoolTimer timer = ThreadPoolTimer.CreatePeriodicTimer(
+                    this.TimerElapsed,
+                    TimeSpan.FromMilliseconds(delayTimeMs));
+            }
+
+            /// <summary>
             /// Имитировать длительную операцию.
             /// </summary>
-            /// <param name="delayTimeMs">Продолжительность в миллисекундах.</param>
             /// <param name="endWith">Действие при завершении операции.</param>
             /// <param name="continueWith">Действие после завершения операции.</param>
-            internal async void SimulateAsync(
-                int delayTimeMs,
+            internal void SimulateAsync(
                 Action endWith,
                 Action continueWith)
             {
-                await Task.Delay(delayTimeMs);
-                endWith();
-                continueWith();
+                this.queue.Enqueue(new KeyValuePair<Action, Action>(continueWith, endWith));
+            }
+
+            /// <summary>
+            /// Выполнение действий в одной итерации таймера.
+            /// </summary>
+            /// <param name="timer"></param>
+            private void TimerElapsed(ThreadPoolTimer timer)
+            {
+                int currentCount = this.queue.Count;
+
+                for (int i = 0; i < currentCount; i++)
+                {
+                    KeyValuePair<Action, Action> currentAction;
+
+                    bool success = this.queue.TryDequeue(out currentAction);
+
+                    Assert.IsTrue(success);
+                    Assert.IsTrue(currentAction.Key != null);
+                    Assert.IsTrue(currentAction.Value != null);
+
+                    if (success)
+                    {
+                        Task.Factory.StartNew(() =>
+                        {
+                            currentAction.Key();
+                            currentAction.Value();
+                        });
+                    }
+                }
             }
         }
     }
