@@ -1,13 +1,11 @@
-﻿using System.Collections.Concurrent;
-using System.Linq;
-using Windows.System.Threading;
-
-namespace Apiary.Tests.Concurrency
+﻿namespace Apiary.Tests.Concurrency
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Windows.System.Threading;
 
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
@@ -21,7 +19,7 @@ namespace Apiary.Tests.Concurrency
         /// <summary>
         /// Количество пчел.
         /// </summary>
-        private const int BeesCount = 700000;
+        private const int BeesCount = 300000;
 
         /// <summary>
         /// Погрешность по времени сбора всего мёда всеми
@@ -99,7 +97,7 @@ namespace Apiary.Tests.Concurrency
             /// Продолжительность сбора одной порции мёда в 
             /// миллисекундах.
             /// </summary>
-            internal const int HarvestHoneyDurationMs = 100;
+            internal const int HarvestHoneyDurationMs = 1000;
             // для нормальной проверки - 1000
 
             /// <summary>
@@ -117,14 +115,18 @@ namespace Apiary.Tests.Concurrency
             /// </summary>
             internal void StartWork()
             {
-                // 10 000 пчёл
+                // 10 000 пчёл при 1000мс на сбор единицы мёда
                 //Task.Factory.StartNew(this.HarvestWithDelay);
 
-                // 300 000 пчёл
+                // 300 000 пчёл при 1000мс на сбор единицы мёда
                 //Task.Factory.StartNew(this.HarvestWithTimer);
 
-                // 700 000 пчёл
-                Task.Factory.StartNew(this.HarvestWithSimulator);
+                // 700 000 пчёл при 1000мс на сбор единицы мёда
+                //Task.Factory.StartNew(this.HarvestWithSimulator);
+
+                // 500 000 пчёл при 1000мс на сбор единицы мёда
+                // 200 000 пчёл при  100мс на сбор единицы мёда
+                Task.Factory.StartNew(this.HarvestWithUtilitiesSimulator);
             }
 
             #region UsingDelay
@@ -177,7 +179,9 @@ namespace Apiary.Tests.Concurrency
 
             #endregion
 
-            #region UsingSpecialSimulator
+            #region UsingSimulators
+
+            #region Using Test Simulator
 
             /// <summary>
             /// Общий имитатор выполнения длительных операций.
@@ -199,6 +203,34 @@ namespace Apiary.Tests.Concurrency
                     this.EndHarvestSinglePortion,
                     this.HarvestWithSimulator);
             }
+
+            #endregion
+
+            #region Using LongOperationSumulator from Utilities
+
+            /// <summary>
+            /// Общий имитатор выполнения длительных операций.
+            /// </summary>
+            private static readonly Apiary.Utilities.LongOperationSimulator utilitiesSimulator
+                = new Apiary.Utilities.LongOperationSimulator();
+
+            /// <summary>
+            /// Сбор мёда. Симуляция с помощью специального класса.
+            /// </summary>
+            private void HarvestWithUtilitiesSimulator()
+            {
+                if (this.currentHoney == HoneyFromSingleBee)
+                {
+                    return;
+                }
+
+                BeeTestDouble.utilitiesSimulator.SimulateAsync(
+                    TimeSpan.FromMilliseconds(HarvestHoneyDurationMs),
+                    this.EndHarvestSinglePortion,
+                    this.HarvestWithUtilitiesSimulator);
+            }
+
+            #endregion
 
             /// <summary>
             /// Окончание сбора одной порции мёда.

@@ -19,6 +19,12 @@ namespace Apiary.Utilities
     public class LongOperationSimulator : ILongOperationSimulator
     {
         /// <summary>
+        /// Минимальная продолжительность имитируемой операции.
+        /// </summary>
+        private static readonly TimeSpan minimalDuration
+            = TimeSpan.FromMilliseconds(100);
+
+        /// <summary>
         /// Объект для синхронизации при создании новых таймеров.
         /// </summary>
         private readonly object lockObject = new object();
@@ -44,8 +50,24 @@ namespace Apiary.Utilities
             Action endWith,
             Action continueWith)
         {
-            this.CreateTimerIfNotExists(duration);
+            if (duration < LongOperationSimulator.minimalDuration)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(duration),
+                    "Задана слишком маленькая продолжительность операции."
+                    + " Минимальная продолжительность (мс) - "
+                    + LongOperationSimulator.minimalDuration.TotalMilliseconds 
+                    + ".");
+            }
+
             ThreadPoolTimer timer = this.GetExistingTimer(duration);
+
+            if (timer == null)
+            {
+                this.CreateTimerIfNotExists(duration);
+                timer = this.GetExistingTimer(duration);
+            }
+           
             var queue = this.timersAndQueues[timer];
             queue.Enqueue(new KeyValuePair<Action, Action>(continueWith, endWith));
         }
@@ -104,7 +126,7 @@ namespace Apiary.Utilities
 
                 if (!queue.TryDequeue(out currentAction))
                 {
-                    continue;
+                    return;
                 }
 
                 if (currentAction.Key == null 

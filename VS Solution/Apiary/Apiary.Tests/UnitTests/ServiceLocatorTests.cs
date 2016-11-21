@@ -11,10 +11,10 @@
     public class ServiceLocatorTests
     {
         /// <summary>
-        /// Тест работы сервис-локатора.
+        /// Нормальное получение сервиса.
         /// </summary>
         [TestMethod]
-        public void ServiceLocatorTest()
+        public void ServiceLocatorGetRegisteredService()
         {
             TestType instance = new TestType();
 
