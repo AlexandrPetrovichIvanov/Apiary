@@ -1,5 +1,7 @@
 namespace Apiary.Interfaces
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Состояние пасеки.
     /// </summary>

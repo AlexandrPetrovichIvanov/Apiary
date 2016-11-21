@@ -18,6 +18,6 @@ namespace Apiary.Implementation.Interfaces
         /// <summary>
         /// Пчела-матка.
         /// </summary>
-        Queen - 2
+        Queen = 2
     }
 }

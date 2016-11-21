@@ -2,6 +2,9 @@ namespace Apiary.Implementation.Interfaces
 {
     using System;
 
+    using Apiary.Implementation.BeeActions;
+    using Apiary.Implementation.BeeRequests;
+
     /// <summary>
     /// Пчела.
     /// </summary>
@@ -27,7 +30,7 @@ namespace Apiary.Implementation.Interfaces
         /// Начать работу.
         /// </summary>
         /// <param name="initialState">С какого момента начинать работу.</param>
-        void StartWork(BeeWorkingState initialState = BeeState.NotSet);
+        void StartWork(BeeWorkingState initialState = BeeWorkingState.NotSet);
 
         /// <summary>
         /// Завершить работу.

@@ -77,7 +77,7 @@ namespace Apiary.Client.ViewModels.Design
         /// <summary>
         /// Общее количество пчёл.
         /// </summary>
-        public int BeesCount => this.Beehives.Sum(beehive => beehive.TotalBeesCount);
+        public int BeesCount => this.Beehives.Sum(beehive => beehive.BeesTotalCount);
 
         /// <summary>
         /// Команда запуска работы пасеки.

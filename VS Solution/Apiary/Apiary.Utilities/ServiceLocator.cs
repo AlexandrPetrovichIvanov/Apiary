@@ -38,12 +38,12 @@ namespace Apiary.Utilities
                     {
                         if (ServiceLocator.instance == null)
                         {
-                            ServiceLocator.instance = new ServiceLocator;
+                            ServiceLocator.instance = new ServiceLocator();
                         }
                     }
                 }
 
-                return ServiceLocator.instance;            
+                return ServiceLocator.instance;           
             }
         }
 

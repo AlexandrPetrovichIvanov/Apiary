@@ -36,7 +36,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Общее кол-во пчёл:" />
-                        <TextBlock Text="{Binding TotalBeesCount, Mode=OneWay}" />
+                        <TextBlock Text="{Binding BeesTotalCount, Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Кол-во пчёл в улье:" />
@@ -44,7 +44,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Рабочие пчелы:" />
-                        <TextBlock Text="{Binding WorkersCount, Mode=OneWay}" />
+                        <TextBlock Text="{Binding WorkerBeesCount, Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Матки:" />
@@ -103,7 +103,7 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        
+
         <GridView Grid.Row="2" ItemsSource="{Binding Beehives, Mode=OneWay}"
                   ItemTemplate="{StaticResource BeehiveTemplate}" />
     </Grid>

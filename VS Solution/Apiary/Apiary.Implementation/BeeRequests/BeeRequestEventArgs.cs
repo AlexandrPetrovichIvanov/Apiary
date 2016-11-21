@@ -26,36 +26,20 @@ namespace Apiary.Implementation.BeeRequests
     public class BeeRequestEventArgs<T> : BeeRequestEventArgs 
     {
         /// <summary>
-        /// Результат запроса (запрошенные пчелой данные).
-        /// </summary>
-        private T result;
-
-        /// <summary>
-        /// Результат - т.е. запрошенные пчелой данные.
+        /// Результат в виде объекта конкретного типа.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public new T Result 
-        { 
-            get
-            {
-                return this.result;
-            }
-
-            set
-            {
-                this.result = value;
-            }
-        }
+        public T TypedResult { get; set; }
 
         /// <summary>
-        /// Реализация базового свойства.
+        /// Результат в виде объекта неопределенного типа.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public object BeeRequestEventArgs.Result
+        public override object Result
         {
             get
             {
-                return this.result;
+                return this.TypedResult;
             }
 
             set
@@ -64,11 +48,10 @@ namespace Apiary.Implementation.BeeRequests
                 {
                     throw new ArgumentException(
                         "Результат запроса пчелы имеет неподходящий тип.",
-                        "value")
-                    )
+                        nameof(value));
                 }
 
-                this.result = (T)value;
+                this.TypedResult = (T)value;
             }
         }
     }

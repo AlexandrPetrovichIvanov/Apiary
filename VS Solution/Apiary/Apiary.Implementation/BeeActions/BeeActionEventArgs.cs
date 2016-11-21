@@ -2,8 +2,10 @@ namespace Apiary.Implementation.BeeActions
 {
     using System;
 
+    using Apiary.Implementation.Interfaces;
+
     /// <summary>
-    /// Аргументы события любого действия пчелы.
+    /// Аргументы любого действия пчелы.
     /// </summary>
     public class BeeActionEventArgs : EventArgs
     {

@@ -2,6 +2,9 @@ namespace Apiary.Utilities
 {
     using System;
 
+    /// <summary>
+    /// Имитатор длительных операций.
+    /// </summary>
     public interface ILongOperationSimulator
     {
         /// <summary>
@@ -10,7 +13,7 @@ namespace Apiary.Utilities
         /// <param name="duration">Продолжительность операции.</param>
         /// <param name="endWith">Действие при завершении операции.</param>
         /// <param name="continueWith">Действие после завершения операции.</param>
-        internal void SimulateAsync(
+        void SimulateAsync(
             TimeSpan duration,
             Action endWith,
             Action continueWith);

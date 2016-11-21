@@ -84,12 +84,12 @@
         /// <summary>
         /// Общее количество пчёл.
         /// </summary>
-        public int TotalBeesCount { get; } = 15;
+        public int BeesTotalCount { get; } = 15;
 
         /// <summary>
         /// Количество рабочих пчёл.
         /// </summary>
-        public int WorkersCount { get; } = 25;
+        public int WorkerBeesCount { get; } = 25;
 
         /// <summary>
         /// Событие изменения значения свойства.

@@ -1,5 +1,7 @@
 namespace Apiary.Implementation.Interfaces
 {
+    using Apiary.Interfaces;
+
     /// <summary>
     /// Улей.
     /// </summary>

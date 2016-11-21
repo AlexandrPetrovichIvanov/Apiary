@@ -1,6 +1,12 @@
 namespace Apiary.Utilities
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Windows.System.Threading;
 
     /// <summary>
     /// Класс имитации длительных операций.
@@ -24,8 +30,8 @@ namespace Apiary.Utilities
         /// 1. Действие при завершении имитации длительной операции.
         /// 2. Действие после завершения имитации длительной операции. 
         /// </summary>
-        private readonly Dictionary<ThreadPoolTimer, ConcurrentQueue<KeyValuePair<Action, Action>>> timersAndQueues
-            = new Dictionary<ThreadPoolTimer, ConcurrentQueue<KeyValuePair<Action, Action>>>();
+        private readonly ConcurrentDictionary<ThreadPoolTimer, ConcurrentQueue<KeyValuePair<Action, Action>>> timersAndQueues
+            = new ConcurrentDictionary<ThreadPoolTimer, ConcurrentQueue<KeyValuePair<Action, Action>>>();
 
         /// <summary>
         /// Имитировать длительную операцию.
@@ -33,13 +39,13 @@ namespace Apiary.Utilities
         /// <param name="duration">Продолжительность операции.</param>
         /// <param name="endWith">Действие при завершении операции.</param>
         /// <param name="continueWith">Действие после завершения операции.</param>
-        internal void SimulateAsync(
+        public void SimulateAsync(
             TimeSpan duration,
             Action endWith,
             Action continueWith)
         {
             this.CreateTimerIfNotExists(duration);
-            ThreadPoolTimer timer = this.GetExistingTimer();
+            ThreadPoolTimer timer = this.GetExistingTimer(duration);
             var queue = this.timersAndQueues[timer];
             queue.Enqueue(new KeyValuePair<Action, Action>(continueWith, endWith));
         }
@@ -61,7 +67,7 @@ namespace Apiary.Utilities
                             this.TimerElapsed,
                             duration);
 
-                        this.timersAndQueues[timer] = 
+                        this.timersAndQueues[newTimer] = 
                             new ConcurrentQueue<KeyValuePair<Action, Action>>();
                     }
                 }
@@ -76,7 +82,7 @@ namespace Apiary.Utilities
         private ThreadPoolTimer GetExistingTimer(TimeSpan duration)
         {
             return this.timersAndQueues.Keys.FirstOrDefault
-                (t => t.Interval == duration);
+                (t => t.Period == duration);
         }
 
         /// <summary>
@@ -102,7 +108,7 @@ namespace Apiary.Utilities
                 {
                     throw new InvalidOperationException(
                         "Ошибка имитации длительной операции. "
-                        + "Элемент очереди действий не найден или некорректен.")
+                        + "Элемент очереди действий не найден или некорректен.");
                 }
 
                 Task.Factory.StartNew(() =>

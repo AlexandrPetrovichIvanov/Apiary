@@ -2,7 +2,6 @@
     x:Class="Apiary.Client.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewmodels="using:Apiary.Client.ViewModels"
     xmlns:mvvm="using:Apiary.Client.Mvvm"
     RequestedTheme="Light">
     <Application.Resources>
