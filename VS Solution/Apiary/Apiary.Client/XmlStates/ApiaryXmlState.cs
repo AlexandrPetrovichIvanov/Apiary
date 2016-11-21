@@ -24,7 +24,7 @@ namespace Apiary.Client.XmlStates
         /// </summary>
         /// <returns>Количество мёда.</returns>
         [XmlElement("Honey")]
-        public int HoneyCount { get; set; }
+        public long HoneyCount { get; set; }
 
         /// <summary>
         /// Явная реализация получения перечисления состояний ульев.

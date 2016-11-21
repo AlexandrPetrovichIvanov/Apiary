@@ -99,7 +99,8 @@ namespace Apiary.Tests.Concurrency
             /// Продолжительность сбора одной порции мёда в 
             /// миллисекундах.
             /// </summary>
-            internal const int HarvestHoneyDurationMs = 1000;
+            internal const int HarvestHoneyDurationMs = 100;
+            // для нормальной проверки - 1000
 
             /// <summary>
             /// Событие сбора одной порции мёда.
@@ -265,10 +266,6 @@ namespace Apiary.Tests.Concurrency
                     KeyValuePair<Action, Action> currentAction;
 
                     bool success = this.queue.TryDequeue(out currentAction);
-
-                    Assert.IsTrue(success);
-                    Assert.IsTrue(currentAction.Key != null);
-                    Assert.IsTrue(currentAction.Value != null);
 
                     if (success)
                     {

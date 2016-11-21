@@ -1,60 +1,60 @@
-namespace Apiary.Client.XmlStates
+п»їnamespace Apiary.Client.XmlStates
 {
     using System.Xml.Serialization;
 
     using Apiary.Interfaces;
 
     /// <summary>
-    /// Xml-сериализуемый класс состояния улья.
+    /// Xml-СЃРµСЂРёР°Р»РёР·СѓРµРјС‹Р№ РєР»Р°СЃСЃ СЃРѕСЃС‚РѕСЏРЅРёСЏ СѓР»СЊСЏ.
     /// </summary>
     public class BeehiveXmlState : IBeehiveState
     {
         /// <summary>
-        /// Получить или задать номер улья.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РЅРѕРјРµСЂ СѓР»СЊСЏ.
         /// </summary>
-        /// <returns>Номер улья.</returns>
+        /// <returns>РќРѕРјРµСЂ СѓР»СЊСЏ.</returns>
         [XmlElement("Number")]
         public int BeehiveNumber { get; set; }
 
         /// <summary>
-        /// Получить или задать количество мёда в улье.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РјС‘РґР° РІ СѓР»СЊРµ.
         /// </summary>
-        /// <returns>Количество мёда.</returns>
+        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ РјС‘РґР°.</returns>
         [XmlElement("Honey")]
-        public int HoneyCount { get; set; }
+        public long HoneyCount { get; set; }
 
         /// <summary>
-        /// Получить или задать общее количество пчёл в улье.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїС‡С‘Р» РІ СѓР»СЊРµ.
         /// </summary>
-        /// <returns>Общее количество пчёл.</returns>
+        /// <returns>РћР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїС‡С‘Р».</returns>
         [XmlElement("TotalBees")]
         public int BeesTotalCount { get; set; }
 
         /// <summary>
-        /// Получить или задать количество пчёл внутри улья.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РїС‡С‘Р» РІРЅСѓС‚СЂРё СѓР»СЊСЏ.
         /// </summary>
-        /// <returns>Количество пчёл внутри улья.</returns>
+        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ РїС‡С‘Р» РІРЅСѓС‚СЂРё СѓР»СЊСЏ.</returns>
         [XmlElement("BeesInside")]
         public int BeesInsideCount { get; set; }
 
         /// <summary>
-        /// Получить или задать количество рабочих пчёл в улье.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°Р±РѕС‡РёС… РїС‡С‘Р» РІ СѓР»СЊРµ.
         /// </summary>
-        /// <returns>Количество рабочих пчёл.</returns>
+        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°Р±РѕС‡РёС… РїС‡С‘Р».</returns>
         [XmlElement("Workers")]
         public int WorkerBeesCount { get; set; }
 
         /// <summary>
-        /// Получить или задать количество маток в улье.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РјР°С‚РѕРє РІ СѓР»СЊРµ.
         /// </summary>
-        /// <returns>Количество маток.</returns>
+        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ РјР°С‚РѕРє.</returns>
         [XmlElement("Queens")]
         public int QueensCount { get; set; }
 
         /// <summary>
-        /// Получить или задать количество пчёл-охранников в улье.
+        /// РџРѕР»СѓС‡РёС‚СЊ РёР»Рё Р·Р°РґР°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РїС‡С‘Р»-РѕС…СЂР°РЅРЅРёРєРѕРІ РІ СѓР»СЊРµ.
         /// </summary>
-        /// <returns>Количество пчёл-охранников.</returns>
+        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ РїС‡С‘Р»-РѕС…СЂР°РЅРЅРёРєРѕРІ.</returns>
         [XmlElement("Guards")]
         public int GuardsCount { get; set; }
     }

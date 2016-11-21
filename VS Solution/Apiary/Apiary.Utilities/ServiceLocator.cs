@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+
 namespace Apiary.Utilities
 {
     using System;
@@ -21,8 +23,8 @@ namespace Apiary.Utilities
         /// <summary>
         /// Зарегистрированные сервисы.
         /// </summary>
-        private readonly Dictionary<Type, object> registeredServices
-            = new Dictionary<Type, object>();
+        private readonly ConcurrentDictionary<Type, object> registeredServices
+            = new ConcurrentDictionary<Type, object>();
 
         /// <summary>
         /// Получить единственный экземпляр service locator'а.

@@ -17,7 +17,7 @@ namespace Apiary.Client.ViewModels.Design
         /// <summary>
         /// Общее количество собранного мёда.
         /// </summary>
-        private int honeyCount;
+        private long honeyCount;
 
         /// <summary>
         /// Событие изменения значения свойства.
@@ -59,7 +59,7 @@ namespace Apiary.Client.ViewModels.Design
         /// <summary>
         /// Общее количество собранного мёда.
         /// </summary>
-        public int HoneyCount
+        public long HoneyCount
         {
             get { return this.honeyCount; }
             private set

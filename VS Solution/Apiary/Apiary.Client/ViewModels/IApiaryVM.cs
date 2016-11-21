@@ -17,7 +17,7 @@
         /// <summary>
         /// Текущее количество всего собранного мёда.
         /// </summary>
-        int HoneyCount { get; }
+        long HoneyCount { get; }
 
         /// <summary>
         /// Количество ульев.

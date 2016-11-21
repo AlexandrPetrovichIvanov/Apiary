@@ -74,7 +74,7 @@
         /// <summary>
         /// Количество мёда.
         /// </summary>
-        public int HoneyCount { get; private set; } = 500;
+        public long HoneyCount { get; private set; } = 500;
 
         /// <summary>
         /// Количество пчёл-маток.

@@ -15,7 +15,7 @@ namespace Apiary.Interfaces
         /// Получить количество мёда в улье.
         /// </summary>
         /// <returns>Количество мёда.</returns>
-        int HoneyCount { get; }
+        long HoneyCount { get; }
 
         /// <summary>
         /// Получить общее количество пчёл в улье.

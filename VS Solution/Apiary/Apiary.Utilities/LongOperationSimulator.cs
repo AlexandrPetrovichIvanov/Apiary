@@ -102,13 +102,17 @@ namespace Apiary.Utilities
             {
                 KeyValuePair<Action, Action> currentAction;
 
-                bool success = queue.TryDequeue(out currentAction);
+                if (!queue.TryDequeue(out currentAction))
+                {
+                    continue;
+                }
 
-                if (!success || currentAction.Key == null || currentAction.Value == null)
+                if (currentAction.Key == null 
+                    || currentAction.Value == null)
                 {
                     throw new InvalidOperationException(
                         "Ошибка имитации длительной операции. "
-                        + "Элемент очереди действий не найден или некорректен.");
+                        + "Элемент очереди действий некорректен.");
                 }
 
                 Task.Factory.StartNew(() =>

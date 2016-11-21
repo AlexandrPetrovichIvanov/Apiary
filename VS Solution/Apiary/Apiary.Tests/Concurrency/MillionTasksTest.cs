@@ -16,7 +16,7 @@
         /// <summary>
         /// Количество одновременных задач.
         /// </summary>
-        private const int TasksNumber = 1000000;
+        private const int TasksNumber = 10000;//должно работать при 1000000
 
         /// <summary>
         /// Количество повторений в одной задаче.
