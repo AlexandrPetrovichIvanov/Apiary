@@ -16,19 +16,46 @@
         [TestMethod]
         public void ServiceLocatorGetRegisteredService()
         {
-            TestType instance = new TestType();
+            RegisteredService instance = new RegisteredService();
 
-            ServiceLocator.Instance.RegisterService<TestType>(instance);
+            ServiceLocator.Instance.RegisterService<RegisteredService>(instance);
 
             Assert.AreEqual(
                 instance,
-                ServiceLocator.Instance.GetService<TestType>());
+                ServiceLocator.Instance.GetService<RegisteredService>());
+        }
+
+        /// <summary>
+        /// Попытка получения незарегистрированного сервиса.
+        /// </summary>
+        [TestMethod]
+        public void ServiceLocatorGetUnregisteredService()
+        {
+            try
+            {
+                ServiceLocator.Instance.GetService<UnregisteredService>());
+                Assert.WrongExecutionPath();
+            }
+            catch (InvalidOperationException)
+            {                
+                // так и должно быть
+            }               
+            catch (Exception)
+            {
+                Assert.WrongExecutionPath();
+            } 
         }
 
         /// <summary>
         /// Простой класс (для теста).
         /// </summary>
-        private class TestType
+        private class RegisteredService
+        {}
+
+        /// <summary>
+        /// Простой класс (для теста).
+        /// </summary>
+        private class UnregisteredService
         {}
     }
 }
