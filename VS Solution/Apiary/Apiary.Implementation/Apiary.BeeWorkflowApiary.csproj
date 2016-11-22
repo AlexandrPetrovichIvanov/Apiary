@@ -107,8 +107,10 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiaryStateThreadSafe.cs" />
     <Compile Include="BeeActions\BeeActionEventArgs.cs" />
     <Compile Include="BeeActions\BeeActionType.cs" />
+    <Compile Include="BeehiveStateThreadSafe.cs" />
     <Compile Include="BeeRequests\BeeRequestEventArgs.cs" />
     <Compile Include="BeeRequests\BeeRequestState.cs" />
     <Compile Include="Interfaces\BeeType.cs" />
