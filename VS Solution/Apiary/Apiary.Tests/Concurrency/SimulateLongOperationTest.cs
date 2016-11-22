@@ -19,7 +19,7 @@
         /// <summary>
         /// Количество пчел.
         /// </summary>
-        private const int BeesCount = 300000;
+        private const int BeesCount = 15000;
 
         /// <summary>
         /// Погрешность по времени сбора всего мёда всеми
@@ -90,14 +90,14 @@
             /// <summary>
             /// Сколько мёда должна собрать одна пчела.
             /// </summary>
-            internal const int HoneyFromSingleBee = 100; 
+            internal const int HoneyFromSingleBee = 50; 
             // 100 - для проверки длительной стабильной работы больше полутора минут
 
             /// <summary>
             /// Продолжительность сбора одной порции мёда в 
             /// миллисекундах.
             /// </summary>
-            internal const int HarvestHoneyDurationMs = 1000;
+            internal const int HarvestHoneyDurationMs = 50;
             // для нормальной проверки - 1000
 
             /// <summary>
@@ -179,8 +179,6 @@
 
             #endregion
 
-            #region UsingSimulators
-
             #region Using Test Simulator
 
             /// <summary>
@@ -204,6 +202,20 @@
                     this.HarvestWithSimulator);
             }
 
+            /// <summary>
+            /// Окончание сбора одной порции мёда.
+            /// </summary>
+            private void EndHarvestSinglePortion()
+            {
+                if (this.currentHoney == HoneyFromSingleBee)
+                {
+                    return;
+                }
+
+                this.OneHoneyHarvested?.Invoke(this, EventArgs.Empty);
+                Interlocked.Add(ref this.currentHoney, 1);
+            }
+
             #endregion
 
             #region Using LongOperationSumulator from Utilities
@@ -219,23 +231,15 @@
             /// </summary>
             private void HarvestWithUtilitiesSimulator()
             {
-                if (this.currentHoney == HoneyFromSingleBee)
-                {
-                    return;
-                }
-
                 BeeTestDouble.utilitiesSimulator.SimulateAsync(
                     TimeSpan.FromMilliseconds(HarvestHoneyDurationMs),
-                    this.EndHarvestSinglePortion,
-                    this.HarvestWithUtilitiesSimulator);
+                    this.HarvestWithUtilitiesSimulatorRecursive);
             }
 
-            #endregion
-
             /// <summary>
-            /// Окончание сбора одной порции мёда.
+            /// Сбор мёда. Симуляция с помощью специального класса.
             /// </summary>
-            private void EndHarvestSinglePortion()
+            private void HarvestWithUtilitiesSimulatorRecursive()
             {
                 if (this.currentHoney == HoneyFromSingleBee)
                 {
@@ -244,6 +248,10 @@
 
                 this.OneHoneyHarvested?.Invoke(this, EventArgs.Empty);
                 Interlocked.Add(ref this.currentHoney, 1);
+                
+                BeeTestDouble.utilitiesSimulator.SimulateAsync(
+                    TimeSpan.FromMilliseconds(HarvestHoneyDurationMs),
+                    this.HarvestWithUtilitiesSimulatorRecursive);
             }
 
             #endregion

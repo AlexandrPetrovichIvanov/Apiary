@@ -1,4 +1,4 @@
-namespace Apiary.Implementation.Interfaces
+namespace Apiary.BeeWorkflowApiary.Interfaces
 {
     using Apiary.Interfaces;
 

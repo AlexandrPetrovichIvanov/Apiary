@@ -1,5 +1,6 @@
 ﻿namespace Apiary.Tests.UnitTests
 {
+    using System;
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     using Apiary.Utilities;
@@ -14,7 +15,7 @@
         /// Нормальное получение сервиса.
         /// </summary>
         [TestMethod]
-        public void ServiceLocatorGetRegisteredService()
+        public void ServiceLocator_GetRegisteredService()
         {
             RegisteredService instance = new RegisteredService();
 
@@ -29,21 +30,17 @@
         /// Попытка получения незарегистрированного сервиса.
         /// </summary>
         [TestMethod]
-        public void ServiceLocatorGetUnregisteredService()
+        public void ServiceLocator_GetUnregisteredService()
         {
             try
             {
-                ServiceLocator.Instance.GetService<UnregisteredService>());
-                Assert.WrongExecutionPath();
+                ServiceLocator.Instance.GetService<UnregisteredService>();
+                throw new Exception();
             }
             catch (InvalidOperationException)
             {                
                 // так и должно быть
-            }               
-            catch (Exception)
-            {
-                Assert.WrongExecutionPath();
-            } 
+            }
         }
 
         /// <summary>

@@ -1,8 +1,8 @@
-namespace Apiary.Implementation.BeeActions
+namespace Apiary.BeeWorkflowApiary.BeeActions
 {
     using System;
 
-    using Apiary.Implementation.Interfaces;
+    using Apiary.BeeWorkflowApiary.Interfaces;
 
     /// <summary>
     /// Аргументы любого действия пчелы.

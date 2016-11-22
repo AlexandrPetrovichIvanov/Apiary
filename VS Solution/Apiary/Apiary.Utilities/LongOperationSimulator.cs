@@ -2,7 +2,6 @@ namespace Apiary.Utilities
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -36,40 +35,40 @@ namespace Apiary.Utilities
         /// 1. Действие при завершении имитации длительной операции.
         /// 2. Действие после завершения имитации длительной операции. 
         /// </summary>
-        private readonly ConcurrentDictionary<ThreadPoolTimer, ConcurrentQueue<KeyValuePair<Action, Action>>> timersAndQueues
-            = new ConcurrentDictionary<ThreadPoolTimer, ConcurrentQueue<KeyValuePair<Action, Action>>>();
+        private readonly ConcurrentDictionary<ThreadPoolTimer, ConcurrentQueue<Action>> timersAndQueues
+            = new ConcurrentDictionary<ThreadPoolTimer, ConcurrentQueue<Action>>();
+
+        /// <summary>
+        /// Признак, что в процессе работы произошла одна или несколько ошибок.
+        /// </summary>
+        public bool HasError { get; private set; }
 
         /// <summary>
         /// Имитировать длительную операцию.
         /// </summary>
         /// <param name="duration">Продолжительность операции.</param>
-        /// <param name="endWith">Действие при завершении операции.</param>
         /// <param name="continueWith">Действие после завершения операции.</param>
         public void SimulateAsync(
             TimeSpan duration,
-            Action endWith,
             Action continueWith)
         {
-            if (duration < LongOperationSimulator.minimalDuration)
+            try
             {
-                throw new ArgumentOutOfRangeException(
-                    nameof(duration),
-                    "Задана слишком маленькая продолжительность операции."
-                    + " Минимальная продолжительность (мс) - "
-                    + LongOperationSimulator.minimalDuration.TotalMilliseconds 
-                    + ".");
+                ThreadPoolTimer timer = this.GetExistingTimer(duration);
+
+                if (timer == null)
+                {
+                    this.CreateTimerIfNotExists(duration);
+                    timer = this.GetExistingTimer(duration);
+                }
+
+                var queue = this.timersAndQueues[timer];
+                queue.Enqueue(continueWith);
             }
-
-            ThreadPoolTimer timer = this.GetExistingTimer(duration);
-
-            if (timer == null)
+            catch
             {
-                this.CreateTimerIfNotExists(duration);
-                timer = this.GetExistingTimer(duration);
+                this.HasError = true;
             }
-           
-            var queue = this.timersAndQueues[timer];
-            queue.Enqueue(new KeyValuePair<Action, Action>(continueWith, endWith));
         }
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace Apiary.Utilities
                             duration);
 
                         this.timersAndQueues[newTimer] = 
-                            new ConcurrentQueue<KeyValuePair<Action, Action>>();
+                            new ConcurrentQueue<Action>();
                     }
                 }
             }
@@ -113,36 +112,40 @@ namespace Apiary.Utilities
         /// <param name="timer">Таймер.</param>
         private void TimerElapsed(ThreadPoolTimer timer)
         {
-            var queue = this.timersAndQueues[timer];
-
-            // обрабатываются действия, которые были
-            // на момент старта цикла. Остальные действия
-            // обработаются в следующей итерации.
-            int currentCount = queue.Count;
-            
-            for (int i = 0; i < currentCount; i++)
+            try
             {
-                KeyValuePair<Action, Action> currentAction;
+                var queue = this.timersAndQueues[timer];
 
-                if (!queue.TryDequeue(out currentAction))
+                // обрабатываются действия, которые были
+                // на момент старта цикла. Остальные действия
+                // обработаются в следующей итерации.
+                int currentCount = queue.Count;
+
+                for (int i = 0; i < currentCount; i++)
                 {
-                    return;
+                    Action currentAction;
+
+                    if (!queue.TryDequeue(out currentAction))
+                    {
+                        return;
+                    }
+
+                    if (currentAction == null)
+                    {
+                        return;
+                    }
+
+                    Task.Factory.StartNew(() =>
+                    {
+                        currentAction();
+                    });
                 }
-
-                if (currentAction.Key == null 
-                    || currentAction.Value == null)
-                {
-                    throw new InvalidOperationException(
-                        "Ошибка имитации длительной операции. "
-                        + "Элемент очереди действий некорректен.");
-                }
-
-                Task.Factory.StartNew(() =>
-                {
-                    currentAction.Key();
-                    currentAction.Value();
-                });
             }
+            catch
+            {
+                this.HasError = true;
+            }
+            
         }
     }
 }

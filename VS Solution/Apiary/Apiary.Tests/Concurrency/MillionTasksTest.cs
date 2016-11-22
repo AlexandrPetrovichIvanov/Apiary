@@ -8,7 +8,7 @@
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     /// <summary>
-    /// Тестирование создания и одновременного выполнения миллионов задач.
+    /// Тестирование создания и одновременного выполнения миллиона задач.
     /// </summary>
     [TestClass]
     public class MillionTasksTest

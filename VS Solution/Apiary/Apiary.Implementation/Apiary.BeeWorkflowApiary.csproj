@@ -7,8 +7,8 @@
     <ProjectGuid>{118EBA47-B497-431B-B6D6-052EBF016B41}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Apiary.Implementation</RootNamespace>
-    <AssemblyName>Apiary.Implementation</AssemblyName>
+    <RootNamespace>Apiary.BeeWorkflowApiary</RootNamespace>
+    <AssemblyName>Apiary.BeeWorkflowApiary</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>

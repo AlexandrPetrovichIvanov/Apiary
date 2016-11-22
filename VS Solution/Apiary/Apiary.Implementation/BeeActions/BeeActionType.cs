@@ -1,4 +1,4 @@
-namespace Apiary.Implementation.BeeActions
+namespace Apiary.BeeWorkflowApiary.BeeActions
 {
     /// <summary>
     /// Тип действия пчелы.

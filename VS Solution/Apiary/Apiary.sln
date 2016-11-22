@@ -9,11 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.Client", "Apiary.Cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.Interfaces", "Apiary.Interfaces\Apiary.Interfaces.csproj", "{FAC556D9-5B59-4164-B058-B8F08B2088DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.Implementation", "Apiary.Implementation\Apiary.Implementation.csproj", "{118EBA47-B497-431B-B6D6-052EBF016B41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.BeeWorkflowApiary", "Apiary.Implementation\Apiary.BeeWorkflowApiary.csproj", "{118EBA47-B497-431B-B6D6-052EBF016B41}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{8356D246-9DDB-4AB8-8859-79E026E6E3F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.Utilities", "Apiary.Utilities\Apiary.Utilities.csproj", "{94C51A05-19C8-4B69-8DB7-AA1047230AB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.BeehiveWorkflowApiary", "Apiary.BeehiveWorkflowApiary\Apiary.BeehiveWorkflowApiary.csproj", "{342BB806-A460-4267-A8B3-6E3BCBD4B86A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.MathematicalApiary", "Apiary.MathematicalApiary\Apiary.MathematicalApiary.csproj", "{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +119,38 @@ Global
 		{94C51A05-19C8-4B69-8DB7-AA1047230AB4}.Release|x64.Build.0 = Release|x64
 		{94C51A05-19C8-4B69-8DB7-AA1047230AB4}.Release|x86.ActiveCfg = Release|x86
 		{94C51A05-19C8-4B69-8DB7-AA1047230AB4}.Release|x86.Build.0 = Release|x86
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|ARM.ActiveCfg = Debug|ARM
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|ARM.Build.0 = Debug|ARM
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|x64.ActiveCfg = Debug|x64
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|x64.Build.0 = Debug|x64
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|x86.ActiveCfg = Debug|x86
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Debug|x86.Build.0 = Debug|x86
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|ARM.ActiveCfg = Release|ARM
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|ARM.Build.0 = Release|ARM
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|x64.ActiveCfg = Release|x64
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|x64.Build.0 = Release|x64
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|x86.ActiveCfg = Release|x86
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A}.Release|x86.Build.0 = Release|x86
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|ARM.ActiveCfg = Debug|ARM
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|ARM.Build.0 = Debug|ARM
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|x64.ActiveCfg = Debug|x64
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|x64.Build.0 = Debug|x64
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|x86.ActiveCfg = Debug|x86
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Debug|x86.Build.0 = Debug|x86
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|ARM.ActiveCfg = Release|ARM
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|ARM.Build.0 = Release|ARM
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|x64.ActiveCfg = Release|x64
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|x64.Build.0 = Release|x64
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|x86.ActiveCfg = Release|x86
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,5 +158,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FAC556D9-5B59-4164-B058-B8F08B2088DA} = {8356D246-9DDB-4AB8-8859-79E026E6E3F2}
 		{118EBA47-B497-431B-B6D6-052EBF016B41} = {8356D246-9DDB-4AB8-8859-79E026E6E3F2}
+		{342BB806-A460-4267-A8B3-6E3BCBD4B86A} = {8356D246-9DDB-4AB8-8859-79E026E6E3F2}
+		{91518F5B-F4B6-46D8-ABD5-9A3EE670C127} = {8356D246-9DDB-4AB8-8859-79E026E6E3F2}
 	EndGlobalSection
 EndGlobal

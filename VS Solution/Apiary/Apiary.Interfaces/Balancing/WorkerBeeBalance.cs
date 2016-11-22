@@ -18,11 +18,5 @@ namespace Apiary.Interfaces.Balancing
         /// </summary>
         /// <returns>Время отдыха в улье.</returns>
         public TimeSpan TimeToRestInBeehive { get; set; }
-
-        /// <summary>
-        /// Интервал между запросами к охране о входе в улей.
-        /// </summary>
-        /// <returns>Интервал между запросами к охране о входе в улей.</returns>
-        public TimeSpan EnterRequestsInterval { get; set; }
     }
 }

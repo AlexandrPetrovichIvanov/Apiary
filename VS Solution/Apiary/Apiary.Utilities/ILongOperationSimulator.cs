@@ -11,11 +11,14 @@ namespace Apiary.Utilities
         /// Имитировать длительную операцию.
         /// </summary>
         /// <param name="duration">Продолжительность операции.</param>
-        /// <param name="endWith">Действие при завершении операции.</param>
         /// <param name="continueWith">Действие после завершения операции.</param>
         void SimulateAsync(
             TimeSpan duration,
-            Action endWith,
             Action continueWith);
+
+        /// <summary>
+        /// Признак, что в процессе работы произошла одна или несколько ошибок.
+        /// </summary>
+        bool HasError { get; }
     }
 }

@@ -1,9 +1,9 @@
-namespace Apiary.Implementation.Interfaces
+namespace Apiary.BeeWorkflowApiary.Interfaces
 {
     using System;
 
-    using Apiary.Implementation.BeeActions;
-    using Apiary.Implementation.BeeRequests;
+    using Apiary.BeeWorkflowApiary.BeeActions;
+    using Apiary.BeeWorkflowApiary.BeeRequests;
 
     /// <summary>
     /// Пчела.

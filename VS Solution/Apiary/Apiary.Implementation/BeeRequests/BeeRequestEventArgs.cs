@@ -1,4 +1,4 @@
-namespace Apiary.Implementation.BeeRequests
+namespace Apiary.BeeWorkflowApiary.BeeRequests
 {
     using System;
 
