@@ -8,6 +8,7 @@ namespace Apiary.Client.ViewModels.Design
     using System.Windows.Input;
 
     using Apiary.Client.Commands;
+    using Apiary.Client.XmlStates;
 
     /// <summary>
     /// Тестовая модель представления пасеки (для разработки UI).
@@ -18,6 +19,11 @@ namespace Apiary.Client.ViewModels.Design
         /// Общее количество собранного мёда.
         /// </summary>
         private long honeyCount;
+
+        /// <summary>
+        /// Состояние пасеки.
+        /// </summary>
+        private readonly ApiaryXmlState state;
 
         /// <summary>
         /// Событие изменения значения свойства.
@@ -49,6 +55,8 @@ namespace Apiary.Client.ViewModels.Design
             this.PropertyChanged?.Invoke(
                 this, 
                 new PropertyChangedEventArgs(nameof(this.BeesCount)));
+
+            this.state = ApiaryXmlState.LoadState();
         }
 
         /// <summary>
@@ -117,7 +125,8 @@ namespace Apiary.Client.ViewModels.Design
         /// </summary>
         private void Stop()
         {
-            throw new NotImplementedException();
+            this.state.SaveInCache();
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -126,7 +135,7 @@ namespace Apiary.Client.ViewModels.Design
         /// <returns>True - пасеку можно остановить.</returns>
         private bool CanStop()
         {
-            return false;
+            return true;
             throw new NotImplementedException();
         }
 

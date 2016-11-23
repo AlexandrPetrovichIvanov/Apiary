@@ -1,3 +1,4 @@
+<!-- Пример состояния пасеки -->
 <Apiary>
     <Honey>300000</Honey>
     <Beehives>
@@ -31,11 +32,11 @@
         <Beehive>
             <Number>4</Number>
             <Honey>0</Honey>
-            <TotalBees>200000</TotalBees>
-            <BeesInside>100000</BeesInside>
-            <Workers>170000</Workers>
-            <Queens>100</Queens>
-            <Guards>29900</Guards>
+            <TotalBees>2000</TotalBees>
+            <BeesInside>1000</BeesInside>
+            <Workers>1700</Workers>
+            <Queens>10</Queens>
+            <Guards>290</Guards>
         </Beehive>
         <Beehive>
             <Number>5</Number>
