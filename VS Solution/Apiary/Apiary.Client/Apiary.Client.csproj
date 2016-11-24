@@ -90,9 +90,6 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <None Include="XmlStates\ApiaryState.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -101,6 +98,7 @@
     <Compile Include="Commands\HarvestHoneyCommand.cs" />
     <Compile Include="Commands\StartCommand.cs" />
     <Compile Include="Commands\StopCommand.cs" />
+    <Compile Include="Mvvm\AppSuspendingCommandBinding.cs" />
     <Compile Include="Mvvm\SimpleCommand.cs" />
     <Compile Include="Mvvm\Dispatcher.cs" />
     <Compile Include="ServiceLocator\SimpleServiceLocator.cs" />
@@ -113,8 +111,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\IBeehiveVM.cs" />
     <Compile Include="Mvvm\ViewModelLocator.cs" />
-    <Compile Include="XmlStates\ApiaryXmlState.cs" />
-    <Compile Include="XmlStates\BeehiveXmlState.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -131,7 +127,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="XmlStates\ApiaryState.xml" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -150,9 +145,17 @@
     <Folder Include="ViewModels\Work\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Apiary.Client.TestablePart\Apiary.Client.TestablePart.csproj">
+      <Project>{67e581ff-6dde-450b-be75-ac25dddeaca2}</Project>
+      <Name>Apiary.Client.TestablePart</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
       <Project>{fac556d9-5b59-4164-b058-b8f08b2088da}</Project>
       <Name>Apiary.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apiary.Utilities\Apiary.Utilities.csproj">
+      <Project>{94c51a05-19c8-4b69-8db7-aa1047230ab4}</Project>
+      <Name>Apiary.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

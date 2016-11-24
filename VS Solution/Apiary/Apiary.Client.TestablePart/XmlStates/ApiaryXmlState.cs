@@ -1,15 +1,14 @@
-namespace Apiary.Client.XmlStates
+﻿namespace Apiary.Client.XmlStates
 {
     using System;
     using System.IO;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Xml.Serialization;
     using Windows.Storage;
-    using Windows.Storage.Pickers;
-    using Windows.Storage.Provider;
 
     using Apiary.Interfaces;
-    using Apiary.Utilities;    
+    using Apiary.Utilities;
 
     /// <summary>
     /// Xml-сериализуемый класс состояния пасеки.
@@ -25,7 +24,7 @@ namespace Apiary.Client.XmlStates
         /// <summary>
         /// Имя embedded-ресурса сборки, хранящего стандартное состояние пасеки.
         /// </summary>
-        private const string StandardXmlStateResourceName = 
+        private const string StandardXmlStateResourceName =
             "Apiary.Client.XmlStates.ApiaryState.xml";
 
         /// <summary>
@@ -46,7 +45,7 @@ namespace Apiary.Client.XmlStates
         /// <summary>
         /// Явная реализация получения перечисления состояний ульев.
         /// </summary>
-        IEnumerable<IBeehiveState> IApiaryState.BeehiveStates 
+        IEnumerable<IBeehiveState> IApiaryState.BeehiveStates
             => this.BeehiveStates;
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace Apiary.Client.XmlStates
             StorageFile file = ApiaryXmlState.GetFileFromLocalCache();
             string xml = file != null
                 ? FileIO.ReadTextAsync(file).GetAwaiter().GetResult()
-                : this.GetType().Assembly.ReadResourceAsText(
+                : typeof(ApiaryXmlState).GetTypeInfo().Assembly.ReadResourceAsText(
                     ApiaryXmlState.StandardXmlStateResourceName);
 
             return xml.Deserialize<ApiaryXmlState>();
@@ -70,8 +69,8 @@ namespace Apiary.Client.XmlStates
         /// </summary>
         public static void ClearCache()
         {
-            ApiaryXmlState.GetFileFromLocalCache();
-                ?.Remove();
+            ApiaryXmlState.GetFileFromLocalCache()?.DeleteAsync()
+                .GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace Apiary.Client.XmlStates
         /// </summary>
         public void SaveInCache()
         {
-            StorageFile file = ApiaryXmlState.GetFileFromLocalCache() 
+            StorageFile file = ApiaryXmlState.GetFileFromLocalCache()
                 ?? ApiaryXmlState.CreateNewFileInCache();
 
             if (file != null)

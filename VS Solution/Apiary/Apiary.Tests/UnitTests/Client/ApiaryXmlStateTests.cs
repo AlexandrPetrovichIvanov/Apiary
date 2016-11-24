@@ -1,5 +1,8 @@
 namespace Apiary.Tests.UnitTests.Client
 {
+    using System;
+    using System.Linq;
+
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     using Apiary.Client.XmlStates;
@@ -33,21 +36,20 @@ namespace Apiary.Tests.UnitTests.Client
         [TestMethod]
         public void ApiaryXmlState_SaveState()
         {
-            ApiaryXmlState state 
+            ApiaryXmlState beforeUpdating
                 = ApiaryXmlState.LoadState();
 
             int randomValue = new Random().Next(1, 1000);
 
-            standardState.BeehiveStates.First(st => 
+            beforeUpdating.BeehiveStates.First(st => 
                 st.BeehiveNumber == 1)
                 .WorkerBeesCount = randomValue;
 
-            state.SaveInCache();
+            beforeUpdating.SaveInCache();
 
-            ApiaryXmlState state
-                = ApiaryXmlState.LoadState();
+            ApiaryXmlState afterUpdating = ApiaryXmlState.LoadState();
 
-            int workersInFirstBeehive = standardState
+            int workersInFirstBeehive = afterUpdating
                 .BeehiveStates.First(st => st.BeehiveNumber == 1)
                 .WorkerBeesCount;
 
@@ -67,15 +69,14 @@ namespace Apiary.Tests.UnitTests.Client
 
             int randomValue = new Random().Next(1, 1000);
 
-            standardState.BeehiveStates.First(st => 
-                st.BeehiveNumber == 1)
+            state.BeehiveStates.First(st => st.BeehiveNumber == 1)
                 .WorkerBeesCount = randomValue;
 
             state.SaveInCache();
 
             ApiaryXmlState.ClearCache();
             
-            ApiaryXmlState state
+            ApiaryXmlState standardState
                 = ApiaryXmlState.LoadState();
 
             int workersInFirstBeehive = standardState

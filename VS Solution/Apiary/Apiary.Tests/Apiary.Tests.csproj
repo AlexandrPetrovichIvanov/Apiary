@@ -103,8 +103,11 @@
     <Compile Include="UnitTestApp.xaml.cs">
       <DependentUpon>UnitTestApp.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UnitTests\LongOperationsSimulatorTests.cs" />
-    <Compile Include="UnitTests\ServiceLocatorTests.cs" />
+    <Compile Include="UnitTests\Client\ApiaryXmlStateTests.cs" />
+    <Compile Include="UnitTests\Utilities\AssemblyResourceReaderTests.cs" />
+    <Compile Include="UnitTests\Utilities\LongOperationsSimulatorTests.cs" />
+    <Compile Include="UnitTests\Utilities\ServiceLocatorTests.cs" />
+    <Compile Include="UnitTests\Utilities\XmlSerializationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="UnitTestApp.xaml">
@@ -127,11 +130,20 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <EmbeddedResource Include="UnitTests\Utilities\Resources\ResourceFileExample.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Apiary.Client.TestablePart\Apiary.Client.TestablePart.csproj">
+      <Project>{67e581ff-6dde-450b-be75-ac25dddeaca2}</Project>
+      <Name>Apiary.Client.TestablePart</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
+      <Project>{fac556d9-5b59-4164-b058-b8f08b2088da}</Project>
+      <Name>Apiary.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Apiary.Utilities\Apiary.Utilities.csproj">
       <Project>{94c51a05-19c8-4b69-8db7-aa1047230ab4}</Project>
       <Name>Apiary.Utilities</Name>

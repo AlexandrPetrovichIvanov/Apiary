@@ -5,6 +5,6 @@
     xmlns:mvvm="using:Apiary.Client.Mvvm"
     RequestedTheme="Light">
     <Application.Resources>
-        <mvvm:ViewModelLocator x:Key="ViewModelLocator" IsDesignMode="true" />
+        <mvvm:ViewModelLocator x:Key="ViewModelLocator" IsDesignMode="True" />
     </Application.Resources>
 </Application>

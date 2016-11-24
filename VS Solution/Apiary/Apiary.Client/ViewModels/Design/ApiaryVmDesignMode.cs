@@ -125,6 +125,8 @@ namespace Apiary.Client.ViewModels.Design
         /// </summary>
         private void Stop()
         {
+            // сохранять надо не this.state, а реальное состояние пасеки
+            this.state.BeehiveStates.First().BeehiveNumber++;
             this.state.SaveInCache();
             //throw new NotImplementedException();
         }

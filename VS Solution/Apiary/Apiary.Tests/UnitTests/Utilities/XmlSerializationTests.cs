@@ -1,5 +1,8 @@
 namespace Apiary.Tests.UnitTests.Utilities
 {
+    using System;
+    using System.Xml.Linq;
+    using System.Xml.Serialization;
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     using Apiary.Utilities;
@@ -20,14 +23,14 @@ namespace Apiary.Tests.UnitTests.Utilities
             {
                 A = 2,
                 B = 3
-            }
+            };
 
-            string xml = testObj.Serialize()
+            string xml = testObj.Serialize();
 
             XDocument doc = XDocument.Parse(xml);
             XElement bElement = doc.Root.Element("Second");
 
-            Assert.AreEqual(3, bElement.Value); 
+            Assert.AreEqual(3, int.Parse(bElement.Value)); 
         }
 
         /// <summary>
@@ -42,10 +45,10 @@ namespace Apiary.Tests.UnitTests.Utilities
                 {
                     A = 2,
                     B = 3
-                }
+                };
 
                 wrongObj.Serialize();
-                throw new AssertionException(
+                throw new AssertFailedException(
                     "Объект не должен был сериализоваться в xml.");
             }
             catch
@@ -61,10 +64,9 @@ namespace Apiary.Tests.UnitTests.Utilities
         public void XmlSerialization_NullObjectSerialize()
         {
             try
-            {              
-                object wrongObj = null;
-                wrongObj.Serialize();
-                throw new AssertionException(
+            {
+                ((object) null).Serialize();
+                throw new AssertFailedException(
                     "Пустой объект не должен был сериализоваться в xml.");
             }
             catch (ArgumentException)
@@ -95,8 +97,9 @@ namespace Apiary.Tests.UnitTests.Utilities
             try
             {
                 string xmlString = "wrongXml";
-                Serializable result = xmlString.Deserialize<Serializable>();
-                Assert.Error();
+                xmlString.Deserialize<Serializable>();
+                throw new AssertFailedException(
+                    "Некорректная xml-строка не должна была десериализоваться.");
             }
             catch (ArgumentException)
             {

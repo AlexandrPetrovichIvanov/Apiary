@@ -1,5 +1,6 @@
 namespace Apiary.Tests.UnitTests.Utilities
 {
+    using System.Reflection;
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     using Apiary.Utilities;
@@ -16,7 +17,7 @@ namespace Apiary.Tests.UnitTests.Utilities
         [TestMethod]
         public void AssemblyResourceReader_GetEmbeddedResource()
         {
-            string result = this.GetType().Assembly
+            string result = this.GetType().GetTypeInfo().Assembly
                 .ReadResourceAsText("Apiary.Tests.UnitTests.Utilities.Resources.ResourceFileExample.txt");
 
             Assert.AreEqual("Example", result);

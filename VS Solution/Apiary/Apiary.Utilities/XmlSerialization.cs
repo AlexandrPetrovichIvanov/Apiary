@@ -1,6 +1,10 @@
 namespace Apiary.Utilities
 {
     using System;
+    using System.IO;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.Serialization;
 
     /// <summary>
     /// Класс вспомогательных методов сериализации xml.
@@ -10,7 +14,7 @@ namespace Apiary.Utilities
         /// <summary>
         /// Сериализовать объект в строку xml.
         /// </summary>
-        /// <param name="@object">Объект.</param>
+        /// <param name="object">Объект.</param>
         /// <returns>Переданный объект в виде xml-строки.</returns>
         public static string Serialize<T>(this T @object)
         {
@@ -39,17 +43,16 @@ namespace Apiary.Utilities
         {
             try
             {
-                XDocument doc = XDocument.Parse(xml);
+                XDocument.Parse(xml);
             }
             catch (Exception)
             {                
                 throw new ArgumentException(
-                    nameof(xml),
-                    "Ошибка десериализации. Строка не является строкой xml.");
+                    "Ошибка десериализации. Строка не является строкой xml.",
+                    nameof(xml));
             }
 
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            T result;
 
             using (TextReader reader = new StringReader(xml))
             {

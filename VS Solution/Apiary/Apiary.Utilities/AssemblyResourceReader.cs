@@ -1,5 +1,8 @@
 namespace Apiary.Utilities
 {
+    using System.IO;
+    using System.Reflection;
+
     /// <summary>
     /// Класс вспомогательных методов для чтения 
     /// embedded-ресурсов сборки.
@@ -16,8 +19,6 @@ namespace Apiary.Utilities
             this Assembly assembly,
             string resourceFullName)
         {
-            string result = string.Empty;
-
             using (Stream stream = assembly.
                 GetManifestResourceStream(resourceFullName))
             {
