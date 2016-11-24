@@ -1,4 +1,4 @@
-﻿namespace Apiary.Tests.UnitTests
+﻿namespace Apiary.Tests.UnitTests.Utilities
 {
     using System;
     using System.Threading;

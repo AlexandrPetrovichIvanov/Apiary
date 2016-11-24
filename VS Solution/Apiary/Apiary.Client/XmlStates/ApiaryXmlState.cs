@@ -1,14 +1,15 @@
 namespace Apiary.Client.XmlStates
 {
+    using System;
+    using System.IO;
     using System.Collections.Generic;
     using System.Xml.Serialization;
     using Windows.Storage;
     using Windows.Storage.Pickers;
+    using Windows.Storage.Provider;
 
     using Apiary.Interfaces;
-    using System;
-    using System.IO;
-    using Windows.Storage.Provider;
+    using Apiary.Utilities;    
 
     /// <summary>
     /// Xml-сериализуемый класс состояния пасеки.
@@ -20,6 +21,12 @@ namespace Apiary.Client.XmlStates
         /// Имя файла, в котором хранится состояние пасеки.
         /// </summary>
         private const string CachedStateFileName = "ApiaryState.xml";
+
+        /// <summary>
+        /// Имя embedded-ресурса сборки, хранящего стандартное состояние пасеки.
+        /// </summary>
+        private const string StandardXmlStateResourceName = 
+            "Apiary.Client.XmlStates.ApiaryState.xml";
 
         /// <summary>
         /// Получить или задать состояния всех ульев на пасеке.
@@ -49,19 +56,22 @@ namespace Apiary.Client.XmlStates
         public static ApiaryXmlState LoadState()
         {
             StorageFile file = ApiaryXmlState.GetFileFromLocalCache();
+            string xml = file != null
+                ? FileIO.ReadTextAsync(file).GetAwaiter().GetResult()
+                : this.GetType().Assembly.ReadResourceAsText(
+                    ApiaryXmlState.StandardXmlStateResourceName);
 
-            if (file != null)
-            {
-                string xml = FileIO.ReadTextAsync(file)
-                    .GetAwaiter().GetResult();
-            }
-            else
-            {
-                string xml = "FromResource";
-                // получить из ресурса
-            }
+            return xml.Deserialize<ApiaryXmlState>();
+        }
 
-            return new ApiaryXmlState();
+        /// <summary>
+        /// Очистить кэш - удалить сохраненный файл состояния
+        /// пасеки, если такой файл есть.
+        /// </summary>
+        public static void ClearCache()
+        {
+            ApiaryXmlState.GetFileFromLocalCache();
+                ?.Remove();
         }
 
         /// <summary>
@@ -74,10 +84,8 @@ namespace Apiary.Client.XmlStates
 
             if (file != null)
             {
-                //CachedFileManager.DeferUpdates(file);
-                FileIO.WriteTextAsync(file, "AfterSaving file content" + DateTime.Now)
+                FileIO.WriteTextAsync(file, this.Serialize())
                     .GetAwaiter().GetResult();
-                //FileUpdateStatus status = CachedFileManager.CompleteUpdatesAsync(file).GetResults();
             }
         }
 
@@ -90,7 +98,8 @@ namespace Apiary.Client.XmlStates
             try
             {
                 return ApplicationData.Current.LocalFolder
-                    .GetFileAsync("file.xml").GetAwaiter().GetResult();
+                    .GetFileAsync(ApiaryXmlState.CachedStateFileName)
+                    .GetAwaiter().GetResult();
             }
             catch (FileNotFoundException)
             {
@@ -106,7 +115,7 @@ namespace Apiary.Client.XmlStates
         {
             return ApplicationData.Current.LocalFolder
                 .CreateFileAsync(
-                    "file.xml",
+                    ApiaryXmlState.CachedStateFileName,
                     CreationCollisionOption.FailIfExists)
                 .GetAwaiter().GetResult();
         }
