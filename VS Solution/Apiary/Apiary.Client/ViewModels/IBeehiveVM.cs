@@ -9,5 +9,9 @@
     /// </summary>
     public interface IBeehiveVM : IBeehiveState, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Перестать посылать оповещения об изменениях свойств.
+        /// </summary>
+        void StopRaisingEvents();
     }
 }

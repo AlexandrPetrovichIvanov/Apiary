@@ -1,9 +1,8 @@
 ﻿namespace Apiary.Client.Mvvm
 {
-    using System;
-
     using Apiary.Client.ViewModels;
     using Apiary.Client.ViewModels.Design;
+    using Apiary.Utilities;
 
     /// <summary>
     /// View Model Locator - создание рабочих View-моделей 
@@ -24,7 +23,7 @@
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    return ServiceLocator.Instance.GetService<IApiaryVM>();
                 }
             }
         }

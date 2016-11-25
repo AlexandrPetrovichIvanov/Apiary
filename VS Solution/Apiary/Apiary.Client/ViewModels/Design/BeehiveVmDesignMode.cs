@@ -56,6 +56,11 @@
             }
         }
 
+        public void StopRaisingEvents()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Номер улья.
         /// </summary>

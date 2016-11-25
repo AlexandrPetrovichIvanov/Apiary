@@ -107,8 +107,20 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MathApiary.cs" />
+    <Compile Include="MathBeehive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Apiary.MathematicalApiary.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
+      <Project>{fac556d9-5b59-4164-b058-b8f08b2088da}</Project>
+      <Name>Apiary.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apiary.Utilities\Apiary.Utilities.csproj">
+      <Project>{94c51a05-19c8-4b69-8db7-aa1047230ab4}</Project>
+      <Name>Apiary.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

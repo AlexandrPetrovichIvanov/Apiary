@@ -10,6 +10,12 @@ namespace Apiary.Client
     using Windows.UI.Xaml.Navigation;
 
     using Apiary.Client.Mvvm;
+    using Apiary.Client.ViewModels;
+    using Apiary.Client.ViewModels.Work;
+    using Apiary.Interfaces;
+    using Apiary.Interfaces.Balancing;
+    using Apiary.MathematicalApiary;
+    using Apiary.Utilities;
 
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -24,6 +30,35 @@ namespace Apiary.Client
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            this.RegisterServices();
+        }
+
+        private void RegisterServices()
+        {
+            ServiceLocator.Instance.RegisterService<IApiary>(new MathApiary());
+
+            ServiceLocator.Instance.RegisterService<IApiaryVM>(new ApiaryVM());
+            
+            ServiceLocator.Instance.RegisterService<ApiaryBalance>(new ApiaryBalance
+            {
+                WorkerBalance = new WorkerBeeBalance
+                {
+                    TimeToHarvestHoney = TimeSpan.FromMilliseconds(500),
+                    TimeToRestInBeehive = TimeSpan.FromMilliseconds(1000)
+                },
+                GuardBalance = new GuardBeeBalance
+                {
+                    TimeToCheckOneBee = TimeSpan.FromMilliseconds(100)
+                },
+                QueenBalance = new QueenBeeBalance
+                {
+                    TimeToProduceBee = TimeSpan.FromMilliseconds(3000),
+                    ThousandthPartToProduceWorker = 900,
+                    ThousandthPartToProduceGuard = 99,
+                    ThousandthPartToProduceQueen = 1
+                }
+            });
         }
 
         /// <summary>

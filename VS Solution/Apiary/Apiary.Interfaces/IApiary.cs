@@ -21,6 +21,6 @@ namespace Apiary.Interfaces
         /// Собрать накопившийся мёд.
         /// </summary>
         /// <returns>Количество собранного мёда.</returns>
-        int CollectHoney();
+        void CollectHoney();
     }
 }
