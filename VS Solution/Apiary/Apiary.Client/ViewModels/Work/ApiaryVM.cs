@@ -11,7 +11,10 @@
     using Apiary.Interfaces;
     using Apiary.Utilities;
 
-    public class ApiaryVM : IApiaryVM
+    /// <summary>
+    /// Модель представления пасеки.
+    /// </summary>
+    public class ApiaryVM : ViewModelBase, IApiaryVM
     {
         /// <summary>
         /// Признак того, что пасека работает.
@@ -21,73 +24,35 @@
         /// <summary>
         /// Сама пасека.
         /// </summary>
-        private IApiary apiary;
+        private readonly IApiary apiary;
 
         /// <summary>
-        /// Состояние пасеки.
+        /// Количество собранного мёда, взятое из сохраненных
+        /// в кэше данных, а не из реальной пасеки.
         /// </summary>
-        private readonly ApiaryXmlState state;
+        private long tempHoneyCount;
 
         /// <summary>
-        /// Событие изменения значения свойства.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Создать тестовую модель представления пасеки.
+        /// Создать модель представления пасеки.
         /// </summary>
         public ApiaryVM()
-        {
-            this.state = ApiaryXmlState.LoadState();
-
+        {            
+            this.Refresh(RefreshApiaryVmOptions.ShowTempSavedState);
             this.apiary = ServiceLocator.Instance.GetService<IApiary>();
-
-            this.Beehives = new ObservableCollection<IBeehiveVM>(
-                this.state.BeehiveStates.Select(xmlState =>
-                    new BeehiveVM(xmlState)));
-
-            foreach (IBeehiveVM beehiveVm in this.Beehives)
-            {
-                beehiveVm.PropertyChanged += this.BeehiveVmOnPropertyChanged;
-            }
-
-            this.StartCommand = new StartCommand(this.Start, this.CanStart);
-            this.StopCommand = new StopCommand(this.Stop, this.CanStop);
-            this.HarvestHoneyCommand = new HarvestHoneyCommand(
-                this.HarvestHoney,
-                this.CanHarvestHoney);
-
-            this.PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(this.BeehivesCount)));
-            this.PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(this.BeesCount)));
-        }
-
-        private void BeehiveVmOnPropertyChanged(
-            object sender, 
-            PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            IBeehiveVM beehive = (IBeehiveVM) sender;
-
-            if (propertyChangedEventArgs.PropertyName == nameof(beehive.BeesTotalCount))
-            {
-                this.PropertyChanged?.Invoke(
-                    this,
-                    new PropertyChangedEventArgs(nameof(this.BeesCount)));
-            }
+            this.InitializeCommands();
         }
 
         /// <summary>
-        /// Все ульи на пасеке.
+        /// Модели представления всех ульев на пасеке.
         /// </summary>
         public ObservableCollection<IBeehiveVM> Beehives { get; }
+            = new ObservableCollection<IBeehiveVM>();
 
         /// <summary>
         /// Общее количество собранного мёда.
         /// </summary>
-        public long HoneyCount => this.apiary.HoneyCount;
+        public long HoneyCount =>
+            this.isWorking ? this.apiary.HoneyCount : this.tempHoneyCount;
 
         /// <summary>
         /// Количество ульев.
@@ -102,33 +67,39 @@
         /// <summary>
         /// Команда запуска работы пасеки.
         /// </summary>
-        public ICommand StartCommand { get; }
+        public SimpleCommand StartCommand { get; private set; }
 
         /// <summary>
         /// Команда остановки работы пасеки.
         /// </summary>
-        public ICommand StopCommand { get; }
+        public SimpleCommand StopCommand { get; private set; }
 
         /// <summary>
         /// Команда сбора мёда.
         /// </summary>
-        public ICommand HarvestHoneyCommand { get; }
+        public SimpleCommand HarvestHoneyCommand { get; private set; }
+
+        /// <summary>
+        /// Установить команды view-модели пасеки.
+        /// </summary>
+        private void InitializeCommands()
+        {
+            this.StartCommand = new StartCommand(this.Start, this.CanStart);
+            this.StopCommand = new StopCommand(this.Stop, this.CanStop);
+            this.HarvestHoneyCommand = new HarvestHoneyCommand(
+                this.HarvestHoney,
+                this.CanHarvestHoney);
+        }
 
         /// <summary>
         /// Запуск пасеки.
         /// </summary>
         private void Start()
         {
-            if (this.CanStart())
-            {
-                this.apiary.Start(this.state);
-                this.Beehives.Clear();
-
-                foreach (IBeehiveState beehiveState in this.apiary.BeehiveStates)
-                {
-                    this.Beehives.Add(new BeehiveVM(beehiveState));
-                }
-            }
+            this.apiary.Start(ApiaryXmlState.LoadState());
+            this.Refresh(RefreshApiaryVmOptions.ShowActualApiary); 
+            this.isWorking = true;   
+            this.RefreshCanExecuteCommands();
         }
 
         /// <summary>
@@ -145,10 +116,11 @@
         /// </summary>
         private void Stop()
         {
-            // сохранять надо не this.state, а реальное состояние пасеки
-            this.state.BeehiveStates.First().BeehiveNumber++;
-            this.state.SaveInCache();
-            //throw new NotImplementedException();
+            IApiaryState lastState = this.apiary.Stop();
+            ApiaryXmlState xmlLastState = ApiaryXmlState.CopyFrom(lastState);
+            xmlLastState.SaveInCache();
+            this.isWorking = false;
+            this.RefreshCanExecuteCommands();
         }
 
         /// <summary>
@@ -157,8 +129,7 @@
         /// <returns>True - пасеку можно остановить.</returns>
         private bool CanStop()
         {
-            return true;
-            throw new NotImplementedException();
+            return this.isWorking;
         }
 
         /// <summary>
@@ -166,7 +137,9 @@
         /// </summary>
         private void HarvestHoney()
         {
-            throw new NotImplementedException();
+            this.apiary.CollectHoney();
+            this.RaisePropertyChanged(nameof(this.HoneyCount));
+            this.RefreshCanExecuteCommands();
         }
 
         /// <summary>
@@ -175,8 +148,127 @@
         /// <returns>True - можно собрать мёд.</returns>
         private bool CanHarvestHoney()
         {
-            return false;
-            throw new NotImplementedException();
+            return this.isWorking
+                && this.Beehives.Any(bh => bh.HoneyCount > 0);
+        }
+
+        /// <summary>
+        /// Обновить визуальное представление пасеки.
+        /// </summary>
+        /// <param name="options">Опции обновления view-модели пасеки.</param>
+        private void Refresh(RefreshApiaryVmOptions options)
+        {
+            IApiaryState state = this.GetStateForRefresh(options);
+
+            if (options == RefreshApiaryVmOptions.ShowTempSavedState)
+            {
+                this.tempHoneyCount = state.HoneyCount;
+            }
+
+            this.RefreshBeehives(state.BeehiveStates);
+            this.RaiseMainPropertiesChanged();
+        }
+
+        /// <summary>
+        /// Получить/выбрать состояние пасеки, в соответствии с которым
+        /// будет обновляться view-модель пасеки.
+        /// </summary>
+        /// <param name="options">Опции обновления view-модели пасеки.</param>
+        /// <returns>Состояние пасеки.</returns>
+        private IApiaryState GetStateForRefresh(RefreshApiaryVmOptions options)
+        {
+            IApiaryState result;
+
+            switch (options)
+            {
+                case RefreshApiaryVmOptions.ShowActualApiary:
+                    result = this.apiary;
+                case RefreshApiaryVmOptions.ShowTempSavedState:
+                    result = ApiaryXmlState.LoadState();
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        "Передано непредусмотренное значение опций обновления view-модели пасеки",
+                        nameof(options))
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Обновить коллекцию view-моделей ульев.
+        /// </summary>
+        private void RefreshBeehives(IEnumerable<IBeehiveState> beehiveStates)
+        {
+            this.ClearBeehives();
+            this.FillBeehives(beehiveStates);                      
+        }
+
+        /// <summary>
+        /// Очистить коллекцию view-моделей ульев.
+        /// </summary>
+        private void ClearBeehives()
+        {
+            foreach (IBeehiveVM beehiveVm in this.Beehives)
+            {
+                beehiveVm.PropertyChanged -= this.BeehiveVmOnPropertyChanged;
+                beehiveVm.StopRaisingEvents();
+            }
+
+            this.Beehives.Clear();
+        }
+
+        /// <summary>
+        /// Заполнить коллекцию view-моделей ульев.
+        /// </summary>
+        /// <param name="states">Состояния ульев.</param>
+        privte void FillBeehives(IEnumerable<IBeehiveState> states)
+        {
+            foreach (IBeehiveState beehiveState in states)
+            {
+                this.Beehives.Add(new BeehiveVM(beehiveState));
+            }
+
+            foreach (IBeehiveVM beehiveVm in this.Beehives)
+            {
+                beehiveVm.PropertyChanged += this.BeehiveVmOnPropertyChanged;
+            }  
+        }
+
+        /// <summary>
+        /// Обработчик события изменения свойств ульев.
+        /// </summary>
+        /// <param name="sender">Источник события (улей).</param>
+        /// <param name="args">Аргументы события.</param>
+        private void BeehiveVmOnPropertyChanged(
+            object sender, 
+            PropertyChangedEventArgs args)
+        {
+            IBeehiveVM beehive = (IBeehiveVM) sender;
+
+            if (args.PropertyName == nameof(beehive.BeesTotalCount))
+            {
+                this.RaisePropertyChanged(nameof(this.BeesCount));
+            }
+        }
+
+        /// <summary>
+        /// Оповестить подписчиков об изменении основных свойств пасеки.
+        /// </summary>
+        private void RaiseMainPropertiesChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.HoneyCount))
+            this.RaisePropertyChanged(nameof(this.BeehivesCount));
+            this.RaisePropertyChanged(nameof(this.BeesCount));
+        }
+
+        /// <summary>
+        /// Обновить доступность всех команд.
+        /// </summary>
+        private void RefreshCanExecuteCommands()
+        {
+            this.StartCommand.RefreshCanExecute();
+            this.StopCommand.RefreshCanExecute();
+            this.HarvestHoneyCommand.RefreshCanExecute();
         }
     }
 }

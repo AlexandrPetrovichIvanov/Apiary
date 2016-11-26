@@ -9,7 +9,7 @@
     /// <summary>
     /// Модель представления улья (тестовая, для разработки UI).
     /// </summary>
-    public class BeehiveVmDesignMode : IBeehiveVM
+    public class BeehiveVmDesignMode : ViewModelBase, IBeehiveVM
     {
         /// <summary>
         /// Создать модель представления улья.
@@ -43,13 +43,8 @@
 
                 Dispatcher.BeginInvoke(() =>
                 {
-                    this.PropertyChanged(
-                        this, 
-                        new PropertyChangedEventArgs(nameof(GuardsCount)));
-                    
-                    this.PropertyChanged(
-                        this, 
-                        new PropertyChangedEventArgs(nameof(HoneyCount)));
+                    this.RaisePropertyChanged(nameof(this.GuardsCount));
+                    this.RaisePropertyChanged(nameof(this.HoneyCount));
                 });
 
                 await Task.Delay(500);

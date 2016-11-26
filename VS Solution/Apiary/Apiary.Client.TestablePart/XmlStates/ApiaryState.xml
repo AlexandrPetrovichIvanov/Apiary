@@ -47,5 +47,32 @@
             <Queens>0</Queens>
             <Guards>1</Guards>
         </Beehive>
+        <Beehive>
+            <Number>6</Number>
+            <Honey>0</Honey>
+            <TotalBees>1000</TotalBees>
+            <BeesInside>0</BeesInside>
+            <Workers>9999</Workers>
+            <Queens>0</Queens>
+            <Guards>1</Guards>
+        </Beehive>
+        <Beehive>
+            <Number>7</Number>
+            <Honey>0</Honey>
+            <TotalBees>1000</TotalBees>
+            <BeesInside>0</BeesInside>
+            <Workers>1</Workers>
+            <Queens>0</Queens>
+            <Guards>9999</Guards>
+        </Beehive>
+        <Beehive>
+            <Number>8</Number>
+            <Honey>0</Honey>
+            <TotalBees>1000</TotalBees>
+            <BeesInside>0</BeesInside>
+            <Workers>0</Workers>
+            <Queens>1000</Queens>
+            <Guards>0</Guards>
+        </Beehive>
     </Beehives>
 </Apiary>

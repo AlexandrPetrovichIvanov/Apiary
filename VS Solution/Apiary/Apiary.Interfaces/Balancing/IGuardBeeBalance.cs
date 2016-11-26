@@ -5,12 +5,12 @@ namespace Apiary.Interfaces.Balancing
     /// <summary>
     /// Баланс пчёл-охранников.
     /// </summary>
-    public class GuardBeeBalance
+    public interface IGuardBeeBalance
     {
         /// <summary>
         /// Время проверки одной пчелы.
         /// </summary>
         /// <returns>Время проверки одной пчелы.</returns>
-        public TimeSpan TimeToCheckOneBee { get; set; }
+        public TimeSpan TimeToCheckOneBee { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Apiary.Tests.Concurrency
+﻿namespace Apiary.Tests.Temp
 {
     using System;
     using System.Collections.Concurrent;

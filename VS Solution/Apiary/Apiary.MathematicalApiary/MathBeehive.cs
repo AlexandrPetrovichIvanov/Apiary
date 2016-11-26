@@ -51,7 +51,7 @@
         /// <summary>
         /// Вероятности воспроизводства пчёл определенного типа.
         /// </summary>
-        private QueenBeeBalance queenBalance;
+        private IQueenBeeBalance queenBalance;
 
         /// <summary>
         /// Минимальная и максимальная продолжительность какой-либо операции.
@@ -68,6 +68,11 @@
         private double newQueensAccumulator = 0;
 
         /// <summary>
+        /// Количество пчёл внутри улья (может быть отрицательным).
+        /// </summary>
+        private int beesInsideCount;
+
+        /// <summary>
         /// Создать улей, работающий на основе итерационных
         /// математических вычислений.
         /// </summary>
@@ -75,18 +80,17 @@
         /// <param name="balance"></param>
         public MathBeehive(
             IBeehiveState state, 
-            ApiaryBalance balance)
+            IApiaryBalance balance)
         {
             this.InitializeBeehiveStateProperties(state);
-
-            // check for normal balance (кратны минимальному)
             
             this.waitingForWork = state.BeesInsideCount - state.QueensCount - state.GuardsCount;
 
             this.InitializeOperationTimes(balance);
-            this.InitializeIntervals();
-            this.InitializeQueues(maximalInterval, minimalInterval);
-            this.InitializeQueueRatios(maximalInterval);
+            this.InitializeIntervals(); 
+            this.ValidateIntervals();           
+            this.InitializeQueues();
+            this.InitializeQueueRatios();            
         }
 
         /// <summary>
@@ -96,23 +100,49 @@
 
         #region IBeehiveState implementation
 
+        /// <summary>
+        /// Номер улья.
+        /// </summary>
         public int BeehiveNumber { get; private set; }
 
+        /// <summary>
+        /// Количество мёда.
+        /// </summary>
         public long HoneyCount { get; set; }
 
+        /// <summary>
+        /// Общее количество пчёл.
+        /// </summary>
         public int BeesTotalCount =>
             this.WorkerBeesCount + this.GuardsCount + this.QueensCount;
 
-        public int BeesInsideCount { get; private set; }
+        /// <summary>
+        /// Количество пчёл внутри улья.
+        /// </summary>
+        public int BeesInsideCount => this.beesInsideCount >= 0
+            ? this.beesInsideCount : 0;
 
+        /// <summary>
+        /// Количество рабочих пчёл.
+        /// </summary>
         public int WorkerBeesCount { get; private set; }
 
+        /// <summary>
+        /// Количество пчёл-маток.
+        /// </summary>
         public int QueensCount { get; private set; }
 
+        /// <summary>
+        /// Количество пчёл-охранников.
+        /// </summary>
         public int GuardsCount { get; private set; }
 
         #endregion
 
+        /// <summary>
+        /// Запустить одну итерацию улья, имитирующую поведение
+        /// улья за интервал времени (свойство IntervalMs).
+        /// </summary>
         public void SingleIteration()
         {
             this.ThrowIfAlreadyStopped();
@@ -126,7 +156,7 @@
             this.isIterationRunning = true;
 
             this.ProduceBees();
-            this.DequeueAllQueues();
+            this.DequeueAllQueuesForIteration();
             this.RestingToWorking();
             this.HavingCheckToResting();
             this.WorkingToHavingCheck();
@@ -134,6 +164,9 @@
             this.isIterationRunning = false;
         }
 
+        /// <summary>
+        /// Остановить работу улья.
+        /// </summary>
         public void Stop()
         {
             this.ThrowIfAlreadyStopped();
@@ -144,23 +177,31 @@
                     "Нельзя остановить улей. Текущая итерация еще не завершена.");
             }
 
-            this.DequeueAllQueues();
+            this.FullDequeueAllQueues();
             this.isStopped = true;
         }
 
         #region Initialization
 
+        /// <summary>
+        /// Инициализировать свойства для реализации интерфейса IBeehiveState.
+        /// </summary>
+        /// <param name="state">Состояние улья.</param>
         private void InitializeBeehiveStateProperties(IBeehiveState state)
         {
             this.BeehiveNumber = state.BeehiveNumber;
             this.GuardsCount = state.GuardsCount;
             this.QueensCount = state.QueensCount;
             this.WorkerBeesCount = state.WorkerBeesCount;
-            this.BeesInsideCount = state.BeesInsideCount;
+            this.beesInsideCount = state.BeesInsideCount;
             this.HoneyCount = state.HoneyCount;
         }
 
-        private void InitializeOperationTimes(ApiaryBalance balance)
+        /// <summary>
+        /// Инициализировать временные интервалы различных операций.
+        /// </summary>
+        /// <param name="balance">Баланс пасеки.</param>
+        private void InitializeOperationTimes(IApiaryBalance balance)
         {
             this.timeToWork = (int)balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds;
             this.timeToRest = (int)balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds;
@@ -170,15 +211,37 @@
             this.queenBalance = balance.QueenBalance;
         }
 
+        /// <summary>
+        /// Инициализировать максимальный и минимальный интервалы.
+        /// </summary>
         private void InitializeIntervals()
         {
             this.minimalInterval = Math.Min(Math.Min(this.timeToWork, this.timeToCheck), this.timeToRest);
             this.maximalInterval = Math.Max(Math.Max(this.timeToWork, this.timeToCheck), this.timeToRest);
         }
 
-        private void InitializeQueues(int maximalInterval, int minimalInterval)
+        /// <summary>
+        /// Проверить корректность совокупности временных интервалов.
+        /// </summary>
+        private void ValidateIntervals()
         {
-            for (int i = 0; i < maximalInterval/minimalInterval; i++)
+            if (this.timeToWork % this.minimalInterval > 0
+                || this.timeToRest % this.minimalInterval > 0
+                || this.timeToCheck % this.minimalInterval > 0)
+            {
+                throw new InvalidOperationException(
+                    "Для корректной работы пасеки необходимо, чтобы каждый из интервалов: "
+                    + "время сбора мёда, время отдыха в улье, время проверки пчелы охранником - "
+                    + "был кратен минимальному из этих интервалов.");
+            }
+        }
+
+        /// <summary>
+        /// Инициализировать специальные очереди.
+        /// </summary>
+        private void InitializeQueues()
+        {
+            for (int i = 0; i < this.maximalInterval / this.minimalInterval; i++)
             {
                 this.working.Enqueue(0);
                 this.resting.Enqueue(0);
@@ -186,15 +249,21 @@
             }
         }
 
-        private void InitializeQueueRatios(int maximalInterval)
+        /// <summary>
+        /// Инициализировать коэффициенты специальных очередей.
+        /// </summary>
+        private void InitializeQueueRatios()
         {
-            this.workingQueeRatio = maximalInterval/this.timeToWork;
-            this.restingQueeRatio = maximalInterval/this.timeToRest;
-            this.havingCheckQueeRatio = maximalInterval/this.timeToCheck;
+            this.workingQueeRatio = this.maximalInterval/this.timeToWork;
+            this.restingQueeRatio = this.maximalInterval/this.timeToRest;
+            this.havingCheckQueeRatio = this.maximalInterval/this.timeToCheck;
         }
 
         #endregion
 
+        /// <summary>
+        /// Имитировать воспроизводство пчёл в рамках одной итерации.
+        /// </summary>
         private void ProduceBees()
         {
             double allBeeProduced = this.QueensCount 
@@ -205,7 +274,7 @@
             this.newQueensAccumulator += producedQueens;
             int currentQueensProduced = (int)this.newQueensAccumulator;
             this.QueensCount += currentQueensProduced;
-            this.BeesInsideCount += currentQueensProduced;
+            this.beesInsideCount += currentQueensProduced;
             this.newQueensAccumulator -= currentQueensProduced;
 
             double producedGuards = allBeeProduced
@@ -213,7 +282,7 @@
             this.newGuardsAccumulator += producedGuards;
             int currentGuardsProduced = (int)this.newGuardsAccumulator;
             this.GuardsCount += currentGuardsProduced;
-            this.BeesInsideCount += currentGuardsProduced;
+            this.beesInsideCount += currentGuardsProduced;
             this.newGuardsAccumulator -= currentGuardsProduced;
 
             double producedWorkers = allBeeProduced
@@ -222,23 +291,29 @@
             int currentWorkersProduced = (int)this.newWorkersAccumulator;
             this.WorkerBeesCount += currentWorkersProduced;
             this.waitingForWork += currentWorkersProduced;
-            this.BeesInsideCount += currentWorkersProduced;
+            this.beesInsideCount += currentWorkersProduced;
             this.newWorkersAccumulator -= currentWorkersProduced;
         }
 
-        private void DequeueAllQueues()
+        /// <summary>
+        /// Извлечь необходимое для одной итерации количество 
+        /// значений из всех специальных очередей и соответствующим
+        /// образом обновить количество пчёл в определенных состояниях
+        /// на начало данной итерации.
+        /// </summary>
+        private void DequeueAllQueuesForIteration()
         {
             for (int i = 0; i < this.restingQueeRatio; i++)
             {
                 int finishedResting = this.resting.Dequeue();
-                this.BeesInsideCount -= finishedResting;
+                this.beesInsideCount -= finishedResting;
                 this.waitingForWork += finishedResting;
             }
 
             for (int i = 0; i < this.havingCheckQueeRatio; i++)
             {
                 int goInside = this.havingCheck.Dequeue();
-                this.BeesInsideCount += goInside;
+                this.beesInsideCount += goInside;
                 this.waitingForRest += goInside;
             }
 
@@ -248,6 +323,32 @@
             }
         }
 
+        /// <summary>
+        /// Полностью очистить специальные очереди и соответствующим
+        /// образом обновить состояние.
+        /// </summary>
+        private void FullDequeueAllQueues()
+        {
+            int maximalRatio = this.maximalInterval / this.minimalInterval;
+
+            for (int i = 0; i < maximalRatio; i++)
+            {
+                int finishedResting = this.resting.Dequeue();
+                this.beesInsideCount -= finishedResting;
+                this.waitingForWork += finishedResting;
+
+                int goInside = this.havingCheck.Dequeue();
+                this.beesInsideCount += goInside;
+                this.waitingForRest += goInside;
+
+                this.waitingForCheck += this.working.Dequeue();
+            }
+        }
+
+        /// <summary>
+        /// В рамках одной итерации: перевести пчёл из состояния
+        /// "отдыхает" в состояние "работает".
+        /// </summary>
         private void RestingToWorking()
         {
             this.working.Enqueue(this.waitingForWork);
@@ -259,6 +360,10 @@
             }
         }
 
+        /// <summary>
+        /// В рамках одной итерации: перевести пчёл из состояния
+        /// "проходит проверку" в состояние "отдыхает".
+        /// </summary>
         private void HavingCheckToResting()
         {
             this.resting.Enqueue(this.waitingForRest);
@@ -271,6 +376,10 @@
             }
         }
 
+        /// <summary>
+        /// В рамках одной итерации: перевести пчёл из состояния
+        /// "работает" в состояние "проходит проверку".
+        /// </summary>
         private void WorkingToHavingCheck()
         {
             double doubleLimit = (double)this.GuardsCount * this.IntervalMs / this.timeToCheck;
@@ -297,6 +406,9 @@
             }
         }
 
+        /// <summary>
+        /// Сгенерировать исключение, если работа улья была остановлена.
+        /// </summary>
         private void ThrowIfAlreadyStopped()
         {
             if (this.isStopped)

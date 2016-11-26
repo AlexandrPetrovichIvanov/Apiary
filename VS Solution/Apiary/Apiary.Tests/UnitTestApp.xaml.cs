@@ -30,6 +30,7 @@ namespace Apiary.Tests
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            StandardConfiguration.RegisterServices();
         }
 
         /// <summary>

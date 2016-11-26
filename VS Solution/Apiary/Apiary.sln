@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.Client", "Apiary.Cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.Interfaces", "Apiary.Interfaces\Apiary.Interfaces.csproj", "{FAC556D9-5B59-4164-B058-B8F08B2088DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.BeeWorkflowApiary", "Apiary.Implementation\Apiary.BeeWorkflowApiary.csproj", "{118EBA47-B497-431B-B6D6-052EBF016B41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiary.BeeWorkflowApiary", "Apiary.BeeWorkflowApiary\Apiary.BeeWorkflowApiary.csproj", "{118EBA47-B497-431B-B6D6-052EBF016B41}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{8356D246-9DDB-4AB8-8859-79E026E6E3F2}"
 EndProject

@@ -70,5 +70,16 @@
                     EventArgs.Empty);
             }
         }
+        
+        /// <summary>
+        /// Обновить состояние доступности команды.
+        /// </summary>
+        public void RefreshCanExecute()
+        {
+            if (this.CanExecuteChanged != null)
+            {
+                this.CanExecuteChanged(this, EventArgs.Empty);
+            }
+        }
     }
 }

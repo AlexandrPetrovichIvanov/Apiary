@@ -11,7 +11,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         /// Результат - т.е. запрошенные пчелой данные.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public abstract object Result { get; set; }
+        public abstract object Response { get; set; }
 
         /// <summary>
         /// Состояние выполнения запроса.
@@ -35,7 +35,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         /// Результат в виде объекта неопределенного типа.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public override object Result
+        public override object Response
         {
             get
             {

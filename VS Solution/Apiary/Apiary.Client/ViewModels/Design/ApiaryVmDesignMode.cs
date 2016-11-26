@@ -13,7 +13,7 @@ namespace Apiary.Client.ViewModels.Design
     /// <summary>
     /// Тестовая модель представления пасеки (для разработки UI).
     /// </summary>
-    public class ApiaryVmDesignMode : IApiaryVM
+    public class ApiaryVmDesignMode : ViewModelBase, IApiaryVM
     {
         /// <summary>
         /// Общее количество собранного мёда.
@@ -49,12 +49,8 @@ namespace Apiary.Client.ViewModels.Design
                 this.HarvestHoney,
                 this.CanHarvestHoney);
 
-            this.PropertyChanged?.Invoke(
-                this, 
-                new PropertyChangedEventArgs(nameof(this.BeehivesCount)));
-            this.PropertyChanged?.Invoke(
-                this, 
-                new PropertyChangedEventArgs(nameof(this.BeesCount)));
+            this.RaisePropertyChanged(nameof(this.BeehivesCount));
+            this.RaisePropertyChanged(nameof(this.BeesCount));
 
             this.state = ApiaryXmlState.LoadState();
         }

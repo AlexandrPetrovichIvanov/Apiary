@@ -64,6 +64,31 @@
         }
 
         /// <summary>
+        /// Создать xml-сериализуемое состояние на основе 
+        /// переданного состояния любого вида.
+        /// </summary>
+        /// <param name="state">Состояние пасеки.</param>
+        /// <returns>Новое xml-сериализуемое состояние пасеки.</returns>
+        public static ApiaryXmlState CopyFrom(IApiaryState state)
+        {
+            return new ApiaryXmlState
+            {
+                HoneyCount = state.HoneyCount,
+                BeehiveStates = new List<BeehiveXmlState>(
+                    state.BeehiveStates.Select(bhState => new BeehiveXmlState
+                    {
+                        BeehiveNumber = bhState.BeehiveNumber,
+                        HoneyCount = bhState.HoneyCount,
+                        BeesTotalCount = bhState.BeesTotalCount,
+                        BeesInsideCount = bhState.BeesInsideCount,
+                        WorkerBeesCount = bhState.WorkerBeesCount,
+                        QueensCount = bhState.QueensCount,
+                        GuardsCount = bhState.GuardsCount
+                    }))
+            }
+        }
+
+        /// <summary>
         /// Очистить кэш - удалить сохраненный файл состояния
         /// пасеки, если такой файл есть.
         /// </summary>
