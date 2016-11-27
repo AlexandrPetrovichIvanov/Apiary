@@ -5,13 +5,19 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     /// <summary>
     /// Аргументы запроса пчелы к улью.
     /// </summary>
-    public abstract class BeeRequestEventArgs : EventArgs 
+    internal class BeeRequestEventArgs : EventArgs 
     {
+        /// <summary>
+        /// Запрос выполнен успешно.
+        /// </summary>
+        /// <returns>True - запрос выполнен успешно, false - нет.</returns>
+        public bool Succeed { get; set; }        
+
         /// <summary>
         /// Результат - т.е. запрошенные пчелой данные.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public abstract object Response { get; set; }
+        public object Response { get; set; }
 
         /// <summary>
         /// Состояние выполнения запроса.
@@ -23,7 +29,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     /// <summary>
     /// Аргументы запроса пчелы к улью с типизированным результатом.
     /// </summary>
-    public class BeeRequestEventArgs<T> : BeeRequestEventArgs 
+    internal class BeeRequestEventArgs<T> : BeeRequestEventArgs 
     {
         /// <summary>
         /// Результат в виде объекта конкретного типа.

@@ -29,8 +29,7 @@ namespace Apiary.BeeWorkflowApiary.Interfaces
         /// <summary>
         /// Начать работу.
         /// </summary>
-        /// <param name="initialState">С какого момента начинать работу.</param>
-        void StartWork(BeeWorkingState initialState = BeeWorkingState.NotSet);
+        void StartWork();
 
         /// <summary>
         /// Завершить работу.

@@ -11,7 +11,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         /// <summary>
         /// Допустимая доля погрешности.
         /// </summary>
-        private const double Inaccuracy = 0.05;
+        private const double Inaccuracy = 0.001;
 
         /// <summary>
         /// Стандартный баланс пасеки.

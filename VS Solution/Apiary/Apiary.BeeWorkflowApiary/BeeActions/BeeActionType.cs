@@ -3,7 +3,7 @@ namespace Apiary.BeeWorkflowApiary.BeeActions
     /// <summary>
     /// Тип действия пчелы.
     /// </summary>
-    public enum BeeActionType
+    internal enum BeeActionType
     {
         /// <summary>
         /// Не установлено.
@@ -21,9 +21,9 @@ namespace Apiary.BeeWorkflowApiary.BeeActions
         EnterGuardPost = 2,
 
         /// <summary>
-        /// Пчела зашла в улей (пройдя пост охраны).
+        /// Пчела зашла в улей с мёдом (пройдя пост охраны).
         /// </summary>
-        EnterBeehive = 3,
+        EnterBeehiveWithHoney = 3,
 
         /// <summary>
         /// Охранник разрешил пчеле пройти в улей.
