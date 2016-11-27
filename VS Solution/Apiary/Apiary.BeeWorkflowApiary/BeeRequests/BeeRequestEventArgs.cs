@@ -8,6 +8,12 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     internal class BeeRequestEventArgs : EventArgs 
     {
         /// <summary>
+        /// Получить или задать тип запроса.
+        /// </summary>
+        /// <returns>Тип запроса пчелы к улью.</returns>
+        public BeeRequestType RequestType { get; set; }
+        
+        /// <summary>
         /// Запрос выполнен успешно.
         /// </summary>
         /// <returns>True - запрос выполнен успешно, false - нет.</returns>

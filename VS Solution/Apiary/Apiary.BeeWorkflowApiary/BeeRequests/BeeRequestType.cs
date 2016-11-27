@@ -19,6 +19,6 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         /// <summary>
         /// Запрос на получение очереди поста охраны.
         /// </summary>
-        RequestGuardPostQueue = 2
+        RequestGuardPostQueue = 2,
     }
 }

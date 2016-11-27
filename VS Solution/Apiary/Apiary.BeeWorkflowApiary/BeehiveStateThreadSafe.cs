@@ -109,6 +109,14 @@
         }
 
         /// <summary>
+        /// Уменьшить количество пчёл внутри улья на 1.
+        /// </summary>
+        public void DecrementBeesInsideCount()
+        {
+            Interlocked.Decrement(ref this.beesInsideCount);
+        }
+
+        /// <summary>
         /// Увеличить количество рабочих пчёл на 1.
         /// </summary>
         public void IncrementWorkerBeesCount()
@@ -130,6 +138,19 @@
         public void IncrementGuardsCount()
         {
             Interlocked.Increment(ref this.guardsCount);
+        }
+
+        /// <summary>
+        /// Сбросить количество мёда.
+        /// </summary>
+        /// <returns>Количество мёда, которое было до сброса.</returns>
+        public long ResetHoneyCount()
+        {
+            long result = this.honeyCount;
+            
+            Interlocked.Minus(ref this.honeyCount, result);
+
+            return result;
         }
     }
 }

@@ -29,6 +29,6 @@ namespace Apiary.BeeWorkflowApiary.Interfaces
         /// Собрать накопленный в улье мёд.
         /// </summary>
         /// <returns>Количество собранного мёда.</returns>
-        int CollectHoney();
+        long CollectHoney();
     }
 }
