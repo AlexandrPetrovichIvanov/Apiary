@@ -35,7 +35,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         /// Результат в виде объекта конкретного типа.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public T TypedResult { get; set; }
+        public T TypedResponse { get; set; }
 
         /// <summary>
         /// Результат в виде объекта неопределенного типа.

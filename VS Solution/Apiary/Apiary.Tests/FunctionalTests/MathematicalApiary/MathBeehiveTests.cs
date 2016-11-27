@@ -14,24 +14,13 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         private const double Inaccuracy = 0.001;
 
         /// <summary>
-        /// Стандартный баланс пасеки.
-        /// </summary>
-        private IApiaryBalance balance;
-
-        /// <summary>
-        /// Создать экземпляр тестового класса.
-        /// </summary>
-        public MathBeehiveTests()
-        {
-            this.balance = new DefaultApiaryBalance();
-        }
-
-        /// <summary>
         /// Проверить сбор мёда при нормальных условиях.
         /// </summary>
         [TestMethod]
         public void MathBeehive_CorrectHoneyHarvesting()
         {
+            ServiceLocator.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+
             IBeehiveState testState = new BeehiveXmlState
             {
                 HoneyCount = 0,
@@ -56,6 +45,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_CorrectBeeProducing()
         {
+            ServiceLocator.RegisterService<IApiaryBalance>(new ApiaryBalanceDontProducingQueens());
+
             IBeehiveState testState = new BeehiveXmlState
             {
                 HoneyCount = 0,
@@ -64,25 +55,14 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
                 WorkerBeesCount = 0,
                 QueensCount = 100,
                 GuardsCount = 0
-            };
+            };            
 
-            IApiaryBalance oldBalance = this.balance;
+            MathBeehive beehive = this.CreateBeehiveWorkedForHour(testState);
 
-            this.balance = new ApiaryBalanceDontProducingQueens();
-
-            try
-            {
-                MathBeehive beehive = this.CreateBeehiveWorkedForHour(testState);
-
-                int expectedNewBees = this.ExpectedChildrenFromOneQueenPerHour
-                    * testState.QueensCount;
+            int expectedNewBees = this.ExpectedChildrenFromOneQueenPerHour
+                * testState.QueensCount;
                 
-                Assert.AreEqual(expectedNewBees, beehive.BeesTotalCount);
-            }
-            finally
-            {
-                this.balance = oldBalance;
-            }
+            Assert.AreEqual(expectedNewBees, beehive.BeesTotalCount);
         }
 
         /// <summary>
@@ -91,6 +71,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_CorrectGuardsLimitation()
         {
+            ServiceLocator.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+
             IBeehiveState testState = new BeehiveXmlState
             {
                 HoneyCount = 0,
@@ -116,6 +98,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_OneGuardToOneBee()
         {
+            ServiceLocator.RegisterService<IApiaryBalance>(new SlowGuardApiaryBalance());
+
             IBeehiveState testState = new BeehiveXmlState
             {
                 HoneyCount = 0,
@@ -126,23 +110,12 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
                 GuardsCount = 9999
             };
 
-            IApiaryBalance oldBalance = this.balance;
+            MathBeehive beehive = this.CreateBeehiveWorkedForHour(testState);
 
-            this.balance = new SlowGuardApiaryBalance();
-
-            try
-            {
-                MathBeehive beehive = this.CreateBeehiveWorkedForHour(testState);
-
-                int expectedHoney = this.ExpectedHoneyFromOneBeePerHour 
-                    * testState.GuardsCount;
+            int expectedHoney = this.ExpectedHoneyFromOneBeePerHour 
+                * testState.GuardsCount;
                 
-                Assert.AreEqual(expectedHoney, beehive.HoneyCount);
-            }
-            finally
-            {
-                this.balance = oldBalance;
-            }
+            Assert.AreEqual(expectedHoney, beehive.HoneyCount);
         }   
 
         /// <summary>
@@ -151,6 +124,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_BeesCountStable()
         {
+            ServiceLocator.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+
             int initialBeesCount = 10000;
 
             IBeehiveState testState = new BeehiveXmlState
@@ -178,9 +153,9 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             get
             {
                 int timeForOnePortionMs = 
-                    (int)this.balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds()
-                    + (int)this.balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds()
-                    + (int)this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds();
+                    (int)this.Balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds()
+                    + (int)this.Balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds()
+                    + (int)this.Balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds();
 
                 int hourInMs = 1000 * 60 * 60;
 
@@ -191,6 +166,12 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         }
 
         /// <summary>
+        /// Стандартный баланс пасеки.
+        /// </summary>
+        private IApiaryBalance Balance
+            => ServiceLocator.Instance.GetService<IApiaryBalance>();
+
+        /// <summary>
         /// Ожидаемое количество пчёл, произведенное одной маткой в час.
         /// </summary>
         /// <returns>Ожидаемое количество пчёл (согласно балансу).</returns>
@@ -199,7 +180,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             get
             {
                 int timeForOneChild = 
-                    (int)this.balance.QueenBalance.TimeToProduceOneBee.TotalMilliseconds();
+                    (int)this.Balance.QueenBalance.TimeToProduceOneBee.TotalMilliseconds();
 
                 double result = this.MillisecondsInHour / timeForOneChild;
 
@@ -216,7 +197,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             get
             {
                 int timeToCheckOneBee = 
-                    (int)this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds();
+                    (int)this.Balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds();
 
                 double result = this.MillisecondsInHour / timeToCheckOneBee;
 
@@ -237,7 +218,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         /// <returns>Улей, отработавший час и остановленный.</returns>
         private MathBeehive CreateBeehiveWorkedForHour(IBeehiveState state)
         {
-            MathBeehive beehive = new MathBeehive(state, this.balance);
+            MathBeehive beehive = new MathBeehive(state);
 
             for (int i = 0; i < this.GetIterationsInHour(beehive); i++)
             {

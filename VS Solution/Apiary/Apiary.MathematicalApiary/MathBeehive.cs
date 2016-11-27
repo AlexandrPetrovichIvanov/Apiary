@@ -77,11 +77,11 @@
         /// математических вычислений.
         /// </summary>
         /// <param name="state"></param>
-        /// <param name="balance"></param>
         public MathBeehive(
-            IBeehiveState state, 
-            IApiaryBalance balance)
+            IBeehiveState state)
         {
+            IApiaryBalance balance = ServiceLocator.Instance.GetService<IApiaryBalance>();
+
             this.InitializeBeehiveStateProperties(state);
             
             this.waitingForWork = state.BeesInsideCount - state.QueensCount - state.GuardsCount;

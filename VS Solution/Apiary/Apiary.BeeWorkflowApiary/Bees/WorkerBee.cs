@@ -73,7 +73,16 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
         private void HarvestHoney()
         {
             this.PerformOperation(
-                Action.Empty,
+                () =>
+                {
+                    this.ActionPerformed.Invoke(
+                        this,
+                        new BeeActionEventArgs
+                        {
+                            SenderBee = this,
+                            ActionType = BeeActionType.LeftBeehiveToHarvestHoney
+                        });
+                }),
                 this.balance.TimeToHarvestHoney,
                 this.EnteringGuardPost);
         }

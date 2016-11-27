@@ -15,5 +15,10 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         /// пчела успешно прошла пост охраны).
         /// </summary>
         RequestToEnterBeehive = 1,
+
+        /// <summary>
+        /// Запрос на получение очереди поста охраны.
+        /// </summary>
+        RequestGuardPostQueue = 2
     }
 }

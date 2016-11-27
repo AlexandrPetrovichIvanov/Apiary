@@ -6,12 +6,6 @@ namespace Apiary.BeeWorkflowApiary.Bees
     public abstract class BeeBase : IBee
     {
         /// <summary>
-        /// Получить тип пчелы.
-        /// </summary>
-        /// <returns>Тип пчелы.</returns>
-        public abstract BeeType Type;
-
-        /// <summary>
         /// Имитатор выполнения длительных операций.
         /// </summary>
         private readonly ILongOperationSimulator longOperationSimulator;
@@ -28,6 +22,18 @@ namespace Apiary.BeeWorkflowApiary.Bees
         {
             this.longOperationSimulator = ServiceLocator.Instance.GetService<ILongOperationSimulator>();
         }
+
+        /// <summary>
+        /// Получить тип пчелы.
+        /// </summary>
+        /// <returns>Тип пчелы.</returns>
+        public abstract BeeType Type;
+
+        /// <summary>
+        /// Получить или задать номер улья.
+        /// </summary>
+        /// <returns>Номер улья.</returns>
+        public int BeehiveNumber BeehiveNumber { get; set; }
 
         /// <summary>
         /// Событие выполнения пчелой какого-либо действия.
