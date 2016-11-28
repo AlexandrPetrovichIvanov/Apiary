@@ -6,18 +6,23 @@ namespace Apiary.BeeWorkflowApiary.Interfaces
     public enum BeeType
     {
         /// <summary>
+        /// Не установлено.
+        /// </summary>
+        NotSet = 0,
+
+        /// <summary>
         /// Рабочая пчела.
         /// </summary>
-        Worker = 0,
+        Worker = 1,
 
         /// <summary>
         /// Пчела-охранник.
         /// </summary>
-        Guard = 1,
+        Guard = 2,
 
         /// <summary>
         /// Пчела-матка.
         /// </summary>
-        Queen = 2
+        Queen = 3
     }
 }
