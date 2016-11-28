@@ -6,7 +6,8 @@
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Navigation;
-
+    using Apiary.BeeWorkflowApiary;
+    using Apiary.BeeWorkflowApiary.Interfaces;
     using Apiary.Client.ViewModels;
     using Apiary.Client.ViewModels.Work;
     using Apiary.Interfaces;
@@ -37,8 +38,16 @@
         /// </summary>
         public static void RegisterServices()
         {
-            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
-            ServiceLocator.Instance.RegisterService<IApiary>(new MathApiary());
+            IApiaryBalance balance = new DefaultApiaryBalance();
+
+            ServiceLocator.Instance.RegisterService<IGuardBeeBalance>(balance.GuardBalance);
+            ServiceLocator.Instance.RegisterService<IQueenBeeBalance>(balance.QueenBalance);
+            ServiceLocator.Instance.RegisterService<IWorkerBeeBalance>(balance.WorkerBalance);
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(balance);
+            ServiceLocator.Instance.RegisterService<IRandomizer>(new Randomizer());
+            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
+            ServiceLocator.Instance.RegisterService<IBeeFactory>(new DefaultBeeFactory());
+            ServiceLocator.Instance.RegisterService<IApiary>(new BeeWorkflowApiary());
             ServiceLocator.Instance.RegisterService<IApiaryVM>(new ApiaryVM());
         }
 

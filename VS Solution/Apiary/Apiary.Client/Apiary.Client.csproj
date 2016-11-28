@@ -146,6 +146,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Apiary.BeeWorkflowApiary\Apiary.BeeWorkflowApiary.csproj">
+      <Project>{118eba47-b497-431b-b6d6-052ebf016b41}</Project>
+      <Name>Apiary.BeeWorkflowApiary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Apiary.Client.TestablePart\Apiary.Client.TestablePart.csproj">
       <Project>{67e581ff-6dde-450b-be75-ac25dddeaca2}</Project>
       <Name>Apiary.Client.TestablePart</Name>

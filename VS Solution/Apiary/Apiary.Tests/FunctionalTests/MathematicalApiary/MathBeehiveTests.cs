@@ -1,5 +1,6 @@
 namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 {
+    using System;
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     using Apiary.Client.XmlStates;
@@ -43,8 +44,9 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 
             int expectedHoney = this.ExpectedHoneyFromOneBeePerHour 
                 * testState.WorkerBeesCount;
-            
-            Assert.AreEqual(expectedHoney, beehive.HoneyCount);
+
+            Assert.IsTrue(Math.Abs(expectedHoney - beehive.HoneyCount)
+                <= expectedHoney * MathBeehiveTests.Inaccuracy);
         }
 
         /// <summary>
@@ -71,7 +73,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             int expectedNewBees = this.ExpectedChildrenFromOneQueenPerHour
                 * testState.QueensCount;
                 
-            Assert.AreEqual(expectedNewBees, beehive.BeesTotalCount);
+            Assert.IsTrue(Math.Abs(expectedNewBees - beehive.BeesTotalCount)
+                <= expectedNewBees * MathBeehiveTests.Inaccuracy);
         }
 
         /// <summary>
@@ -96,8 +99,9 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 
             int expectedHoney = this.ExpectedChecksPerHourFromOneGuard 
                 * testState.GuardsCount;
-            
-            Assert.AreEqual(expectedHoney, beehive.HoneyCount);
+
+            Assert.IsTrue(Math.Abs(expectedHoney - beehive.HoneyCount)
+                <= expectedHoney * MathBeehiveTests.Inaccuracy);
         }
 
         /// <summary>
@@ -113,7 +117,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             IBeehiveState testState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 1,
+                BeesTotalCount = 10000,
                 BeesInsideCount = 10000,
                 WorkerBeesCount = 1,
                 QueensCount = 0,
@@ -122,10 +126,10 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 
             MathBeehive beehive = this.CreateBeehiveWorkedForHour(testState);
 
-            int expectedHoney = this.ExpectedHoneyFromOneBeePerHour 
-                * testState.GuardsCount;
-                
-            Assert.AreEqual(expectedHoney, beehive.HoneyCount);
+            int expectedHoney = this.ExpectedHoneyFromOneBeePerHour;
+
+            Assert.IsTrue(Math.Abs(expectedHoney - beehive.HoneyCount)
+                <= expectedHoney * MathBeehiveTests.Inaccuracy);
         }   
 
         /// <summary>
@@ -154,6 +158,43 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         }
 
         /// <summary>
+        /// Проверить сбор мёда пчёлами, которые на момент начала находятся вне улья.
+        /// </summary>
+        [TestMethod]
+        public void MathBeehive_OutsideWorkersNormalStartTheirWork()
+        {
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+
+            IBeehiveState testState = new BeehiveXmlState
+            {
+                HoneyCount = 5,
+                BeesTotalCount = 10,
+                BeesInsideCount = 1,
+                WorkerBeesCount = 9,
+                QueensCount = 0,
+                GuardsCount = 1
+            };
+
+            MathBeehive beehive = this.CreateBeehiveWorkedForHour(testState);
+
+            long expectedHoney = this.ExpectedHoneyFromOneBeePerHour
+                * testState.WorkerBeesCount
+                + testState.HoneyCount;
+
+            Assert.IsTrue(Math.Abs(expectedHoney - beehive.HoneyCount)
+                <= expectedHoney * MathBeehiveTests.Inaccuracy);
+        }
+
+        /// <summary>
+        /// Проверить, что улей не стартует при некорректных начальных условиях.
+        /// </summary>
+        [TestMethod]
+        public void MathBeehive_NotStartWithIncorrectState()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Получить ожидаемое количество мёда, собранное одной пчелой
         /// в течение часа.
         /// </summary>
@@ -169,7 +210,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 
                 double result = (double)this.MillisecondsInHour / timeForOnePortionMs;
 
-                return (int)(result - (result * MathBeehiveTests.Inaccuracy));
+                return (int)result;
             }
         }
 
@@ -190,9 +231,10 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
                 int timeForOneChild = 
                     (int)this.Balance.QueenBalance.TimeToProduceBee.TotalMilliseconds;
 
-                double result = (double)this.MillisecondsInHour / timeForOneChild;
+                double result = (double)this.MillisecondsInHour / timeForOneChild
+                    + 1; // при завершении работы пчела заканчивает производство пчелы.
 
-                return (int)(result - (result * MathBeehiveTests.Inaccuracy));
+                return (int)result;
             }
         }
 
@@ -209,7 +251,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 
                 double result = (double)this.MillisecondsInHour / timeToCheckOneBee;
 
-                return (int)(result - (result * MathBeehiveTests.Inaccuracy));
+                return (int)result;
             }
         }
 
@@ -223,13 +265,17 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         /// в течение часа.
         /// </summary>
         /// <param name="state">Состояние улья.</param>
+        /// <param name="checkForEveryIteration">Проверка на каждой итерации.</param>
         /// <returns>Улей, отработавший час и остановленный.</returns>
-        private MathBeehive CreateBeehiveWorkedForHour(IBeehiveState state)
+        private MathBeehive CreateBeehiveWorkedForHour(
+            IBeehiveState state,
+            Action<MathBeehive> checkForEveryIteration = null)
         {
             MathBeehive beehive = new MathBeehive(state);
 
             for (int i = 0; i < this.GetIterationsInHour(beehive); i++)
             {
+                checkForEveryIteration?.Invoke(beehive);
                 beehive.SingleIteration();
             }
 

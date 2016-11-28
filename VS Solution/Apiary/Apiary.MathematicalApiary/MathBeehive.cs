@@ -86,6 +86,7 @@
             this.InitializeBeehiveStateProperties(state);
             
             this.waitingForWork = state.BeesInsideCount - state.QueensCount - state.GuardsCount;
+            this.waitingForCheck = state.WorkerBeesCount - waitingForWork;
 
             this.InitializeOperationTimes(balance);
             this.InitializeIntervals(); 

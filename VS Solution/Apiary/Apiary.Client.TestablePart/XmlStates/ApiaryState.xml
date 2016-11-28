@@ -59,8 +59,8 @@
         <Beehive>
             <Number>7</Number>
             <Honey>0</Honey>
-            <TotalBees>1000</TotalBees>
-            <BeesInside>0</BeesInside>
+            <TotalBees>10000</TotalBees>
+            <BeesInside>9999</BeesInside>
             <Workers>1</Workers>
             <Queens>0</Queens>
             <Guards>9999</Guards>
