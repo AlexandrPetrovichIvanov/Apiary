@@ -101,6 +101,7 @@
     <Compile Include="Mvvm\AppSuspendingCommandBinding.cs" />
     <Compile Include="Mvvm\SimpleCommand.cs" />
     <Compile Include="Mvvm\Dispatcher.cs" />
+    <Compile Include="Mvvm\ViewModelBase.cs" />
     <Compile Include="ViewModels\Design\ApiaryVmDesignMode.cs" />
     <Compile Include="ViewModels\Design\BeehiveVmDesignMode.cs" />
     <Compile Include="ViewModels\IApiaryVM.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Mvvm\ViewModelLocator.cs" />
     <Compile Include="ViewModels\Work\ApiaryVM.cs" />
     <Compile Include="ViewModels\Work\BeehiveVM.cs" />
+    <Compile Include="ViewModels\Work\RefreshApiaryVmOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -147,6 +149,10 @@
     <ProjectReference Include="..\Apiary.Client.TestablePart\Apiary.Client.TestablePart.csproj">
       <Project>{67e581ff-6dde-450b-be75-ac25dddeaca2}</Project>
       <Name>Apiary.Client.TestablePart</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apiary.Implementation.Common\Apiary.Implementation.Common.csproj">
+      <Project>{47bafac5-e791-4b00-93e2-cba69df012b3}</Project>
+      <Name>Apiary.Implementation.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
       <Project>{fac556d9-5b59-4164-b058-b8f08b2088da}</Project>

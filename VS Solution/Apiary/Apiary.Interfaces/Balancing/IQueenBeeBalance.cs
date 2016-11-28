@@ -11,24 +11,24 @@ namespace Apiary.Interfaces.Balancing
         /// Время производства одной пчелы.
         /// </summary>
         /// <returns>Время производства одной пчелы.</returns>
-        public TimeSpan TimeToProduceBee { get; }
+        TimeSpan TimeToProduceBee { get; }
 
         /// <summary>
         /// Тысячная доля вероятности произвести рабочую пчелу.
         /// </summary>
         /// <returns>Вероятность произвести рабочую пчелу.</returns>
-        public int ThousandthPartToProduceWorker { get; }
+        int ThousandthPartToProduceWorker { get; }
 
         /// <summary>
         /// Тысячная доля вероятности произвести охранника.
         /// </summary>
         /// <returns>Вероятность произвести охранника.</returns>
-        public int ThousandthPartToProduceGuard { get; }
+        int ThousandthPartToProduceGuard { get; }
 
         /// <summary>
         /// Тысячная доля вероятности произвести пчелу-матку.
         /// </summary>
         /// <returns>Вероятность произвести пчелу-матку.</returns>
-        public int ThousandthPartToProduceQueen { get; }
+        int ThousandthPartToProduceQueen { get; }
     }
 }

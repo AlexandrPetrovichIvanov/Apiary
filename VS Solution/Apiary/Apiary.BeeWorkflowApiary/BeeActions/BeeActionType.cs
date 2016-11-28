@@ -3,7 +3,7 @@ namespace Apiary.BeeWorkflowApiary.BeeActions
     /// <summary>
     /// Тип действия пчелы.
     /// </summary>
-    internal enum BeeActionType
+    public enum BeeActionType
     {
         /// <summary>
         /// Не установлено.

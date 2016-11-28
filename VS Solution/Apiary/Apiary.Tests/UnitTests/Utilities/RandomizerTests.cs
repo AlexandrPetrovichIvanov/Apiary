@@ -1,6 +1,12 @@
 namespace Apiary.Tests.UnitTests.Utilities
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+
+    using Apiary.Utilities;
 
     /// <summary>
     /// Тестирование генератора случайных чисел.
@@ -23,11 +29,11 @@ namespace Apiary.Tests.UnitTests.Utilities
             {
                 tasks.Add(Task.Factory.StartNew(() =>
                 {
-                    int random = randomizer.GetRandom(1, 1000);
+                    randomizer.GetRandom(1, 1000);
                 }));
             }
 
-            tasks.ForEach(t => t.GetAwaiter().Await());
+            tasks.ForEach(t => t.GetAwaiter().GetResult());
         }
 
         /// <summary>
@@ -51,8 +57,8 @@ namespace Apiary.Tests.UnitTests.Utilities
 
             randoms.ForEach(r =>
             {
-                Assert.IsTrue(random >= 1);
-                Assert.IsTrue(random <= 1000);
+                Assert.IsTrue(r >= 1);
+                Assert.IsTrue(r <= 1000);
             });                                
         }
     }

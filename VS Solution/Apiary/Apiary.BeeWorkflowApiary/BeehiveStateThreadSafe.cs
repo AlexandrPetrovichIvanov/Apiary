@@ -148,7 +148,7 @@
         {
             long result = this.honeyCount;
             
-            Interlocked.Minus(ref this.honeyCount, result);
+            Interlocked.Add(ref this.honeyCount, -result);
 
             return result;
         }

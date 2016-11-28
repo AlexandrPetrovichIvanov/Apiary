@@ -6,8 +6,6 @@
     using Windows.System.Threading;
 
     using Apiary.Interfaces;
-    using Apiary.Interfaces.Balancing;
-    using Apiary.Utilities;
 
     /// <summary>
     /// Пасека, реализованная на основе итеративных математических
@@ -55,12 +53,10 @@
             this.isWorking = true;
             this.HoneyCount = state.HoneyCount;
 
-            IApiaryBalance balance = ServiceLocator.Instance.GetService<IApiaryBalance>();
-
             lock (lockObject)
             {
                 this.beehives = new List<MathBeehive>(state.BeehiveStates.Select(
-                    bhState => new MathBeehive(bhState, balance)));
+                    bhState => new MathBeehive(bhState)));
 
                 ThreadPoolTimer.CreatePeriodicTimer(
                     this.TimerElapsed,

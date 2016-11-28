@@ -19,7 +19,7 @@
         {
             RegisteredService instance = new RegisteredService();
 
-            ServiceLocator.Instance.RegisterService<RegisteredService>(instance);
+            ServiceLocator.Instance.RegisterService(instance);
 
             Assert.AreEqual(
                 instance,
@@ -52,7 +52,7 @@
         /// <summary>
         /// Простой класс (для теста).
         /// </summary>
-        private class UnregisteredService
+        private abstract class UnregisteredService
         {}
     }
 }

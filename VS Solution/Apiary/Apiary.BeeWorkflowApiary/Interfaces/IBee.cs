@@ -17,6 +17,11 @@ namespace Apiary.BeeWorkflowApiary.Interfaces
         BeeType Type { get; }
 
         /// <summary>
+        /// Номер улья.
+        /// </summary>
+        int BeehiveNumber { get; set; }
+
+        /// <summary>
         /// Событие выполнения пчелой какого-либо действия.
         /// </summary>
         event EventHandler<BeeActionEventArgs> ActionPerformed;

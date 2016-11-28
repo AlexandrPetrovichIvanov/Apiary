@@ -1,6 +1,5 @@
 ﻿namespace Apiary.Client.ViewModels.Work
 {
-    using System.ComponentModel;
     using System.Threading.Tasks;
 
     using Apiary.Client.Mvvm;

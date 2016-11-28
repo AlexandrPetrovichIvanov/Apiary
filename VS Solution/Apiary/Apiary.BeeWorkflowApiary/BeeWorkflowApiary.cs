@@ -1,5 +1,8 @@
 namespace Apiary.BeeWorkflowApiary
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Apiary.Interfaces;
 
     /// <summary>
@@ -37,10 +40,10 @@ namespace Apiary.BeeWorkflowApiary
         /// <param name="state">Исходное состояние пасеки.</param>
         public void Start(IApiaryState state)
         {
-            if (this.working)
+            if (this.isWorking)
             {
                 throw new InvalidOperationException(
-                    "Ошибка запуска пасеки. Пасека уже работает.")
+                    "Ошибка запуска пасеки. Пасека уже работает.");
             }
 
             this.HoneyCount = state.HoneyCount;
@@ -63,10 +66,10 @@ namespace Apiary.BeeWorkflowApiary
         /// <returns>Состояние пасеки на момент остановки.</returns>
         public IApiaryState Stop()
         {
-            if (!this.working)
+            if (!this.isWorking)
             {
                 throw new InvalidOperationException(
-                    "Ошибка остановки пасеки. Пасека не запущена.")
+                    "Ошибка остановки пасеки. Пасека не запущена.");
             }
 
             foreach(var beehive in this.beehives)

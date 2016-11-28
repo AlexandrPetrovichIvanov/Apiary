@@ -1,6 +1,8 @@
-namespace Apiary.Implementation.Common.DefaultBalance
+namespace Apiary.Implementation.Common
 {
     using System;
+
+    using Apiary.Interfaces.Balancing;
 
     /// <summary>
     /// Стандартный баланс для рабочих пчёл.

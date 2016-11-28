@@ -5,6 +5,7 @@
 
     using Apiary.Interfaces;
     using Apiary.Interfaces.Balancing;
+    using Apiary.Utilities;
 
     /// <summary>
     /// Улей, работающий по принципу итеративных математических вычислений.
@@ -62,10 +63,10 @@
         /// <summary>
         /// Аккумуляторы нецелых значений, чтобы не терять дробные части.
         /// </summary>
-        private double limitAccumulator = 0;
-        private double newWorkersAccumulator = 0;
-        private double newGuardsAccumulator = 0;
-        private double newQueensAccumulator = 0;
+        private double limitAccumulator;
+        private double newWorkersAccumulator;
+        private double newGuardsAccumulator;
+        private double newQueensAccumulator;
 
         /// <summary>
         /// Количество пчёл внутри улья (может быть отрицательным).

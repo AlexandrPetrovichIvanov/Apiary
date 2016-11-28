@@ -1,15 +1,13 @@
-namespace Apiary.Implementation.Common.DefaultBalance
+namespace Apiary.Tests.TestDoubles.Balances
 {
+    using System;
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Баланс работы пчёл-охранников, работающих в 2 раза быстрее.
     /// </summary>
     internal class FastGuardBeeBalance : IGuardBeeBalance
     {
-        /// <summary>
-        /// Базовый (исходный) баланс.
-        /// </summary>
-        private readonly IGuardBeeBalance baseBalance;
-
         /// <summary>
         /// Создать баланс работы охранников, проверяющих в 2 раза быстрее.
         /// </summary>
@@ -17,13 +15,14 @@ namespace Apiary.Implementation.Common.DefaultBalance
         public FastGuardBeeBalance(
             IGuardBeeBalance baseBalance)
         {
-            this.baseBalance = baseBalance;
+            this.TimeToCheckOneBee = TimeSpan.FromMilliseconds(
+                (baseBalance.TimeToCheckOneBee.TotalMilliseconds / 2));
         }
         
         /// <summary>
         /// Время проверки одной пчелы.
         /// </summary>
         /// <returns>Время проверки одной пчелы.</returns>
-        public TimeSpan TimeToCheckOneBee => this.baseBalance.TimeToCheckOneBee / 2;
+        public TimeSpan TimeToCheckOneBee { get; }
     }
 }

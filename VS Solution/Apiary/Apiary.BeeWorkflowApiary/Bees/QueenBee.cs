@@ -1,5 +1,12 @@
 namespace Apiary.BeeWorkflowApiary.Bees
 {
+    using System;
+
+    using Apiary.BeeWorkflowApiary.BeeActions;
+    using Apiary.BeeWorkflowApiary.Interfaces;
+    using Apiary.Interfaces.Balancing;
+    using Apiary.Utilities;
+
     /// <summary>
     /// Пчела-матка.
     /// </summary>
@@ -18,19 +25,18 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Фабрика пчёл.
         /// </summary>
-        private void IBeeFactory factory;
+        private readonly IBeeFactory factory;
 
         /// <summary>
         /// Получить тип пчелы.
         /// </summary>
         /// <returns>Тип пчелы.</returns>
-        public BeeType Type => BeeType.Queen;
+        public override BeeType Type => BeeType.Queen;
 
         /// <summary>
         /// Создать пчелу-матку.
         /// </summary>
         public QueenBee()
-            : base()
         {
             this.balance = ServiceLocator.Instance.GetService<IQueenBeeBalance>();
             this.randomizer = ServiceLocator.Instance.GetService<IRandomizer>();
@@ -41,7 +47,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// Метод получения действия, с которого нужно начинать работу.
         /// </summary>
         /// <returns>Действие, с которого нужно начинать работу.</returns>
-        private override Action GetStartAction()
+        protected override Action GetStartAction()
         {
             return this.StartProducingBees;
         }
@@ -52,8 +58,8 @@ namespace Apiary.BeeWorkflowApiary.Bees
         private void StartProducingBees()
         {
             this.PerformOperation(
-                Action.Empty,
-                this.balance.TimeToProduceOneBee,
+                () => {},
+                this.balance.TimeToProduceBee,
                 this.ProduceBee);
         }
 
@@ -67,7 +73,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 {
                     IBee newBee = this.CreateRandomBee();
 
-                    this.ActionPerformed.Invoke(
+                    this.ActionPerformedInternal(
                         this,
                         new BeeActionEventArgs
                         {
@@ -75,8 +81,8 @@ namespace Apiary.BeeWorkflowApiary.Bees
                             RelatedBee = newBee,
                             ActionType = BeeActionType.ProduceBee
                         });
-                }),
-                this.balance.TimeToProduceOneBee,
+                },
+                this.balance.TimeToProduceBee,
                 this.ProduceBee);
         }
 

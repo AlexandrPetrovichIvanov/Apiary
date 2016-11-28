@@ -1,5 +1,7 @@
 namespace Apiary.Tests.TestDoubles.Balances
 {
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Баланс пасеки, в котором матки не производят маток.
     /// </summary>
@@ -17,6 +19,7 @@ namespace Apiary.Tests.TestDoubles.Balances
         public ApiaryBalanceDontProducingQueens(IApiaryBalance baseBalance)
         {
             this.baseBalance = baseBalance;
+            this.QueenBalance = new QueenBalanceDontProducingQueens(baseBalance.QueenBalance);
         }
 
         /// <summary>
@@ -38,6 +41,5 @@ namespace Apiary.Tests.TestDoubles.Balances
         /// </summary>
         /// <returns>Баланс пчёл-маток.</returns>
         public IQueenBeeBalance QueenBalance { get; }
-            = new QueenBalanceDontProducingQueens(this.baseBalance.QueenBalance);
     }
 }

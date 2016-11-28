@@ -1,5 +1,7 @@
 namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
 {
+    using System;
+
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
     
     /// <summary>

@@ -11,12 +11,12 @@ namespace Apiary.Interfaces.Balancing
         /// Время сбора мёда (снаружи улья).
         /// </summary>
         /// <returns>Время сбора мёда (снаружи улья).</returns>
-        public TimeSpan TimeToHarvestHoney { get; }
+        TimeSpan TimeToHarvestHoney { get; }
 
         /// <summary>
         /// Время отдыха в улье (перерывы между полётами за мёдом).
         /// </summary>
         /// <returns>Время отдыха в улье.</returns>
-        public TimeSpan TimeToRestInBeehive { get; }
+        TimeSpan TimeToRestInBeehive { get; }
     }
 }

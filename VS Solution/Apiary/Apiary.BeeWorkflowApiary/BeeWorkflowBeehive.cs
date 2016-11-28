@@ -1,5 +1,15 @@
 namespace Apiary.BeeWorkflowApiary
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+
+    using Apiary.BeeWorkflowApiary.BeeActions;
+    using Apiary.BeeWorkflowApiary.BeeRequests;
+    using Apiary.BeeWorkflowApiary.Interfaces;
+    using Apiary.Interfaces;
+    using Apiary.Utilities;
+
     /// <summary>
     /// Улей, основанный на непрерывной работе пчёл и обработке
     /// их запросов и действий, без прямого вызова методов пчёл.
@@ -41,7 +51,7 @@ namespace Apiary.BeeWorkflowApiary
         /// </summary>
         public BeeWorkflowBeehive()
         {
-            this.factory = ServiceLocator.Instance.GetService<IBeeFactory>();
+            this.beeFactory = ServiceLocator.Instance.GetService<IBeeFactory>();
         }
 
         /// <summary>
@@ -64,6 +74,7 @@ namespace Apiary.BeeWorkflowApiary
 
             this.isWorking = true;
 
+            this.allBees = new ConcurrentQueue<IBee>();
             this.state = new BeehiveStateThreadSafe(state);
             this.guardPostQueue = new GuardPostQueue();
             this.acceptedList = new GuardPostAcceptedList();
@@ -112,7 +123,7 @@ namespace Apiary.BeeWorkflowApiary
             List<IBee> initialBees = new List<IBee>();
 
             initialBees.AddRange(this.GetInitialQueens());
-            ihitialBees.AddRange(this.GetInitialGuards());
+            initialBees.AddRange(this.GetInitialGuards());
             initialBees.AddRange(this.GetInitialWorkers());         
 
             initialBees.ForEach(bee =>
@@ -131,7 +142,7 @@ namespace Apiary.BeeWorkflowApiary
 
             for (int i = 0; i < this.state.GuardsCount; i++)
             {
-                result.Add(this.factory.CreateGuardBee());
+                result.Add(this.beeFactory.CreateGuardBee());
             }
 
             return result;
@@ -146,7 +157,7 @@ namespace Apiary.BeeWorkflowApiary
 
             for (int i = 0; i < this.state.QueensCount; i++)
             {
-                result.Add(this.factory.CreateQueenBee());
+                result.Add(this.beeFactory.CreateQueenBee());
             }
 
             return result;
@@ -164,14 +175,14 @@ namespace Apiary.BeeWorkflowApiary
 
             for (int i = 0; i < workersInside; i++)
             {
-                result.Add(this.factory.CreateWorkerBee(BeeWorkingState.OnTheRest));
+                result.Add(this.beeFactory.CreateWorkerBee(BeeWorkingState.OnTheRest));
             }
 
             int workersOutside = this.state.WorkerBeesCount - workersInside;
 
             for (int i = 0; i < workersOutside; i++)
             {
-                result.Add(this.factory.CreateWorkerBee(BeeWorkingState.OnTheWork));
+                result.Add(this.beeFactory.CreateWorkerBee(BeeWorkingState.OnTheWork));
             }
 
             return result;
@@ -184,7 +195,7 @@ namespace Apiary.BeeWorkflowApiary
         private void RegisterBee(IBee bee)
         {            
             this.allBees.Enqueue(bee);
-            bee.BeehiveNumber = this.BeehiveNumber;
+            bee.BeehiveNumber = this.state.BeehiveNumber;
 
             bee.ActionPerformed += this.BeeOnActionPerformed;
             bee.RequestForBeehiveData += this.BeeOnRequestBeehiveData;
@@ -211,13 +222,13 @@ namespace Apiary.BeeWorkflowApiary
             {
                 case BeeType.Worker:
                     this.state.IncrementWorkerBeesCount();
-
+                    break;
                 case BeeType.Guard:
                     this.state.IncrementGuardsCount();
-
+                    break;
                 case BeeType.Queen:
                     this.state.IncrementQueensCount();
-
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(
                         $"Неизвестный тип пчелы - {newBeeType}",
@@ -240,23 +251,23 @@ namespace Apiary.BeeWorkflowApiary
             {
                 case BeeActionType.LeftBeehiveToHarvestHoney:
                     this.state.DecrementBeesInsideCount();                    
-
+                    break;
                 case BeeActionType.EnterGuardPost:
                     this.guardPostQueue.Enqueue(args.SenderBee);
-
+                    break;
                 case BeeActionType.EnterBeehiveWithHoney:
                     this.state.IncrementHoneyCount();
                     this.state.IncrementBeesInsideCount(); 
                     this.acceptedList.ResetBeeAcceptedState(args.SenderBee);             
-
+                    break;
                 case BeeActionType.AcceptBeeToEnter:
                     this.acceptedList.AcceptBeeToEnter(args.RelatedBee);
-
+                    break;
                 case BeeActionType.ProduceBee:
                     this.RegisterBee(args.RelatedBee);
                     args.RelatedBee.StartWork();
                     this.ChangeStateAccordingToNewBee(args.RelatedBee.Type);
-
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(
                         $"Неизвестное действие пчелы - {args.ActionType}",
@@ -276,17 +287,20 @@ namespace Apiary.BeeWorkflowApiary
             switch (args.RequestType)
             {
                 case BeeRequestType.RequestToEnterBeehive:
-                    args.Succeed = this.acceptedList.IsBeeAcceptedToEnter(args.SenderBee);
-                    args.Response = true;
 
+                    args.Succeed = this.acceptedList.IsBeeAcceptedToEnter((IBee)sender);
+                    args.Response = true;
+                    break;
                 case BeeRequestType.RequestGuardPostQueue:
-                    args.Succeed = args.SenderBee.Type == BeeType.Guard
-                        && args.SenderBee.BeehiveNumber == this.state.BeehiveNumber;
+                    args.Succeed = ((IBee)sender).Type == BeeType.Guard
+                        && ((IBee)sender).BeehiveNumber == this.state.BeehiveNumber;
                     
                     if (args.Succeed)
                     {
                         args.Response = this.guardPostQueue;
                     }
+
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException(

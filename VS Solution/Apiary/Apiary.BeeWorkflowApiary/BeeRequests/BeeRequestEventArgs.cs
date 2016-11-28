@@ -5,7 +5,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     /// <summary>
     /// Аргументы запроса пчелы к улью.
     /// </summary>
-    internal class BeeRequestEventArgs : EventArgs 
+    public class BeeRequestEventArgs : EventArgs 
     {
         /// <summary>
         /// Получить или задать тип запроса.
@@ -23,13 +23,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         /// Результат - т.е. запрошенные пчелой данные.
         /// </summary>
         /// <returns>Запрошенные пчелой данные.</returns>
-        public object Response { get; set; }
-
-        /// <summary>
-        /// Состояние выполнения запроса.
-        /// </summary>
-        /// <returns>Состояние запроса.</returns>
-        public BeeRequestState State { get; set; }
+        public virtual object Response { get; set; }
     }
 
     /// <summary>
@@ -51,7 +45,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
         {
             get
             {
-                return this.TypedResult;
+                return this.TypedResponse;
             }
 
             set
@@ -63,7 +57,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
                         nameof(value));
                 }
 
-                this.TypedResult = (T)value;
+                this.TypedResponse = (T)value;
             }
         }
     }

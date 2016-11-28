@@ -7,7 +7,7 @@ namespace Apiary.BeeWorkflowApiary.BeeActions
     /// <summary>
     /// Аргументы любого действия пчелы.
     /// </summary>
-    internal class BeeActionEventArgs : EventArgs
+    public class BeeActionEventArgs : EventArgs
     {
         /// <summary>
         /// Пчела-инициатор действия.

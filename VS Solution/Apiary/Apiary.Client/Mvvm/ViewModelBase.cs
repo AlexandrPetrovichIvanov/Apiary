@@ -1,5 +1,7 @@
 namespace Apiary.Client.Mvvm
 {
+    using System.ComponentModel;
+
     /// <summary>
     /// Общая часть всех View-моделей.
     /// </summary>

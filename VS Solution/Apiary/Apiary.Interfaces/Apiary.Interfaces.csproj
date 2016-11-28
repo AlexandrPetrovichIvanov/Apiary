@@ -107,10 +107,10 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Balancing\ApiaryBalance.cs" />
-    <Compile Include="Balancing\GuardBeeBalance.cs" />
-    <Compile Include="Balancing\QueenBeeBalance.cs" />
-    <Compile Include="Balancing\WorkerBeeBalance.cs" />
+    <Compile Include="Balancing\IApiaryBalance.cs" />
+    <Compile Include="Balancing\IGuardBeeBalance.cs" />
+    <Compile Include="Balancing\IQueenBeeBalance.cs" />
+    <Compile Include="Balancing\IWorkerBeeBalance.cs" />
     <Compile Include="IApiary.cs" />
     <Compile Include="IApiaryState.cs" />
     <Compile Include="IBeehiveState.cs" />

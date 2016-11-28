@@ -1,35 +1,36 @@
-namespace Apiary.Implementation.Common.DefaultBalance
+namespace Apiary.Tests.TestDoubles.Balances
 {
+    using System;
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Баланс рабочих пчёл, работающих в 20 раз быстрее.
     /// </summary>
-    internal class FastGuardBeeBalance : IGuardBeeBalance
+    internal class FastWorkerBalance : IWorkerBeeBalance
     {
-        /// <summary>
-        /// Базовый (исходный) баланс.
-        /// </summary>
-        private readonly IWorkerBeeBalance baseBalance;
-
         /// <summary>
         /// Создать баланс рабочих пчёл, работающих в 20 раз быстрее.
         /// </summary>
         /// <param name="baseBalance">Исходный баланс.</param>
-        public FastGuardBeeBalance(
+        public FastWorkerBalance(
             IWorkerBeeBalance baseBalance)
         {
-            this.baseBalance = baseBalance;
+            this.TimeToHarvestHoney = TimeSpan.FromMilliseconds(
+                baseBalance.TimeToHarvestHoney.TotalMilliseconds/20);
+            this.TimeToRestInBeehive = TimeSpan.FromMilliseconds(
+                baseBalance.TimeToRestInBeehive.TotalMilliseconds/20);
         }
         
         /// <summary>
         /// Время сбора мёда (снаружи улья).
         /// </summary>
         /// <returns>Время сбора мёда (снаружи улья).</returns>
-        public TimeSpan TimeToHarvestHoney => this.baseBalance.TimeToHarvestHoney / 20;
+        public TimeSpan TimeToHarvestHoney { get; }
 
         /// <summary>
         /// Время отдыха в улье (перерывы между полётами за мёдом).
         /// </summary>
         /// <returns>Время отдыха в улье.</returns>
-        public TimeSpan TimeToRestInBeehive => this.baseBalance.TimeToRestInBeehive / 20;
+        public TimeSpan TimeToRestInBeehive { get; }
     }
 }

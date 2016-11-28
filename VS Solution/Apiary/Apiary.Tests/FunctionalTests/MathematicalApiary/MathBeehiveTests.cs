@@ -2,6 +2,14 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 {
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
+    using Apiary.Client.XmlStates;
+    using Apiary.Interfaces;
+    using Apiary.Interfaces.Balancing;
+    using Apiary.Tests.TestDoubles.Balances;
+    using Apiary.Utilities;
+    using Apiary.Implementation.Common;
+    using Apiary.MathematicalApiary;
+
     /// <summary>
     /// Класс тестирования математической реализации ульев.
     /// </summary>
@@ -19,7 +27,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_CorrectHoneyHarvesting()
         {
-            ServiceLocator.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
 
             IBeehiveState testState = new BeehiveXmlState
             {
@@ -45,7 +53,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_CorrectBeeProducing()
         {
-            ServiceLocator.RegisterService<IApiaryBalance>(new ApiaryBalanceDontProducingQueens());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(
+                new ApiaryBalanceDontProducingQueens(new DefaultApiaryBalance()));
 
             IBeehiveState testState = new BeehiveXmlState
             {
@@ -71,7 +80,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_CorrectGuardsLimitation()
         {
-            ServiceLocator.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
 
             IBeehiveState testState = new BeehiveXmlState
             {
@@ -98,7 +107,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_OneGuardToOneBee()
         {
-            ServiceLocator.RegisterService<IApiaryBalance>(new SlowGuardApiaryBalance());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(
+                new SlowGuardsApiaryBalance(new DefaultApiaryBalance()));
 
             IBeehiveState testState = new BeehiveXmlState
             {
@@ -124,7 +134,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_BeesCountStable()
         {
-            ServiceLocator.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
 
             int initialBeesCount = 10000;
 
@@ -153,13 +163,11 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             get
             {
                 int timeForOnePortionMs = 
-                    (int)this.Balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds()
-                    + (int)this.Balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds()
-                    + (int)this.Balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds();
+                    (int)this.Balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds
+                    + (int)this.Balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds
+                    + (int)this.Balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
 
-                int hourInMs = 1000 * 60 * 60;
-
-                double result = this.MillisecondsInHour / timeForOnePortionMs;
+                double result = (double)this.MillisecondsInHour / timeForOnePortionMs;
 
                 return (int)(result - (result * MathBeehiveTests.Inaccuracy));
             }
@@ -180,9 +188,9 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             get
             {
                 int timeForOneChild = 
-                    (int)this.Balance.QueenBalance.TimeToProduceOneBee.TotalMilliseconds();
+                    (int)this.Balance.QueenBalance.TimeToProduceBee.TotalMilliseconds;
 
-                double result = this.MillisecondsInHour / timeForOneChild;
+                double result = (double)this.MillisecondsInHour / timeForOneChild;
 
                 return (int)(result - (result * MathBeehiveTests.Inaccuracy));
             }
@@ -197,9 +205,9 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             get
             {
                 int timeToCheckOneBee = 
-                    (int)this.Balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds();
+                    (int)this.Balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
 
-                double result = this.MillisecondsInHour / timeToCheckOneBee;
+                double result = (double)this.MillisecondsInHour / timeToCheckOneBee;
 
                 return (int)(result - (result * MathBeehiveTests.Inaccuracy));
             }
@@ -226,6 +234,8 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             }
 
             beehive.Stop();
+
+            return beehive;
         }
 
         /// <summary>

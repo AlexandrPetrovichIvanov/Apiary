@@ -1,7 +1,7 @@
 ﻿namespace Apiary.Client.Mvvm
 {
     using System;
-
+    using System.Threading.Tasks;
     using Windows.ApplicationModel.Core;
     using Windows.UI.Core;
 
@@ -22,15 +22,11 @@
         /// <param name="action">Действие.</param>
         internal static void BeginInvoke(Action action)
         {
-            // TODO: При вызовах метода в самом начале работы приложения 
-            // UWP иногда выкидывает исключение "Метод вызван в неподходящее время" 
-            // (видимо, основное представление - MainView - еще не успевает 
-            // до конца инициализирроваться). Пока ошибка не устранена.
-            // 
+            // TODO: Не запускать View-модели в конструкторе App();
             // Временное решение:
             if (Dispatcher.isFirstInvoke)
             {
-                Task.Delay(BeehiveVM.IntervalMs).GetAwaiter().Await();
+                Task.Delay(500).GetAwaiter().GetResult();
                 Dispatcher.isFirstInvoke = false;
             }
 

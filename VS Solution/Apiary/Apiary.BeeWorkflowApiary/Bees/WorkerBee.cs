@@ -1,9 +1,10 @@
-namespace Apiary.BeehiveWorkflowApiary.Bees
+namespace Apiary.BeeWorkflowApiary.Bees
 {
     using System;
-
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
+    using Apiary.BeeWorkflowApiary.Interfaces;
+    using Apiary.Interfaces.Balancing;
     using Apiary.Utilities;
 
     /// <summary>
@@ -27,22 +28,16 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
         private readonly BeeWorkingState initialState;
 
         /// <summary>
-        /// Работа пчелы остановлена.
-        /// </summary>
-        private bool isWorking = false;
-
-        /// <summary>
         /// Получить тип пчелы.
         /// </summary>
         /// <returns>Тип пчелы.</returns>
-        public BeeType Type => BeeType.Worker;
+        public override BeeType Type => BeeType.Worker;
 
         /// <summary>
         /// Создать рабочую пчелу.
         /// </summary>
         /// <param name="initialState">Изначальное состояние рабочей пчелы.</param>
         public WorkerBee(BeeWorkingState initialState)
-            : base()
         {
             this.balance = ServiceLocator.Instance.GetService<IWorkerBeeBalance>();
             this.guardBalance = ServiceLocator.Instance.GetService<IGuardBeeBalance>();
@@ -52,7 +47,7 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
         /// <summary>
         /// Получить действие, с которого необходимо начать работу.
         /// </summary>
-        private override GetStartAction()
+        protected override Action GetStartAction()
         {
             switch (this.initialState)
             {
@@ -62,8 +57,8 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
                     return this.GoToRest;
                 default:
                     throw new ArgumentOutOfRangeException(
-                        "Задано неверное изначальное состояние рабочей пчелы",
-                        nameof(this.initialState))
+                        nameof(this.initialState),
+                        "Задано неверное изначальное состояние рабочей пчелы");
             }
         }
 
@@ -75,14 +70,14 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
             this.PerformOperation(
                 () =>
                 {
-                    this.ActionPerformed.Invoke(
+                    this.ActionPerformedInternal(
                         this,
                         new BeeActionEventArgs
                         {
                             SenderBee = this,
                             ActionType = BeeActionType.LeftBeehiveToHarvestHoney
                         });
-                }),
+                },
                 this.balance.TimeToHarvestHoney,
                 this.EnteringGuardPost);
         }
@@ -95,7 +90,7 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
             this.PerformOperation(
                 () => 
                 {
-                    this.ActionPerformed.Invoke(
+                    this.ActionPerformedInternal(
                         this,
                         new BeeActionEventArgs
                         {
@@ -120,7 +115,7 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
                         RequestType = BeeRequestType.RequestToEnterBeehive
                     };
 
-                    this.RequestForBeehiveData(this, request)
+                    this.RequestForBeehiveDataInternal(this, request);
 
                     return request;
                 },
@@ -137,9 +132,12 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
         private Action SelectActionAfterEnterRequest(
             BeeRequestEventArgs request)
         {
-            return request.Succeed 
-                ? this.GoToRest
-                : this.RequestToEnterBeehive;
+            if (request.Succeed)
+            {
+                return this.GoToRest;
+            }
+
+            return this.RequestToEnterBeehive;
         }
 
         /// <summary>
@@ -158,26 +156,13 @@ namespace Apiary.BeehiveWorkflowApiary.Bees
         /// </summary>
         private void DeliverHoney()
         {
-            this.ActionPerformed.Invoke(
+            this.ActionPerformedInternal(
                 this,
                 new BeeActionEventArgs
                 {
                     SenderBee = this,
                     ActionType = BeeActionType.EnterBeehiveWithHoney
                 });
-        }
-
-        /// <summary>
-        /// Проверить связь пчелы с ульем.
-        /// </summary>
-        private void CheckLinkWithBeehive()
-        {
-            if (this.ActionPerformed == null
-                || this.RequestForBeehiveData == null)
-            {
-                throw new InvalidOperationException(
-                    "Невозможно начать работу, т.к. связь с ульем не установлена.");
-            }
         }
     }
 }

@@ -1,7 +1,9 @@
-namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
+namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
 {
+    using System;
+
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-    
+
     /// <summary>
     /// Класс тестирования объектно-ориентированного улья.
     /// </summary>
@@ -14,7 +16,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         [TestMethod]
         public void BeeWorkflowBeehive_CorrectHoneyHarvesting()
         {
-            throw new NotImplementingException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         [TestMethod]
         public void BeeWorkflowBeehive_CorrectBeeProducing()
         {
-            throw new NotImplementingException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         [TestMethod]
         public void BeeWorkflowBeehive_CorrectGuardsLimitation()
         {
-            throw new NotImplementingException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         [TestMethod]
         public void BeeWorkflowBeehive_OneGuardToOneBee()
         {
-            throw new NotImplementingException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         [TestMethod]
         public void BeeWorkflowBeehive_BeesCountStable()
         {
-            throw new NotImplementingException();
+            throw new NotImplementedException();
         }
     }
 }

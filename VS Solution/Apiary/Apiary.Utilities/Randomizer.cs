@@ -1,5 +1,7 @@
 namespace Apiary.Utilities
 {
+    using System;
+
     /// <summary>
     /// Механизм получения случайных чисел.
     /// </summary>
@@ -30,7 +32,7 @@ namespace Apiary.Utilities
         {
             lock (lockObject)
             {
-                return this.random.GetNext(min, max);
+                return this.random.Next(min, max);
             }
         }
     }

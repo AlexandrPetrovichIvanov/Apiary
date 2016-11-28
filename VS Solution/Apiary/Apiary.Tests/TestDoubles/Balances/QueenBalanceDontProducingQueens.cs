@@ -1,5 +1,8 @@
-namespace Apiary.Implementation.Common.DefaultBalance
+namespace Apiary.Tests.TestDoubles.Balances
 {
+    using System;
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Баланс работы пчёл-маток, в которм матки не производят маток.
     /// </summary>
@@ -24,20 +27,20 @@ namespace Apiary.Implementation.Common.DefaultBalance
         /// Время производства одной пчелы.
         /// </summary>
         /// <returns>Время производства одной пчелы.</returns>
-        public TimeSpan TimeToProduceBee => baseBalance.TimeToProduceBee;
+        public TimeSpan TimeToProduceBee => this.baseBalance.TimeToProduceBee;
 
         /// <summary>
         /// Тысячная доля вероятности произвести рабочую пчелу.
         /// </summary>
         /// <returns>Вероятность произвести рабочую пчелу.</returns>
-        public int ThousandthPartToProduceWorker => baseBalance.ThousandthPartToProduceWorker
-            + baseBalance.ThousandthPartToProduceQueen;
+        public int ThousandthPartToProduceWorker => this.baseBalance.ThousandthPartToProduceWorker
+            + this.baseBalance.ThousandthPartToProduceQueen;
 
         /// <summary>
         /// Тысячная доля вероятности произвести охранника.
         /// </summary>
         /// <returns>Вероятность произвести охранника.</returns>
-        public int ThousandthPartToProduceGuard => baseBalance.ThousandthPartToProduceGuard;
+        public int ThousandthPartToProduceGuard => this.baseBalance.ThousandthPartToProduceGuard;
 
         /// <summary>
         /// Тысячная доля вероятности произвести пчелу-матку.

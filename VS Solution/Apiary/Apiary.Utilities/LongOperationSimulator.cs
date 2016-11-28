@@ -18,12 +18,6 @@ namespace Apiary.Utilities
     public class LongOperationSimulator : ILongOperationSimulator
     {
         /// <summary>
-        /// Минимальная продолжительность имитируемой операции.
-        /// </summary>
-        private static readonly TimeSpan minimalDuration
-            = TimeSpan.FromMilliseconds(100);
-
-        /// <summary>
         /// Объект для синхронизации при создании новых таймеров.
         /// </summary>
         private readonly object lockObject = new object();
@@ -145,7 +139,6 @@ namespace Apiary.Utilities
             {
                 this.HasError = true;
             }
-            
         }
     }
 }

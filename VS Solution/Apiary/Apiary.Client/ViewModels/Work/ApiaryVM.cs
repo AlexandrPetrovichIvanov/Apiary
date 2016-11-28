@@ -1,6 +1,7 @@
 ﻿namespace Apiary.Client.ViewModels.Work
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
@@ -8,6 +9,7 @@
 
     using Apiary.Client.XmlStates;
     using Apiary.Client.Commands;
+    using Apiary.Client.Mvvm;
     using Apiary.Interfaces;
     using Apiary.Utilities;
 
@@ -78,6 +80,21 @@
         /// Команда сбора мёда.
         /// </summary>
         public SimpleCommand HarvestHoneyCommand { get; private set; }
+
+        /// <summary>
+        /// Команда запуска работы пасеки.
+        /// </summary>
+        ICommand IApiaryVM.StartCommand => this.StartCommand;
+
+        /// <summary>
+        /// Команда остановки работы пасеки.
+        /// </summary>
+        ICommand IApiaryVM.StopCommand => this.StopCommand;
+
+        /// <summary>
+        /// Команда сбора мёда.
+        /// </summary>
+        ICommand IApiaryVM.HarvestHoneyCommand => this.HarvestHoneyCommand;
 
         /// <summary>
         /// Установить команды view-модели пасеки.
@@ -183,12 +200,14 @@
             {
                 case RefreshApiaryVmOptions.ShowActualApiary:
                     result = this.apiary;
+                    break;
                 case RefreshApiaryVmOptions.ShowTempSavedState:
                     result = ApiaryXmlState.LoadState();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(
-                        "Передано непредусмотренное значение опций обновления view-модели пасеки",
-                        nameof(options))
+                        nameof(options),
+                        "Передано непредусмотренное значение опций обновления view-модели пасеки");
             }
 
             return result;
@@ -221,7 +240,7 @@
         /// Заполнить коллекцию view-моделей ульев.
         /// </summary>
         /// <param name="states">Состояния ульев.</param>
-        privte void FillBeehives(IEnumerable<IBeehiveState> states)
+        private void FillBeehives(IEnumerable<IBeehiveState> states)
         {
             foreach (IBeehiveState beehiveState in states)
             {
@@ -243,7 +262,7 @@
             object sender, 
             PropertyChangedEventArgs args)
         {
-            IBeehiveVM beehive = (IBeehiveVM) sender;
+            IBeehiveVM beehive;
 
             if (args.PropertyName == nameof(beehive.BeesTotalCount))
             {
@@ -256,7 +275,7 @@
         /// </summary>
         private void RaiseMainPropertiesChanged()
         {
-            this.RaisePropertyChanged(nameof(this.HoneyCount))
+            this.RaisePropertyChanged(nameof(this.HoneyCount));
             this.RaisePropertyChanged(nameof(this.BeehivesCount));
             this.RaisePropertyChanged(nameof(this.BeesCount));
         }

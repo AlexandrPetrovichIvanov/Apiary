@@ -36,7 +36,7 @@ namespace Apiary.Utilities
             {
                 if (ServiceLocator.instance == null)
                 {
-                    lock (lockObject)
+                    lock (ServiceLocator.lockObject)
                     {
                         if (ServiceLocator.instance == null)
                         {

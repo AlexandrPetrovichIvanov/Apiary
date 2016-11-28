@@ -1,5 +1,9 @@
 namespace Apiary.BeeWorkflowApiary
 {
+    using System.Collections.Concurrent;
+
+    using Apiary.BeeWorkflowApiary.Interfaces;
+
     /// <summary>
     /// Список пчёл, допущенных к проходу в улей.
     /// </summary>
@@ -28,8 +32,8 @@ namespace Apiary.BeeWorkflowApiary
         internal bool IsBeeAcceptedToEnter(IBee bee)
         {
             bool result;
-            bool success = this.TryGetValue(bee, out result);
-            return success ? result : false;
+            bool success = this.acceptedList.TryGetValue(bee, out result);
+            return success && result;
         }
 
         /// <summary>

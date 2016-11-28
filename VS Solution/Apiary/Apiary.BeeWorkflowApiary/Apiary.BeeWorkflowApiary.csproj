@@ -112,10 +112,20 @@
     <Compile Include="BeeActions\BeeActionType.cs" />
     <Compile Include="BeehiveStateThreadSafe.cs" />
     <Compile Include="BeeRequests\BeeRequestEventArgs.cs" />
-    <Compile Include="BeeRequests\BeeRequestState.cs" />
+    <Compile Include="BeeRequests\BeeRequestType.cs" />
+    <Compile Include="Bees\BeeBase.cs" />
+    <Compile Include="Bees\GuardBee.cs" />
+    <Compile Include="Bees\QueenBee.cs" />
+    <Compile Include="Bees\WorkerBee.cs" />
+    <Compile Include="BeeWorkflowApiary.cs" />
+    <Compile Include="BeeWorkflowBeehive.cs" />
+    <Compile Include="DefaultBeeFactory.cs" />
+    <Compile Include="GuardPostAcceptedList.cs" />
+    <Compile Include="GuardPostQueue.cs" />
     <Compile Include="Interfaces\BeeType.cs" />
     <Compile Include="Interfaces\BeeWorkingState.cs" />
     <Compile Include="Interfaces\IBee.cs" />
+    <Compile Include="Interfaces\IBeeFactory.cs" />
     <Compile Include="Interfaces\IBeehive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Apiary.Implementation.rd.xml" />
@@ -124,6 +134,10 @@
     <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
       <Project>{FAC556D9-5B59-4164-B058-B8F08B2088DA}</Project>
       <Name>Apiary.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apiary.Utilities\Apiary.Utilities.csproj">
+      <Project>{94c51a05-19c8-4b69-8db7-aa1047230ab4}</Project>
+      <Name>Apiary.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

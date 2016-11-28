@@ -1,5 +1,12 @@
 namespace Apiary.BeeWorkflowApiary.Bees
 {
+    using System;
+    using Apiary.BeeWorkflowApiary.BeeActions;
+    using Apiary.BeeWorkflowApiary.BeeRequests;
+    using Apiary.BeeWorkflowApiary.Interfaces;
+    using Apiary.Interfaces.Balancing;
+    using Apiary.Utilities;
+
     /// <summary>
     /// Пчела-охранник.
     /// </summary>
@@ -19,13 +26,12 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// Получить тип пчелы.
         /// </summary>
         /// <returns>Тип пчелы.</returns>
-        public BeeType Type => BeeType.Guard;
+        public override BeeType Type => BeeType.Guard;
 
         /// <summary>
         /// Создать пчелу-охранника.
         /// </summary>
         public GuardBee()
-            : base()
         {
             this.balance = ServiceLocator.Instance.GetService<IGuardBeeBalance>();
         }
@@ -34,13 +40,13 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// Метод получения действия, с которого нужно начинать работу.
         /// </summary>
         /// <returns>Действие, с которого нужно начинать работу.</returns>
-        private override Action GetStartAction()
+        protected override Action GetStartAction()
         {
             return () =>
             {
                 this.RequestGuardPostQueue();
                 this.CheckOneBee();
-            }
+            };
         }
 
         /// <summary>
@@ -53,7 +59,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 RequestType = BeeRequestType.RequestGuardPostQueue
             };
 
-            this.RequestForBeehiveData(this, request)
+            this.RequestForBeehiveDataInternal(this, request);
 
             if (!request.Succeed
                 || request.TypedResponse == null)
@@ -81,7 +87,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                         return;
                     }
 
-                    this.ActionPerformed.Invoke(
+                    this.ActionPerformedInternal(
                         this,
                         new BeeActionEventArgs
                         {
@@ -89,7 +95,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                             RelatedBee = nextBee,
                             ActionType = BeeActionType.AcceptBeeToEnter
                         });
-                }),
+                },
                 this.balance.TimeToCheckOneBee,
                 this.CheckOneBee);
         }

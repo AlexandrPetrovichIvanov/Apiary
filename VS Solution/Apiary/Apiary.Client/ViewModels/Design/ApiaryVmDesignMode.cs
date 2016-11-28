@@ -1,13 +1,12 @@
-﻿using System.Linq;
-
-namespace Apiary.Client.ViewModels.Design
+﻿namespace Apiary.Client.ViewModels.Design
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
+    using System.Linq;
     using System.Windows.Input;
 
     using Apiary.Client.Commands;
+    using Apiary.Client.Mvvm;
     using Apiary.Client.XmlStates;
 
     /// <summary>
@@ -16,19 +15,9 @@ namespace Apiary.Client.ViewModels.Design
     public class ApiaryVmDesignMode : ViewModelBase, IApiaryVM
     {
         /// <summary>
-        /// Общее количество собранного мёда.
-        /// </summary>
-        private long honeyCount;
-
-        /// <summary>
         /// Состояние пасеки.
         /// </summary>
         private readonly ApiaryXmlState state;
-
-        /// <summary>
-        /// Событие изменения значения свойства.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Создать тестовую модель представления пасеки.
@@ -63,15 +52,7 @@ namespace Apiary.Client.ViewModels.Design
         /// <summary>
         /// Общее количество собранного мёда.
         /// </summary>
-        public long HoneyCount
-        {
-            get { return this.honeyCount; }
-            private set
-            {
-                this.honeyCount = value;
-                throw new NotImplementedException();
-            }
-        }
+        public long HoneyCount => this.state.HoneyCount;
 
         /// <summary>
         /// Количество ульев.
@@ -113,7 +94,6 @@ namespace Apiary.Client.ViewModels.Design
         private bool CanStart()
         {
             return false;
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -134,7 +114,6 @@ namespace Apiary.Client.ViewModels.Design
         private bool CanStop()
         {
             return true;
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -152,7 +131,6 @@ namespace Apiary.Client.ViewModels.Design
         private bool CanHarvestHoney()
         {
             return false;
-            throw new NotImplementedException();
         }
     }
 }

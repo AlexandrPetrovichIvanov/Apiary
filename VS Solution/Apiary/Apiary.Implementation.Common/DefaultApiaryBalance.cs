@@ -1,5 +1,7 @@
-namespace Apiary.Implementation.Common.DefaultBalance
+namespace Apiary.Implementation.Common
 {
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Стандартный баланс "пасеки".
     /// </summary>
@@ -24,6 +26,6 @@ namespace Apiary.Implementation.Common.DefaultBalance
         /// </summary>
         /// <returns>Баланс пчёл-маток.</returns>
         public IQueenBeeBalance QueenBalance { get; }
-            = new DefaultQueenBeeBalance();
+            = new DefaultQueenBalance();
     }
 }

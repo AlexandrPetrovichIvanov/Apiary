@@ -1,5 +1,9 @@
 namespace Apiary.BeeWorkflowApiary
 {
+    using System.Collections.Concurrent;
+
+    using Apiary.BeeWorkflowApiary.Interfaces;
+
     /// <summary>
     /// Очередь поста охраны улья (потокобезопасная).
     /// </summary>
@@ -26,7 +30,7 @@ namespace Apiary.BeeWorkflowApiary
         /// Поставить пчелу в очередь на пост охраны.
         /// </summary>
         /// <param name="bee">Пчела, прилетевшая на пост охраны.</param>
-        internal Enqueue(IBee bee)
+        internal void Enqueue(IBee bee)
         {
             this.concurrentQueue.Enqueue(bee);
         }

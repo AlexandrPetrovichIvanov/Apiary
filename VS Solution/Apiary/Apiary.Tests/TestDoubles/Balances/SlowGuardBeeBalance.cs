@@ -1,5 +1,9 @@
-namespace Apiary.Implementation.Common.DefaultBalance
+namespace Apiary.Tests.TestDoubles.Balances
 {
+    using System;
+
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Баланс работы пчёл-охранников, работающих очень медленно.
     /// </summary>

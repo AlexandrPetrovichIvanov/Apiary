@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{342BB806-A460-4267-A8B3-6E3BCBD4B86A}</ProjectGuid>
+    <ProjectGuid>{47BAFAC5-E791-4B00-93E2-CBA69DF012B3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Apiary.BeehiveWorkflowApiary</RootNamespace>
-    <AssemblyName>Apiary.BeehiveWorkflowApiary</AssemblyName>
+    <RootNamespace>Apiary.Implementation.Common</RootNamespace>
+    <AssemblyName>Apiary.Implementation.Common</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -107,8 +107,18 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultApiaryBalance.cs" />
+    <Compile Include="DefaultGuardBeeBalance.cs" />
+    <Compile Include="DefaultQueenBalance.cs" />
+    <Compile Include="DefaultWorkerBeeBalance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Apiary.BeehiveWorkflowApiary.rd.xml" />
+    <EmbeddedResource Include="Properties\Apiary.Implementation.Common.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
+      <Project>{fac556d9-5b59-4164-b058-b8f08b2088da}</Project>
+      <Name>Apiary.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

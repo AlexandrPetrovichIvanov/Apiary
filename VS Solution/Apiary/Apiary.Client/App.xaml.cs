@@ -3,10 +3,17 @@
     using System;
     using Windows.ApplicationModel;
     using Windows.ApplicationModel.Activation;
-    using Windows.UI.Core;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Navigation;
+
+    using Apiary.Client.ViewModels;
+    using Apiary.Client.ViewModels.Work;
+    using Apiary.Interfaces;
+    using Apiary.Interfaces.Balancing;
+    using Apiary.MathematicalApiary;
+    using Apiary.Utilities;
+    using Apiary.Implementation.Common;
 
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -22,7 +29,7 @@
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            this.RegisterServices();
+            App.RegisterServices();
         }
 
         /// <summary>
@@ -30,7 +37,7 @@
         /// </summary>
         public static void RegisterServices()
         {
-            ServiceLocator.Instance.RegisterService<ApiaryBalance>(new DefaultApiaryBalance());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
             ServiceLocator.Instance.RegisterService<IApiary>(new MathApiary());
             ServiceLocator.Instance.RegisterService<IApiaryVM>(new ApiaryVM());
         }

@@ -3,7 +3,7 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     /// <summary>
     /// Тип запроса пчелы к улью.
     /// </summary>
-    internal enum BeeRequestType
+    public enum BeeRequestType
     {
         /// <summary>
         /// Не установлено.

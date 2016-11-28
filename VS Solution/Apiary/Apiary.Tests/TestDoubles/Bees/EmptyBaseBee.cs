@@ -1,5 +1,12 @@
 namespace Apiary.Tests.TestDoubles.Bees
 {
+    using System;
+
+    using Apiary.BeeWorkflowApiary.BeeActions;
+    using Apiary.BeeWorkflowApiary.BeeRequests;
+    using Apiary.BeeWorkflowApiary.Bees;
+    using Apiary.BeeWorkflowApiary.Interfaces;
+
     /// <summary>
     /// Пчела, просто посылающая сообщения и запросы,
     /// но не выполняющая реальной работы.
@@ -10,15 +17,15 @@ namespace Apiary.Tests.TestDoubles.Bees
         /// Получить тип пчелы.
         /// </summary>
         /// <returns>Тип пчелы.</returns>
-        public BeeType Type => BeeType.NotSet;
+        public override BeeType Type => BeeType.NotSet;
 
         /// <summary>
         /// Метод получения действия, с которого нужно начинать работу.
         /// </summary>
         /// <returns>Действие, с которого нужно начинать работу.</returns>
-        private override Action GetStartAction()
+        protected override Action GetStartAction()
         {
-            return this.SendMessageAndRequest();
+            return this.SendMessageAndRequest;
         }
 
         /// <summary>
@@ -29,7 +36,7 @@ namespace Apiary.Tests.TestDoubles.Bees
             this.PerformOperation(
                 () =>
                 {
-                    this.ActionPerformed.Invoke(
+                    this.ActionPerformedInternal(
                         this,
                         new BeeActionEventArgs
                         {
@@ -43,10 +50,10 @@ namespace Apiary.Tests.TestDoubles.Bees
                         RequestType = BeeRequestType.NotSet
                     };
 
-                    this.RequestForBeehiveData(this, request);
-                }),
+                    this.RequestForBeehiveDataInternal(this, request);
+                },
                 TimeSpan.FromMilliseconds(30),
-                this.EmptyWork);
+                () => {});
         }
     }
 }

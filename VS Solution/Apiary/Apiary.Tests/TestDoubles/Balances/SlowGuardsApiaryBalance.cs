@@ -1,5 +1,7 @@
 namespace Apiary.Tests.TestDoubles.Balances
 {
+    using Apiary.Interfaces.Balancing;
+
     /// <summary>
     /// Баланс пасеки с медленными охранниками.
     /// </summary>
@@ -37,7 +39,7 @@ namespace Apiary.Tests.TestDoubles.Balances
         /// Баланс пчёл-маток.
         /// </summary>
         /// <returns>Баланс пчёл-маток.</returns>
-        public IQueenBeeBalance QueenBalance { get; }
-            = this.baseBalance.QueenBalance;
+        public IQueenBeeBalance QueenBalance 
+            => this.baseBalance.QueenBalance;
     }
 }
