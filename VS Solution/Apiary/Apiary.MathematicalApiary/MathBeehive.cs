@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Apiary.Implementation.Common;
     using Apiary.Interfaces;
     using Apiary.Interfaces.Balancing;
     using Apiary.Utilities;
@@ -81,6 +82,8 @@
         public MathBeehive(
             IBeehiveState state)
         {
+            state.Validate();
+
             IApiaryBalance balance = ServiceLocator.Instance.GetService<IApiaryBalance>();
 
             this.InitializeBeehiveStateProperties(state);

@@ -1,6 +1,7 @@
 namespace Apiary.Tests.FunctionalTests.MathematicalApiary
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
     using Apiary.Client.XmlStates;
@@ -10,6 +11,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
     using Apiary.Utilities;
     using Apiary.Implementation.Common;
     using Apiary.MathematicalApiary;
+    using Apiary.Tests.Common;
 
     /// <summary>
     /// Класс тестирования математической реализации ульев.
@@ -196,12 +198,14 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
             {
                 try
                 {
-                    MathBeehive beehive = new MathBeehive(wrongState);
+                    // создается просто для проверки.
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new MathBeehive(wrongState);
 
-                    throw new AssertionException(
+                    throw new AssertFailedException(
                         "Улей с некорректным состоянием не должен был создаться.");
                 }
-                catch (ArgumentException)
+                catch (ValidationException)
                 {
                     // Так и должно быть
                 }              

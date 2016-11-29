@@ -84,7 +84,7 @@
         /// </summary>
         private void Start()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -101,10 +101,10 @@
         /// </summary>
         private void Stop()
         {
+            throw new NotSupportedException();
             // сохранять надо не this.state, а реальное состояние пасеки
-            this.state.BeehiveStates.First().BeehiveNumber++;
-            this.state.SaveInCache();
-            //throw new NotImplementedException();
+            //this.state.BeehiveStates.First().BeehiveNumber++;
+            //this.state.SaveInCache();
         }
 
         /// <summary>
@@ -121,7 +121,7 @@
         /// </summary>
         private void HarvestHoney()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>

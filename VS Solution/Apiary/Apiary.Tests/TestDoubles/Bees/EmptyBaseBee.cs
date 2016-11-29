@@ -14,6 +14,11 @@ namespace Apiary.Tests.TestDoubles.Bees
     public class EmptyBaseBee : BeeBase
     {
         /// <summary>
+        /// Интервал между пустыми операциями.
+        /// </summary>
+        internal const int IntervalMs = 300;
+
+        /// <summary>
         /// Получить тип пчелы.
         /// </summary>
         /// <returns>Тип пчелы.</returns>
@@ -29,7 +34,7 @@ namespace Apiary.Tests.TestDoubles.Bees
         }
 
         /// <summary>
-        /// Послать сообщение и запрос.
+        /// Бесконечно посылать сообщения и запросы.
         /// </summary>
         private void SendMessageAndRequest()
         {
@@ -52,8 +57,8 @@ namespace Apiary.Tests.TestDoubles.Bees
 
                     this.RequestForBeehiveDataInternal(this, request);
                 },
-                TimeSpan.FromMilliseconds(30),
-                () => {});
+                TimeSpan.FromMilliseconds(EmptyBaseBee.IntervalMs),
+                this.SendMessageAndRequest);
         }
     }
 }

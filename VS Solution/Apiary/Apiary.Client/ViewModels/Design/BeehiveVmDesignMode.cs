@@ -53,7 +53,7 @@
 
         public void StopRaisingEvents()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>

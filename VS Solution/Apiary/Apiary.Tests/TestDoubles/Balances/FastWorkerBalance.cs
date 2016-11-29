@@ -16,9 +16,9 @@ namespace Apiary.Tests.TestDoubles.Balances
             IWorkerBeeBalance baseBalance)
         {
             this.TimeToHarvestHoney = TimeSpan.FromMilliseconds(
-                baseBalance.TimeToHarvestHoney.TotalMilliseconds/20);
+                baseBalance.TimeToHarvestHoney.TotalMilliseconds/5);
             this.TimeToRestInBeehive = TimeSpan.FromMilliseconds(
-                baseBalance.TimeToRestInBeehive.TotalMilliseconds/20);
+                baseBalance.TimeToRestInBeehive.TotalMilliseconds/5);
         }
         
         /// <summary>

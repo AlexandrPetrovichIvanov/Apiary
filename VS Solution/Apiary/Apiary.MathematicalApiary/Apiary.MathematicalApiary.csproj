@@ -113,6 +113,10 @@
     <EmbeddedResource Include="Properties\Apiary.MathematicalApiary.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Apiary.Implementation.Common\Apiary.Implementation.Common.csproj">
+      <Project>{47bafac5-e791-4b00-93e2-cba69df012b3}</Project>
+      <Name>Apiary.Implementation.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Apiary.Interfaces\Apiary.Interfaces.csproj">
       <Project>{fac556d9-5b59-4164-b058-b8f08b2088da}</Project>
       <Name>Apiary.Interfaces</Name>

@@ -7,6 +7,7 @@ namespace Apiary.BeeWorkflowApiary
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Interfaces;
+    using Apiary.Implementation.Common;
     using Apiary.Interfaces;
     using Apiary.Utilities;
 
@@ -66,6 +67,8 @@ namespace Apiary.BeeWorkflowApiary
         /// <param name="state">Исходное состояние улья.</param>
         public void Start(IBeehiveState state)
         {
+            state.Validate();
+
             if (this.isWorking)
             {
                 throw new InvalidOperationException(
@@ -287,9 +290,8 @@ namespace Apiary.BeeWorkflowApiary
             switch (args.RequestType)
             {
                 case BeeRequestType.RequestToEnterBeehive:
-
                     args.Succeed = this.acceptedList.IsBeeAcceptedToEnter((IBee)sender);
-                    args.Response = true;
+                    args.Response = args.Succeed;
                     break;
                 case BeeRequestType.RequestGuardPostQueue:
                     args.Succeed = ((IBee)sender).Type == BeeType.Guard

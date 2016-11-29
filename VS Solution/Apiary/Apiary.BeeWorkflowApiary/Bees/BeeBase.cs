@@ -135,7 +135,12 @@ namespace Apiary.BeeWorkflowApiary.Bees
         public void StopWork()
         {            
             this.isWorking = false;
-            this.currentAction.GetAwaiter().GetResult();
+
+            if (this.currentAction != null)
+            {
+                var awaiter = this.currentAction.GetAwaiter();
+                awaiter.GetResult();
+            }
         }
 
         /// <summary>
@@ -155,42 +160,13 @@ namespace Apiary.BeeWorkflowApiary.Bees
             TimeSpan timeBeforeNextAction,
             Action nextAction)
         {
-            this.DoAsCurrentAction(() =>
+            if (nextAction == null)
             {
-                action();
-                this.longOperationSimulator.SimulateAsync(timeBeforeNextAction, nextAction);
-            });
-        }
+                throw new ArgumentException(
+                    nameof(nextAction),
+                    "Если последующее действие не подразумевается, необходимо передать пустое действие, а не null.");
+            }
 
-        /// <summary>
-        /// Выполнить действие, подождать, и выполнить следующее.
-        /// </summary>
-        /// <typeparam name="T">Параметр для вычисления следующего действия.</typeparam>
-        /// <param name="action">Действие для выполнения (результат - параметр 
-        /// для выбора следующего действия).</param>
-        /// <param name="timeBeforeNextAction">Задержка перед следующим действием.</param>
-        /// <param name="selectNextAction">Функция выбора следующего действия.</param>
-        protected void PerformOperation<T>(
-            Func<T> action,
-            TimeSpan timeBeforeNextAction,
-            Func<T, Action> selectNextAction)
-        {
-            this.DoAsCurrentAction(() =>
-            {
-                T actionResult = action();
-                this.longOperationSimulator.SimulateAsync(
-                    timeBeforeNextAction, 
-                    selectNextAction(actionResult));
-            });
-        }
-
-        /// <summary>
-        /// Выполнить как текущее действие (при остановке работы текущее 
-        /// действие будет выполнено до конца).
-        /// </summary>
-        /// <param name="action">Действие.</param>
-        private void DoAsCurrentAction(Action action)
-        {
             this.currentAction = Task.Factory.StartNew(() =>
             {
                 if (!this.isWorking)
@@ -199,6 +175,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 }
 
                 action();
+                this.longOperationSimulator.SimulateAsync(timeBeforeNextAction, nextAction);
             });
         }
 

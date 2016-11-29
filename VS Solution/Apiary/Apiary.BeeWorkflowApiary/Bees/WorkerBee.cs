@@ -54,7 +54,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 case BeeWorkingState.OnTheWork:
                     return this.HarvestHoney;
                 case BeeWorkingState.OnTheRest:
-                    return this.GoToRest;
+                    return this.EnteringGuardPost;
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(this.initialState),
@@ -107,37 +107,24 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// </summary>
         private void RequestToEnterBeehive()
         {
-            this.PerformOperation(
-                () => 
-                {
-                    BeeRequestEventArgs request = new BeeRequestEventArgs
-                    {
-                        RequestType = BeeRequestType.RequestToEnterBeehive
-                    };
+            BeeRequestEventArgs request = new BeeRequestEventArgs
+            {
+                RequestType = BeeRequestType.RequestToEnterBeehive
+            };
 
-                    this.RequestForBeehiveDataInternal(this, request);
+            this.RequestForBeehiveDataInternal(this, request);
 
-                    return request;
-                },
-                this.guardBalance.TimeToCheckOneBee,
-                this.SelectActionAfterEnterRequest);
-        }
-
-        /// <summary>
-        /// Решить, что делать дальше, в зависимости от 
-        /// результата запроса на вход в улей.
-        /// </summary>
-        /// <param name="request">Рассмотренный запрос на вход в улей.</param>
-        /// <returns>Действие, которое необходимо делать дальше.</returns>
-        private Action SelectActionAfterEnterRequest(
-            BeeRequestEventArgs request)
-        {
             if (request.Succeed)
             {
-                return this.GoToRest;
+                this.GoToRest();
             }
-
-            return this.RequestToEnterBeehive;
+            else
+            {
+                this.PerformOperation(
+                    null,
+                    this.guardBalance.TimeToCheckOneBee,
+                    this.RequestToEnterBeehive);
+            }
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 namespace Apiary.BeeWorkflowApiary
 {
-    using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     using Apiary.BeeWorkflowApiary.Interfaces;
 
@@ -10,10 +10,14 @@ namespace Apiary.BeeWorkflowApiary
     internal class GuardPostAcceptedList
     {
         /// <summary>
-        /// Потокобезопасная коллекция пчёл.
+        /// Объект синхронизации.
         /// </summary>
-        private readonly ConcurrentDictionary<IBee, bool> acceptedList
-            = new ConcurrentDictionary<IBee, bool>();
+        private object lockObject = new object();
+
+        /// <summary>
+        /// Проверенные/непроверенные пчёлы.
+        /// </summary>
+        private readonly Dictionary<IBee, bool> list = new Dictionary<IBee, bool>(); 
 
         /// <summary>
         /// Зарегистрировать пчелу, как допущенную к проходу.
@@ -21,7 +25,10 @@ namespace Apiary.BeeWorkflowApiary
         /// <param name="bee">Пчела.</param>
         internal void AcceptBeeToEnter(IBee bee)
         {
-            this.acceptedList[bee] = true;
+            lock (lockObject)
+            {
+                list[bee] = true;
+            }
         }
 
         /// <summary>
@@ -31,9 +38,10 @@ namespace Apiary.BeeWorkflowApiary
         /// <returns>True - пчела допущена к проходу в улей.</returns>
         internal bool IsBeeAcceptedToEnter(IBee bee)
         {
-            bool result;
-            bool success = this.acceptedList.TryGetValue(bee, out result);
-            return success && result;
+            lock (lockObject)
+            {
+                return list[bee];
+            }
         }
 
         /// <summary>
@@ -43,7 +51,10 @@ namespace Apiary.BeeWorkflowApiary
         /// <param name="bee">Пчела.</param>
         internal void ResetBeeAcceptedState(IBee bee)
         {
-            this.acceptedList[bee] = false;
+            lock (lockObject)
+            {
+                list[bee] = false;
+            }
         }
     }
 }

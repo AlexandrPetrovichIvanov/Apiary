@@ -1,5 +1,10 @@
 namespace Apiary.Tests.Common
 {
+    using System.Collections.Generic;
+
+    using Apiary.Client.XmlStates;
+    using Apiary.Interfaces;
+
     /// <summary>
     /// Класс предоставления некорректных состояний улья.
     /// </summary>

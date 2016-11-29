@@ -95,6 +95,7 @@
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\WrongBeehiveStates.cs" />
     <Compile Include="FunctionalTests\BeeWorkflowApiary\BeeWorkflowBeehiveTests.cs" />
     <Compile Include="FunctionalTests\MathematicalApiary\MathBeehiveTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
