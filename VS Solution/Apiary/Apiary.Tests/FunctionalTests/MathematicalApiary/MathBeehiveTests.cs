@@ -191,7 +191,21 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         [TestMethod]
         public void MathBeehive_NotStartWithIncorrectState()
         {
-            throw new NotImplementedException();
+            foreach (IBeehiveState wrongState 
+                in WrongBeehiveStates.GetWrongStates())
+            {
+                try
+                {
+                    MathBeehive beehive = new MathBeehive(wrongState);
+
+                    throw new AssertionException(
+                        "Улей с некорректным состоянием не должен был создаться.");
+                }
+                catch (ArgumentException)
+                {
+                    // Так и должно быть
+                }              
+            }
         }
 
         /// <summary>
@@ -239,9 +253,9 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
         }
 
         /// <summary>
-        /// Ожидаемое количество проверок пчёл охранниками.
+        /// Ожидаемое количество проверок пчёл одним охранниками за час.
         /// </summary>
-        /// <returns>Максимальное количество работающих пчёл.</returns>
+        /// <returns>Количество проверок охранником за час.</returns>
         private int ExpectedChecksPerHourFromOneGuard
         {
             get
