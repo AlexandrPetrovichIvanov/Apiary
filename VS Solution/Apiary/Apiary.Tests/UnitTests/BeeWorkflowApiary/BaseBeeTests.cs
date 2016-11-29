@@ -16,14 +16,6 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
     [TestClass]
     public class BaseBeeTests
     {
-        /// <summary>
-        /// Общая настройка тестов.
-        /// </summary>
-        public BaseBeeTests()
-        {
-            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
-        }
-
         [TestMethod]
         public void BaseBee_NormalWork()
         {
@@ -44,7 +36,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
 
             bee.StopWork();
 
-            Assert.IsTrue(Math.Abs(20 - operationsCount) <= 1);
+            Assert.AreEqual(20, operationsCount);
         }
 
         /// <summary>

@@ -33,10 +33,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
             FastApiaryBalance balanceFast = new FastApiaryBalance(new DefaultApiaryBalance());
             this.queenBalance = balanceFast.QueenBalance;
 
-            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
-            ServiceLocator.Instance.RegisterService<IQueenBeeBalance>(this.queenBalance);
-            ServiceLocator.Instance.RegisterService<IWorkerBeeBalance>(balanceFast.WorkerBalance);
-            ServiceLocator.Instance.RegisterService<IGuardBeeBalance>(balanceFast.GuardBalance);
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(balanceFast);
             ServiceLocator.Instance.RegisterService<IRandomizer>(new Randomizer());
             ServiceLocator.Instance.RegisterService<IBeeFactory>(new DefaultBeeFactory());
         }

@@ -40,7 +40,7 @@ namespace Apiary.BeeWorkflowApiary
         {
             lock (lockObject)
             {
-                return list[bee];
+                return this.list.ContainsKey(bee) && this.list[bee];
             }
         }
 

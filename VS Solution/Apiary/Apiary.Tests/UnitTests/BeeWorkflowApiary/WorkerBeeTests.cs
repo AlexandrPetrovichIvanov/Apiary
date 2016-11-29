@@ -33,15 +33,11 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         public WorkerBeeTests()
         {
             this.apiaryBalance = new FastApiaryBalance(new DefaultApiaryBalance());
-
-            ServiceLocator.Instance.RegisterService<IWorkerBeeBalance>(this.apiaryBalance.WorkerBalance);
-            ServiceLocator.Instance.RegisterService<IGuardBeeBalance>(this.apiaryBalance.GuardBalance);
-            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
             ServiceLocator.Instance.RegisterService<IApiaryBalance>(this.apiaryBalance);
         }
 
         /// <summary>
-        /// Пчела нормально собирает одну порцию мёда.
+        /// Пчела собирает мёд за правильное время.
         /// </summary>
         [TestMethod]
         public void WorkerBee_GetSingleHoney()

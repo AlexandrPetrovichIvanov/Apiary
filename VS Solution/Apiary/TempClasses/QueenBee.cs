@@ -15,7 +15,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Баланс пчелы-матки.
         /// </summary>
-        private readonly IApiaryBalance balance;
+        private readonly IQueenBeeBalance balance;
 
         /// <summary>
         /// Генератор случайных чисел.
@@ -38,7 +38,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// </summary>
         public QueenBee()
         {
-            this.balance = ServiceLocator.Instance.GetService<IApiaryBalance>();
+            this.balance = ServiceLocator.Instance.GetService<IQueenBeeBalance>();
             this.randomizer = ServiceLocator.Instance.GetService<IRandomizer>();
             this.factory = ServiceLocator.Instance.GetService<IBeeFactory>();
         }
@@ -49,31 +49,41 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <returns>Действие, с которого нужно начинать работу.</returns>
         protected override Action GetStartAction()
         {
-            return this.ProduceBee;
+            return this.StartProducingBees;
         }
 
         /// <summary>
         /// Начать производство пчёл.
         /// </summary>
-        private async void ProduceBee()
+        private void StartProducingBees()
         {
-            await Task.Delay(this.balance.QueenBalance.TimeToProduceBee);
+            this.PerformOperation(
+                () => {},
+                this.balance.TimeToProduceBee,
+                this.ProduceBee);
+        }
 
-            if (!this.isWorking)
-            {
-                return;
-            }
+        /// <summary>
+        /// Произвести одну пчелу.
+        /// </summary>
+        private void ProduceBee()
+        {
+            this.PerformOperation(
+                () =>
+                {
+                    IBee newBee = this.CreateRandomBee();
 
-            IBee newBee = this.CreateRandomBee();
-
-            this.SafePerformAction(new BeeActionEventArgs
-            {
-                SenderBee = this,
-                RelatedBee = newBee,
-                ActionType = BeeActionType.ProduceBee
-            });
-
-            Task.Factory.StartNew(this.ProduceBee);
+                    this.ActionPerformedInternal(
+                        this,
+                        new BeeActionEventArgs
+                        {
+                            SenderBee = this,
+                            RelatedBee = newBee,
+                            ActionType = BeeActionType.ProduceBee
+                        });
+                },
+                this.balance.TimeToProduceBee,
+                this.ProduceBee);
         }
 
         /// <summary>

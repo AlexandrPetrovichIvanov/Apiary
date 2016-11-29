@@ -19,27 +19,9 @@ namespace Apiary.BeeWorkflowApiary.Bees
         private const string AlreadyHasBeehiveLinked = "Пчела уже связана с этим или другим ульем.";
 
         /// <summary>
-        /// Имитатор выполнения длительных операций.
-        /// </summary>
-        private readonly ILongOperationSimulator longOperationSimulator;
-
-        /// <summary>
         /// Признак того, что пчела работает в данный момент.
         /// </summary>
         private bool isWorking;
-
-        /// <summary>
-        /// Текущее выполняемое действие.
-        /// </summary>
-        private Task currentAction;
-
-        /// <summary>
-        /// Общая часть создания пчелы.
-        /// </summary>
-        protected BeeBase()
-        {
-            this.longOperationSimulator = ServiceLocator.Instance.GetService<ILongOperationSimulator>();
-        }
 
         /// <summary>
         /// Получить тип пчелы.
@@ -56,12 +38,12 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Делегат выполнения пчелой какого-либо действия.
         /// </summary>
-        protected EventHandler<BeeActionEventArgs> ActionPerformedInternal;
+        private EventHandler<BeeActionEventArgs> ActionPerformedInternal;
 
         /// <summary>
         /// Делегат запроса пчелы к улью.
         /// </summary>
-        protected EventHandler<BeeRequestEventArgs> RequestForBeehiveDataInternal;
+        private EventHandler<BeeRequestEventArgs> RequestForBeehiveDataInternal;
 
         /// <summary>
         /// Внешняя точка доступа к событию выполнения пчелой какого-либо действия.
@@ -135,12 +117,6 @@ namespace Apiary.BeeWorkflowApiary.Bees
         public void StopWork()
         {            
             this.isWorking = false;
-
-            if (this.currentAction != null)
-            {
-                var awaiter = this.currentAction.GetAwaiter();
-                awaiter.GetResult();
-            }
         }
 
         /// <summary>
@@ -150,33 +126,31 @@ namespace Apiary.BeeWorkflowApiary.Bees
         protected abstract Action GetStartAction();
 
         /// <summary>
-        /// Выполнить действие, подождать, и выполнить следующее.
+        /// Отправить в улей отчет о действии, если работа еще не остановлена.
         /// </summary>
-        /// <param name="action">Действие для выполнения.</param>
-        /// <param name="timeBeforeNextAction">Задержка перед последующим действием.</param>
-        /// <param name="nextAction">Последующее действие.</param>
-        protected void PerformOperation(
-            Action action,
-            TimeSpan timeBeforeNextAction,
-            Action nextAction)
+        /// <param name="args">Описание действия.</param>
+        protected void SafePerformAction(BeeActionEventArgs args)
         {
-            if (nextAction == null)
+            if (!this.isWorking)
             {
-                throw new ArgumentException(
-                    nameof(nextAction),
-                    "Если последующее действие не подразумевается, необходимо передать пустое действие, а не null.");
+                return;
             }
 
-            this.currentAction = Task.Factory.StartNew(() =>
-            {
-                if (!this.isWorking)
-                {
-                    return;
-                }
+            this.ActionPerformedInternal(this, args);
+        }
 
-                action();
-                this.longOperationSimulator.SimulateAsync(timeBeforeNextAction, nextAction);
-            });
+        /// <summary>
+        /// Отправить запрос улью, если работа еще не остановлена.
+        /// </summary>
+        /// <param name="args">Запрос.</param>
+        protected void SafeSendRequest(BeeRequestEventArgs args)
+        {
+            if (!this.isWorking)
+            {
+                return;
+            }
+
+            this.RequestForBeehiveDataInternal(this, args);
         }
 
         /// <summary>

@@ -38,17 +38,14 @@
         /// </summary>
         public static void RegisterServices()
         {
-            IApiaryBalance balance = new DefaultApiaryBalance();
-
-            ServiceLocator.Instance.RegisterService<IGuardBeeBalance>(balance.GuardBalance);
-            ServiceLocator.Instance.RegisterService<IQueenBeeBalance>(balance.QueenBalance);
-            ServiceLocator.Instance.RegisterService<IWorkerBeeBalance>(balance.WorkerBalance);
-            ServiceLocator.Instance.RegisterService<IApiaryBalance>(balance);
             ServiceLocator.Instance.RegisterService<IRandomizer>(new Randomizer());
-            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new DefaultApiaryBalance());
             ServiceLocator.Instance.RegisterService<IBeeFactory>(new DefaultBeeFactory());
             ServiceLocator.Instance.RegisterService<IApiary>(new BeeWorkflowApiary());
             ServiceLocator.Instance.RegisterService<IApiaryVM>(new ApiaryVM());
+
+            // для проверки математического варианта пасеки:
+            // ServiceLocator.Instance.RegisterService<IApiary>(new MathApiary());
         }
 
         /// <summary>

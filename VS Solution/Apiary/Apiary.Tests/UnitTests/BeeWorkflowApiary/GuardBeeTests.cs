@@ -2,9 +2,10 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Apiary.BeeWorkflowApiary.BeeRequests;
+    
     using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
+    using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Bees;
     using Apiary.Implementation.Common;
     using Apiary.Interfaces.Balancing;
@@ -22,9 +23,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         /// </summary>
         public GuardBeeTests()
         {
-            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
-            ServiceLocator.Instance.RegisterService<IGuardBeeBalance>(
-                new FastGuardBeeBalance(new DefaultGuardBeeBalance()));
+            ServiceLocator.Instance.RegisterService<IApiaryBalance>(new FastGuardBeeBalance(new DefaultGuardBeeBalance()));
         }
 
         /// <summary>

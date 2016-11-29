@@ -1,11 +1,11 @@
 namespace Apiary.BeeWorkflowApiary.Bees
 {
     using System;
-
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Interfaces;
     using Apiary.Interfaces.Balancing;
+    using Apiary.Utilities;
 
     /// <summary>
     /// Рабочая пчела.
@@ -13,9 +13,14 @@ namespace Apiary.BeeWorkflowApiary.Bees
     public class WorkerBee : BeeBase
     {
         /// <summary>
-        /// Баланс пасеки.
+        /// Баланс рабочей пчелы.
         /// </summary>
-        private readonly IApiaryBalance balance;
+        private readonly IWorkerBeeBalance balance;
+
+        /// <summary>
+        /// Баланс работы охранников.
+        /// </summary>
+        private readonly IGuardBeeBalance guardBalance;
 
         /// <summary>
         /// Изначальное состояние рабочей пчелы.
@@ -34,7 +39,8 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <param name="initialState">Изначальное состояние рабочей пчелы.</param>
         public WorkerBee(BeeWorkingState initialState)
         {
-            this.balance = ServiceLocator.Instance.GetService<IApiaryBalance>();
+            this.balance = ServiceLocator.Instance.GetService<IWorkerBeeBalance>();
+            this.guardBalance = ServiceLocator.Instance.GetService<IGuardBeeBalance>();
             this.initialState = initialState;
         }
 
@@ -46,7 +52,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
             switch (this.initialState)
             {
                 case BeeWorkingState.OnTheWork:
-                    return this.EnterGuardPost;
+                    return this.EnteringGuardPost;
                 case BeeWorkingState.OnTheRest:
                     return this.HarvestHoney;
                 default:
@@ -59,88 +65,77 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Собрать мёд.
         /// </summary>
-        private async void HarvestHoney()
+        private void HarvestHoney()
         {
-            if (!this.isWorking)
-            {
-                return;
-            }
-
-            this.SafePerformAction(new BeeActionEventArgs
-            {
-                SenderBee = this,
-                ActionType = BeeActionType.LeftBeehiveToHarvestHoney
-            });
-
-            await Task.Delay(this.balance.WorkerBalance.TimeToHarvestHoney);
-
-            this.EnterGuardPost();
+            this.PerformOperation(
+                () =>
+                {
+                    this.ActionPerformedInternal(
+                        this,
+                        new BeeActionEventArgs
+                        {
+                            SenderBee = this,
+                            ActionType = BeeActionType.LeftBeehiveToHarvestHoney
+                        });
+                },
+                this.balance.TimeToHarvestHoney,
+                this.EnteringGuardPost);
         }
 
         /// <summary>
         /// Зайти на пост охраны.
         /// </summary>
-        private async void EnterGuardPost()
+        private void EnteringGuardPost()
         {
-            if (!this.isWorking)
-            {
-                return;
-            }
-
-            this.SafePerformAction(new BeeActionEventArgs
-            {
-                SenderBee = this,
-                ActionType = BeeActionType.EnterGuardPost
-            });
-            
-            await Task.Delay(this.balance.GuardBalance.TimeToCheckOneBee);
-
-            this.RequestToEnterBeehive();
+            this.PerformOperation(
+                () => 
+                {
+                    this.ActionPerformedInternal(
+                        this,
+                        new BeeActionEventArgs
+                        {
+                            SenderBee = this,
+                            ActionType = BeeActionType.EnterGuardPost
+                        });
+                },
+                this.guardBalance.TimeToCheckOneBee,
+                this.RequestToEnterBeehive);
         }
 
         /// <summary>
         /// Запросить вход в улей на посте охраны.
         /// </summary>
-        private async void RequestToEnterBeehive()
+        private void RequestToEnterBeehive()
         {
-            if (!this.isWorking)
-            {
-                return;
-            }
-
             BeeRequestEventArgs request = new BeeRequestEventArgs
             {
                 RequestType = BeeRequestType.RequestToEnterBeehive
             };
 
-            this.SafeSendRequest(request);
+            this.RequestForBeehiveDataInternal(this, request);
 
-            // startnew вместо обычного вызова - для
-            // предотвращения возможного зацикливания
             if (request.Succeed)
             {
-                Task.Factory.StartNew(this.GoToRest);
+                this.GoToRest();
             }
             else
             {
-                await Task.Delay(this.balance.GuardBalance.TimeToCheckOneBee);
-                Task.Factory.StartNew(this.RequestToEnterBeehive);
+                this.PerformOperation(
+                    () => {},
+                    this.guardBalance.TimeToCheckOneBee,
+                    this.RequestToEnterBeehive);
             }
         }
 
         /// <summary>
         /// Сдать мёд и пойти отдыхать.
         /// </summary>
-        private async void GoToRest()
+        private void GoToRest()
         {
-            if (!this.isWorking)
-            {
-                return;
-            }
-
-            this.DeliverHoney();
-            await Task.Delay(this.balance.WorkerBalance.TimeToRestInBeehive);
-            this.HarvestHoney();
+            this.PerformOperation(
+                this.DeliverHoney,
+                this.balance.TimeToRestInBeehive,
+                this.HarvestHoney);
         }
 
         /// <summary>
@@ -148,16 +143,13 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// </summary>
         private void DeliverHoney()
         {
-            if (!this.isWorking)
-            {
-                return;
-            }
-
-            this.SafePerformAction(new BeeActionEventArgs
-            {
-                SenderBee = this,
-                ActionType = BeeActionType.EnterBeehiveWithHoney
-            });
+            this.ActionPerformedInternal(
+                this,
+                new BeeActionEventArgs
+                {
+                    SenderBee = this,
+                    ActionType = BeeActionType.EnterBeehiveWithHoney
+                });
         }
     }
 }

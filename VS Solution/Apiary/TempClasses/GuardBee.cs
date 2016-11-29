@@ -5,7 +5,8 @@ namespace Apiary.BeeWorkflowApiary.Bees
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Interfaces;
-    using Apiary.Interfaces.Balancing
+    using Apiary.Interfaces.Balancing;
+    using Apiary.Utilities;
 
     /// <summary>
     /// Пчела-охранник.
@@ -15,7 +16,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Баланс пчелы-охранника.
         /// </summary>
-        private readonly IApiaryBalance balance;
+        private readonly IGuardBeeBalance balance;
 
         /// <summary>
         /// Очередь пчёл на посту охраны.
@@ -33,7 +34,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// </summary>
         public GuardBee()
         {
-            this.balance = ServiceLocator.Instance.GetService<IApiaryBalance>();
+            this.balance = ServiceLocator.Instance.GetService<IGuardBeeBalance>();
         }
 
         /// <summary>
@@ -42,11 +43,15 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <returns>Действие, с которого нужно начинать работу.</returns>
         protected override Action GetStartAction()
         {
-            return this.RequestGuardPostQueue;
+            return () =>
+            {
+                this.RequestGuardPostQueue();
+                this.CheckOneBee();
+            };
         }
 
         /// <summary>
-        /// Запросить у улья очередь поста охраны и начать работу.
+        /// Запросить у улья и получить очередь поста охраны.
         /// </summary>
         private void RequestGuardPostQueue()
         {
@@ -55,7 +60,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 RequestType = BeeRequestType.RequestGuardPostQueue
             };
 
-            this.SafeSendRequest(request);
+            this.RequestForBeehiveDataInternal(this, request);
 
             if (!request.Succeed
                 || request.TypedResponse == null)
@@ -65,36 +70,35 @@ namespace Apiary.BeeWorkflowApiary.Bees
             }
 
             this.guardPostQueue = request.TypedResponse;
-
-            this.CheckOneBee();
         }
 
         /// <summary>
         /// Проверить одну пчелу.
         /// </summary>
-        private async void CheckOneBee()
+        private void CheckOneBee()
         {
-            IBee nextBee = this.guardPostQueue.Dequeue();
-
-            await Task.Delay(this.balance.GuardBalance.TimeToCheckOneBee);
-
-            if (!this.isWork)
-            {
-                return;
-            }
-
-            if (nextBee != null 
-                && nextBee.BeehiveNumber == this.BeehiveNumber)
-            {
-                this.SafePerformAction(new BeeActionEventArgs
+            this.PerformOperation(
+                () =>
                 {
-                    SenderBee = this,
-                    RelatedBee = nextBee,
-                    ActionType = BeeActionType.AcceptBeeToEnter
-                });
-            }            
+                    IBee nextBee = this.guardPostQueue.Dequeue();
 
-            Task.Factory.StartNew(this.CheckOneBee);
+                    if (nextBee == null 
+                        || nextBee.BeehiveNumber != this.BeehiveNumber)
+                    {
+                        return;
+                    }
+
+                    this.ActionPerformedInternal(
+                        this,
+                        new BeeActionEventArgs
+                        {
+                            SenderBee = this,
+                            RelatedBee = nextBee,
+                            ActionType = BeeActionType.AcceptBeeToEnter
+                        });
+                },
+                this.balance.TimeToCheckOneBee,
+                this.CheckOneBee);
         }
     }
 }

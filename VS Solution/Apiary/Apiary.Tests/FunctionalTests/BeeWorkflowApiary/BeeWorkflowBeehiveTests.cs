@@ -31,20 +31,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
         /// <summary>
         /// Баланс "быстрой" пасеки.
         /// </summary>
-        private readonly DefaultApiaryBalance balance = new DefaultApiaryBalance();
+        private readonly FastApiaryBalance balance = new FastApiaryBalance(new DefaultApiaryBalance());
 
         /// <summary>
         /// Подготовить тесты к выполнению.
         /// </summary>
         public BeeWorkflowBeehiveTests()
         {
-            ServiceLocator.Instance.RegisterService<ILongOperationSimulator>(new LongOperationSimulator());
             ServiceLocator.Instance.RegisterService<IRandomizer>(new Randomizer());
             ServiceLocator.Instance.RegisterService<IBeeFactory>(new DefaultBeeFactory());
             ServiceLocator.Instance.RegisterService<IApiaryBalance>(this.balance);
-            ServiceLocator.Instance.RegisterService<IGuardBeeBalance>(this.balance.GuardBalance);
-            ServiceLocator.Instance.RegisterService<IQueenBeeBalance>(this.balance.QueenBalance);
-            ServiceLocator.Instance.RegisterService<IWorkerBeeBalance>(this.balance.WorkerBalance);
         }
 
         /// <summary>
@@ -56,16 +52,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 600,
-                BeesInsideCount = 600,
-                WorkerBeesCount = 100,
+                BeesTotalCount = 30,
+                BeesInsideCount = 30,
+                WorkerBeesCount = 10,
                 QueensCount = 0,
-                GuardsCount = 500
+                GuardsCount = 20
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            double expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
+            int expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
                 * initialState.WorkerBeesCount;
 
             Assert.IsTrue(Math.Abs(expectedHoney - newState.HoneyCount)
@@ -81,16 +77,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 100,
-                BeesInsideCount = 100,
+                BeesTotalCount = 10,
+                BeesInsideCount = 10,
                 WorkerBeesCount = 0,
-                QueensCount = 100,
+                QueensCount = 10,
                 GuardsCount = 0
             };            
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            double expectedNewBees = this.ChildrenFromOneQueenPerFiveSeconds
+            int expectedNewBees = this.ChildrenFromOneQueenPerFiveSeconds
                 * initialState.QueensCount;
                 
             Assert.IsTrue(Math.Abs(expectedNewBees - newState.BeesTotalCount)
@@ -106,16 +102,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 1000,
-                BeesInsideCount = 1000,
-                WorkerBeesCount = 990,
+                BeesTotalCount = 100,
+                BeesInsideCount = 100,
+                WorkerBeesCount = 99,
                 QueensCount = 0,
-                GuardsCount = 10
+                GuardsCount = 1
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            double expectedHoney = this.ChecksFromOneGuardPerFiveSeconds 
+            int expectedHoney = this.ChecksFromOneGuardPerFiveSeconds 
                 * initialState.GuardsCount;
 
             Assert.IsTrue(Math.Abs(expectedHoney - newState.HoneyCount)
@@ -132,16 +128,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 1000,
-                BeesInsideCount = 1000,
+                BeesTotalCount = 100,
+                BeesInsideCount = 100,
                 WorkerBeesCount = 1,
                 QueensCount = 0,
-                GuardsCount = 999
+                GuardsCount = 99
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            double expectedHoney = this.HoneyPerFiveSecondsFromOneBee;
+            int expectedHoney = this.HoneyPerFiveSecondsFromOneBee;
 
             Assert.IsTrue(Math.Abs(expectedHoney - newState.HoneyCount)
                 <= 0/*expectedHoney * BeeWorkflowBeehiveTests.Inaccuracy*/);
@@ -156,16 +152,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 1000,
-                BeesInsideCount = 1000,
-                WorkerBeesCount = 900,
+                BeesTotalCount = 100,
+                BeesInsideCount = 100,
+                WorkerBeesCount = 90,
                 QueensCount = 0,
-                GuardsCount = 100
+                GuardsCount = 10
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            Assert.AreEqual(1000, newState.BeesTotalCount);
+            Assert.AreEqual(100, newState.BeesTotalCount);
         }
 
                 /// <summary>
@@ -186,7 +182,7 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            double expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
+            int expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
                 * initialState.WorkerBeesCount
                 + initialState.HoneyCount;
 
@@ -236,16 +232,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
         /// в течение пяти секунд.
         /// </summary>
         /// <returns>Ожидаемое количество мёда (согласно балансу).</returns>
-        private double HoneyPerFiveSecondsFromOneBee
+        private int HoneyPerFiveSecondsFromOneBee
         {
             get
             {
-                double timeForOnePortionMs = 
-                    this.balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds
-                    + this.balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds
-                    + this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
+                int timeForOnePortionMs = 
+                    (int)this.balance.WorkerBalance.TimeToHarvestHoney.TotalMilliseconds
+                    + (int)this.balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds
+                    + (int)this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
 
-                return 5000 / timeForOnePortionMs;
+                return (int)(5000 / timeForOnePortionMs);
             }
         }
 
@@ -253,14 +249,14 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
         /// Ожидаемое количество пчёл, произведенное одной маткой за 5 секунд.
         /// </summary>
         /// <returns>Ожидаемое количество пчёл (согласно балансу).</returns>
-        private double ChildrenFromOneQueenPerFiveSeconds
+        private int ChildrenFromOneQueenPerFiveSeconds
         {
             get
             {
-                double timeForOneChild = 
-                    this.balance.QueenBalance.TimeToProduceBee.TotalMilliseconds;
+                int timeForOneChild = 
+                    (int)this.balance.QueenBalance.TimeToProduceBee.TotalMilliseconds;
 
-                return 5000 / timeForOneChild + 1; // при завершении работы пчела заканчивает производство пчелы.
+                return (int)(5000 / timeForOneChild + 1); // при завершении работы пчела заканчивает производство пчелы.
             }
         }
 
@@ -268,14 +264,14 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
         /// Ожидаемое количество проверок пчёл одним охранником за 5 секунд.
         /// </summary>
         /// <returns>Количество проверок охранником за 5 секунд.</returns>
-        private double ChecksFromOneGuardPerFiveSeconds
+        private int ChecksFromOneGuardPerFiveSeconds
         {
             get
             {
-                double timeToCheckOneBee = 
-                    this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
+                int timeToCheckOneBee = 
+                    (int)this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
 
-                return 5000 / timeToCheckOneBee;
+                return (int)(5000 / timeToCheckOneBee);
             }
         }
     }
