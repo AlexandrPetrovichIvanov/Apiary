@@ -7,7 +7,7 @@ namespace Apiary.BeeWorkflowApiary
     /// <summary>
     /// Очередь поста охраны улья (потокобезопасная).
     /// </summary>
-    internal class GuardPostQueue
+    public class GuardPostQueue
     {
         /// <summary>
         /// Потокобезопасная очередь.
@@ -19,7 +19,7 @@ namespace Apiary.BeeWorkflowApiary
         /// Принять следующую в очереди пчелу.
         /// </summary>
         /// <returns>Пчела (в порядке очереди) или null, если очередь пуста.</returns>
-        internal IBee Dequeue()
+        public IBee Dequeue()
         {
             IBee bee;
             this.concurrentQueue.TryDequeue(out bee);
@@ -30,7 +30,7 @@ namespace Apiary.BeeWorkflowApiary
         /// Поставить пчелу в очередь на пост охраны.
         /// </summary>
         /// <param name="bee">Пчела, прилетевшая на пост охраны.</param>
-        internal void Enqueue(IBee bee)
+        public void Enqueue(IBee bee)
         {
             this.concurrentQueue.Enqueue(bee);
         }

@@ -1,7 +1,7 @@
 namespace Apiary.BeeWorkflowApiary.Bees
 {
     using System;
-
+    using System.Threading.Tasks;
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.Interfaces;
     using Apiary.Interfaces.Balancing;
@@ -83,8 +83,8 @@ namespace Apiary.BeeWorkflowApiary.Bees
         {
             int random = this.randomizer.GetRandom(1, 1000);
 
-            int workerLimit = this.balance.ThousandthPartToProduceWorker;
-            int guardLimit = workerLimit + this.balance.ThousandthPartToProduceGuard;
+            int workerLimit = this.balance.QueenBalance.ThousandthPartToProduceWorker;
+            int guardLimit = workerLimit + this.balance.QueenBalance.ThousandthPartToProduceGuard;
 
             if (random <= workerLimit)
             {

@@ -113,7 +113,7 @@
     <Compile Include="BeehiveStateThreadSafe.cs" />
     <Compile Include="BeeRequests\BeeRequestEventArgs.cs" />
     <Compile Include="BeeRequests\BeeRequestType.cs" />
-    <Compile Include="Bees\BeeBase.cs" />
+    <Compile Include="Bees\BaseBee.cs" />
     <Compile Include="Bees\GuardBee.cs" />
     <Compile Include="Bees\QueenBee.cs" />
     <Compile Include="Bees\WorkerBee.cs" />

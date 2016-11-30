@@ -8,7 +8,6 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
 
     using Apiary.BeeWorkflowApiary.Bees;
     using Apiary.Tests.TestDoubles.Bees;
-    using Apiary.Utilities;
 
     /// <summary>
     /// Класс тестирования базового класса пчёл.

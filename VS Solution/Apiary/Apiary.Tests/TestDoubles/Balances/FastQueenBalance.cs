@@ -23,7 +23,7 @@ namespace Apiary.Tests.TestDoubles.Balances
         {
             this.baseBalance = baseBalance;
             this.TimeToProduceBee = TimeSpan.FromMilliseconds(
-                this.baseBalance.TimeToProduceBee.TotalMilliseconds / 40);
+                this.baseBalance.TimeToProduceBee.TotalMilliseconds / 5);
         }
 
         /// <summary>

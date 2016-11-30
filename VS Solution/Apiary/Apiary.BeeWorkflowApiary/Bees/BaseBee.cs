@@ -21,7 +21,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Признак того, что пчела работает в данный момент.
         /// </summary>
-        private bool isWorking;
+        protected bool isWorking;
 
         /// <summary>
         /// Получить тип пчелы.

@@ -1,5 +1,6 @@
 namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -24,6 +25,11 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         /// Баланс быстрой пчелы-матки.
         /// </summary>
         private readonly IQueenBeeBalance queenBalance;
+
+        /// <summary>
+        /// Допустимая погрешность.
+        /// </summary>
+        private const double Inaccuracy = 0.1;
 
         /// <summary>
         /// Общая настройка тестов пчелы-матки.
@@ -94,7 +100,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
 
             bee.StopWork();
 
-            Assert.AreEqual(10, children);
+            Assert.IsTrue(Math.Abs(children - 10) <= 10 * QueenBeeTests.Inaccuracy);
         }
     }
 }

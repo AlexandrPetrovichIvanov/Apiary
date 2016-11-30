@@ -16,7 +16,7 @@ namespace Apiary.Tests.TestDoubles.Balances
             IGuardBeeBalance baseBalance)
         {
             this.TimeToCheckOneBee = TimeSpan.FromMilliseconds(
-                (baseBalance.TimeToCheckOneBee.TotalMilliseconds / 5));
+                (baseBalance.TimeToCheckOneBee.TotalMilliseconds));
         }
         
         /// <summary>

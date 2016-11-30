@@ -1,7 +1,7 @@
 namespace Apiary.Tests.TestDoubles.Bees
 {
     using System;
-
+    using System.Threading.Tasks;
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Bees;
@@ -36,29 +36,19 @@ namespace Apiary.Tests.TestDoubles.Bees
         /// <summary>
         /// Бесконечно посылать сообщения и запросы.
         /// </summary>
-        private void SendMessageAndRequest()
+        private async void SendMessageAndRequest()
         {
-            this.PerformOperation(
-                () =>
+            this.SafePerformAction(
+                new BeeActionEventArgs
                 {
-                    this.ActionPerformedInternal(
-                        this,
-                        new BeeActionEventArgs
-                        {
-                            SenderBee = this,
-                            RelatedBee = null,
-                            ActionType = BeeActionType.NotSet
-                        });
+                    SenderBee = this,
+                    RelatedBee = null,
+                    ActionType = BeeActionType.NotSet
+                });
 
-                    BeeRequestEventArgs request = new BeeRequestEventArgs
-                    {
-                        RequestType = BeeRequestType.NotSet
-                    };
+            await Task.Delay(TimeSpan.FromMilliseconds(EmptyBaseBee.IntervalMs));
 
-                    this.RequestForBeehiveDataInternal(this, request);
-                },
-                TimeSpan.FromMilliseconds(EmptyBaseBee.IntervalMs),
-                this.SendMessageAndRequest);
+            Task.Factory.StartNew(this.SendMessageAndRequest);
         }
     }
 }

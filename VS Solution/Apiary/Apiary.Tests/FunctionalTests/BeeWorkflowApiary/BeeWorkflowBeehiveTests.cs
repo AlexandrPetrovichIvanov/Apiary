@@ -26,7 +26,7 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
         /// <summary>
         /// Допустимая погрешность.
         /// </summary>
-        private const double Inaccuracy = 0.000;
+        private const double Inaccuracy = 0.2;
 
         /// <summary>
         /// Баланс "быстрой" пасеки.
@@ -52,11 +52,11 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 30,
-                BeesInsideCount = 30,
-                WorkerBeesCount = 10,
+                BeesTotalCount = 5000,
+                BeesInsideCount = 5000,
+                WorkerBeesCount = 1000,
                 QueensCount = 0,
-                GuardsCount = 20
+                GuardsCount = 4000
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
@@ -77,10 +77,10 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 10,
-                BeesInsideCount = 10,
+                BeesTotalCount = 1000,
+                BeesInsideCount = 1000,
                 WorkerBeesCount = 0,
-                QueensCount = 10,
+                QueensCount = 1000,
                 GuardsCount = 0
             };            
 
@@ -102,11 +102,11 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 100,
-                BeesInsideCount = 100,
-                WorkerBeesCount = 99,
+                BeesTotalCount = 10000,
+                BeesInsideCount = 10000,
+                WorkerBeesCount = 9900,
                 QueensCount = 0,
-                GuardsCount = 1
+                GuardsCount = 100
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
@@ -128,19 +128,20 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 100,
-                BeesInsideCount = 100,
-                WorkerBeesCount = 1,
+                BeesTotalCount = 10000,
+                BeesInsideCount = 10000,
+                WorkerBeesCount = 200,
                 QueensCount = 0,
-                GuardsCount = 99
+                GuardsCount = 9800
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            int expectedHoney = this.HoneyPerFiveSecondsFromOneBee;
+            int expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
+                * initialState.WorkerBeesCount;
 
             Assert.IsTrue(Math.Abs(expectedHoney - newState.HoneyCount)
-                <= 0/*expectedHoney * BeeWorkflowBeehiveTests.Inaccuracy*/);
+                <= expectedHoney * BeeWorkflowBeehiveTests.Inaccuracy);
         }
 
         /// <summary>
@@ -152,16 +153,16 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             IBeehiveState initialState = new BeehiveXmlState
             {
                 HoneyCount = 0,
-                BeesTotalCount = 100,
-                BeesInsideCount = 100,
-                WorkerBeesCount = 90,
+                BeesTotalCount = 10000,
+                BeesInsideCount = 10000,
+                WorkerBeesCount = 9000,
                 QueensCount = 0,
-                GuardsCount = 10
+                GuardsCount = 1000
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            Assert.AreEqual(100, newState.BeesTotalCount);
+            Assert.AreEqual(initialState.BeesTotalCount, newState.BeesTotalCount);
         }
 
                 /// <summary>
@@ -172,17 +173,17 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
         {
             IBeehiveState initialState = new BeehiveXmlState
             {
-                HoneyCount = 5,
-                BeesTotalCount = 10,
-                BeesInsideCount = 1,
-                WorkerBeesCount = 9,
+                HoneyCount = 500,
+                BeesTotalCount = 1900,
+                BeesInsideCount = 1000,
+                WorkerBeesCount = 900,
                 QueensCount = 0,
-                GuardsCount = 1
+                GuardsCount = 1000
             };
 
             IBeehiveState newState = this.LaunchBeehiveForFiveSeconds(initialState);
 
-            int expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
+            long expectedHoney = this.HoneyPerFiveSecondsFromOneBee 
                 * initialState.WorkerBeesCount
                 + initialState.HoneyCount;
 
@@ -256,7 +257,7 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
                 int timeForOneChild = 
                     (int)this.balance.QueenBalance.TimeToProduceBee.TotalMilliseconds;
 
-                return (int)(5000 / timeForOneChild + 1); // при завершении работы пчела заканчивает производство пчелы.
+                return (int)(5000 / timeForOneChild); // при завершении работы пчела заканчивает производство пчелы.
             }
         }
 

@@ -1,11 +1,12 @@
 namespace Apiary.BeeWorkflowApiary.Bees
 {
     using System;
-
+    using System.Threading.Tasks;
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Interfaces;
-    using Apiary.Interfaces.Balancing
+    using Apiary.Interfaces.Balancing;
+    using Apiary.Utilities;
 
     /// <summary>
     /// Пчела-охранник.
@@ -78,7 +79,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
 
             await Task.Delay(this.balance.GuardBalance.TimeToCheckOneBee);
 
-            if (!this.isWork)
+            if (!this.isWorking)
             {
                 return;
             }
@@ -92,7 +93,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                     RelatedBee = nextBee,
                     ActionType = BeeActionType.AcceptBeeToEnter
                 });
-            }            
+            }   
 
             Task.Factory.StartNew(this.CheckOneBee);
         }
