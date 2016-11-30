@@ -108,9 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyResourceReader.cs" />
-    <Compile Include="ILongOperationSimulator.cs" />
     <Compile Include="IRandomizer.cs" />
-    <Compile Include="LongOperationSimulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="ServiceLocator.cs" />

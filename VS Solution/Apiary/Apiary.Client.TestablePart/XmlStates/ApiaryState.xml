@@ -42,7 +42,7 @@
             <Number>5</Number>
             <Honey>5</Honey>
             <TotalBees>10</TotalBees>
-            <BeesInside>0</BeesInside>
+            <BeesInside>1</BeesInside>
             <Workers>9</Workers>
             <Queens>0</Queens>
             <Guards>1</Guards>

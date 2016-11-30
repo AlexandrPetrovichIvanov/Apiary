@@ -101,8 +101,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Temp\ConcurrencyIncrementingTest.cs" />
     <Compile Include="Temp\MillionTasksTest.cs" />
-    <Compile Include="Temp\SimulateLongOperationTest.cs" />
-    <Compile Include="Temp\SimulateShortOperationTest.cs" />
     <Compile Include="TestDoubles\Balances\ApiaryBalanceDontProducingQueens.cs" />
     <Compile Include="TestDoubles\Balances\FastApiaryBalance.cs" />
     <Compile Include="TestDoubles\Balances\FastGuardBalance.cs" />
@@ -121,7 +119,6 @@
     <Compile Include="UnitTests\BeeWorkflowApiary\WorkerBeeTests.cs" />
     <Compile Include="UnitTests\Client\ApiaryXmlStateTests.cs" />
     <Compile Include="UnitTests\Utilities\AssemblyResourceReaderTests.cs" />
-    <Compile Include="UnitTests\Utilities\LongOperationsSimulatorTests.cs" />
     <Compile Include="UnitTests\Utilities\RandomizerTests.cs" />
     <Compile Include="UnitTests\Utilities\ServiceLocatorTests.cs" />
     <Compile Include="UnitTests\Utilities\XmlSerializationTests.cs" />
