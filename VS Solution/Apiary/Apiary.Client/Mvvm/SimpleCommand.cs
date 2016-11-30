@@ -6,7 +6,7 @@
     /// <summary>
     /// Простая реализация команды (без параметров).
     /// </summary>
-    public abstract class SimpleCommand : ICommand
+    public class SimpleCommand : ICommand
     {
         /// <summary>
         /// Делегат проверки доступности команды.
@@ -28,7 +28,7 @@
         /// </summary>
         /// <param name="execute">Выполнение команды.</param>
         /// <param name="canExecute">Проверка доступности команды.</param>
-        protected SimpleCommand(
+        internal SimpleCommand(
             Action execute,
             Func<bool> canExecute = null)
         {
@@ -76,10 +76,7 @@
         /// </summary>
         public void RefreshCanExecute()
         {
-            if (this.CanExecuteChanged != null)
-            {
-                this.CanExecuteChanged(this, EventArgs.Empty);
-            }
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

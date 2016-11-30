@@ -16,7 +16,7 @@
         /// Число, которое будет изменяться из разных потоков
         /// одновременно.
         /// </summary>
-        private int threadUnsafeValue = 0;
+        private int threadUnsafeValue;
 
         /// <summary>
         /// Проверка, не будет ли ошибок при инкрементировании

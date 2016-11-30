@@ -66,14 +66,14 @@ namespace Apiary.BeeWorkflowApiary.Bees
 
             IBee newBee = this.CreateRandomBee();
 
-            this.SafePerformAction(new BeeActionEventArgs
+            this.SafePerformAction(new BeeActionNotification
             {
                 SenderBee = this,
                 RelatedBee = newBee,
                 ActionType = BeeActionType.ProduceBee
             });
 
-            Task.Factory.StartNew(this.ProduceBee);
+            await Task.Factory.StartNew(this.ProduceBee);
         }
 
         /// <summary>

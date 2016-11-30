@@ -245,36 +245,36 @@ namespace Apiary.BeeWorkflowApiary
         /// Обработка действий зарегистрированных пчёл.
         /// </summary>
         /// <param name="sender">Пчела-исполнитель действия.</param>
-        /// <param name="args">Аргументы действия пчелы.</param>
+        /// <param name="actionNotification">Оповещение о действии пчелы.</param>
         private void BeeOnActionPerformed(
             object sender,
-            BeeActionEventArgs args)
+            BeeActionNotification actionNotification)
         {
-            switch (args.ActionType)
+            switch (actionNotification.ActionType)
             {
                 case BeeActionType.LeftBeehiveToHarvestHoney:
                     this.state.DecrementBeesInsideCount();                    
                     break;
                 case BeeActionType.EnterGuardPost:
-                    this.guardPostQueue.Enqueue(args.SenderBee);
+                    this.guardPostQueue.Enqueue(actionNotification.SenderBee);
                     break;
                 case BeeActionType.EnterBeehiveWithHoney:
                     this.state.IncrementHoneyCount();
                     this.state.IncrementBeesInsideCount(); 
-                    this.acceptedList.ResetBeeAcceptedState(args.SenderBee);             
+                    this.acceptedList.ResetBeeAcceptedState(actionNotification.SenderBee);             
                     break;
                 case BeeActionType.AcceptBeeToEnter:
-                    this.acceptedList.AcceptBeeToEnter(args.RelatedBee);
+                    this.acceptedList.AcceptBeeToEnter(actionNotification.RelatedBee);
                     break;
                 case BeeActionType.ProduceBee:
-                    this.RegisterBee(args.RelatedBee);
-                    args.RelatedBee.StartWork();
-                    this.ChangeStateAccordingToNewBee(args.RelatedBee.Type);
+                    this.RegisterBee(actionNotification.RelatedBee);
+                    actionNotification.RelatedBee.StartWork();
+                    this.ChangeStateAccordingToNewBee(actionNotification.RelatedBee.Type);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
-                        $"Неизвестное действие пчелы - {args.ActionType}",
-                        nameof(args));
+                        $"Неизвестное действие пчелы - {actionNotification.ActionType}",
+                        nameof(actionNotification));
             }
         }
 
@@ -282,32 +282,32 @@ namespace Apiary.BeeWorkflowApiary
         /// Обработка запросов зарегистрированных пчёл.
         /// </summary>
         /// <param name="sender">Пчела-отправитель запроса.</param>
-        /// <param name="args">Аргументы запроса пчелы к улью.</param>
+        /// <param name="request">Запрос пчелы к улью.</param>
         private void BeeOnRequestBeehiveData(
             object sender,
-            BeeRequestEventArgs args)
+            BeeRequest request)
         {
-            switch (args.RequestType)
+            switch (request.RequestType)
             {
                 case BeeRequestType.RequestToEnterBeehive:
-                    args.Succeed = this.acceptedList.IsBeeAcceptedToEnter((IBee)sender);
-                    args.Response = args.Succeed;
+                    request.Succeed = this.acceptedList.IsBeeAcceptedToEnter((IBee)sender);
+                    request.Response = request.Succeed;
                     break;
                 case BeeRequestType.RequestGuardPostQueue:
-                    args.Succeed = ((IBee)sender).Type == BeeType.Guard
+                    request.Succeed = ((IBee)sender).Type == BeeType.Guard
                         && ((IBee)sender).BeehiveNumber == this.state.BeehiveNumber;
                     
-                    if (args.Succeed)
+                    if (request.Succeed)
                     {
-                        args.Response = this.guardPostQueue;
+                        request.Response = this.guardPostQueue;
                     }
 
                     break;
 
                 default:
                     throw new ArgumentOutOfRangeException(
-                        $"Неизвестный тип запроса пчелы - {args.RequestType}",
-                        nameof(args));
+                        $"Неизвестный тип запроса пчелы - {request.RequestType}",
+                        nameof(request));
             }
         }
     }

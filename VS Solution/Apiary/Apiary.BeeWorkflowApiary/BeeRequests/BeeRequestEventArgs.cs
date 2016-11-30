@@ -3,9 +3,9 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     using System;
 
     /// <summary>
-    /// Аргументы запроса пчелы к улью.
+    /// Запрос пчелы к улью.
     /// </summary>
-    public class BeeRequestEventArgs : EventArgs 
+    public class BeeRequest : EventArgs 
     {
         /// <summary>
         /// Получить или задать тип запроса.
@@ -27,9 +27,9 @@ namespace Apiary.BeeWorkflowApiary.BeeRequests
     }
 
     /// <summary>
-    /// Аргументы запроса пчелы к улью с типизированным результатом.
+    /// Запрос пчелы к улью с типизированным результатом.
     /// </summary>
-    internal class BeeRequestEventArgs<T> : BeeRequestEventArgs 
+    internal class BeeRequest<T> : BeeRequest 
     {
         /// <summary>
         /// Результат в виде объекта конкретного типа.

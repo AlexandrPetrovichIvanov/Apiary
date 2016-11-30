@@ -45,7 +45,7 @@
             ServiceLocator.Instance.RegisterService<IApiaryVM>(new ApiaryVM());
 
             // для проверки математического варианта пасеки:
-            // ServiceLocator.Instance.RegisterService<IApiary>(new MathApiary());
+            //ServiceLocator.Instance.RegisterService<IApiary>(new MathApiary());
         }
 
         /// <summary>

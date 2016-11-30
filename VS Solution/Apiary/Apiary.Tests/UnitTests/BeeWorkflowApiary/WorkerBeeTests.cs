@@ -25,7 +25,7 @@ namespace Apiary.Tests.UnitTests.BeeWorkflowApiary
         /// <summary>
         /// Баланс пасеки.
         /// </summary>
-        private readonly IApiaryBalance apiaryBalance;
+        private readonly FastApiaryBalance apiaryBalance;
 
         /// <summary>
         /// Общая настройка тестов рабочей пчелы.

@@ -6,7 +6,6 @@ namespace Apiary.BeeWorkflowApiary.Bees
     using Apiary.BeeWorkflowApiary.BeeActions;
     using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Interfaces;
-    using Apiary.Utilities;
 
     /// <summary>
     /// Пчела (общая часть реализации всех видов пчёл).
@@ -38,66 +37,66 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// <summary>
         /// Делегат выполнения пчелой какого-либо действия.
         /// </summary>
-        private EventHandler<BeeActionEventArgs> ActionPerformedInternal;
+        private EventHandler<BeeActionNotification> actionPerformedInternal;
 
         /// <summary>
         /// Делегат запроса пчелы к улью.
         /// </summary>
-        private EventHandler<BeeRequestEventArgs> RequestForBeehiveDataInternal;
+        private EventHandler<BeeRequest> requestForBeehiveDataInternal;
 
         /// <summary>
         /// Внешняя точка доступа к событию выполнения пчелой какого-либо действия.
         /// </summary>
-        public event EventHandler<BeeActionEventArgs> ActionPerformed
+        public event EventHandler<BeeActionNotification> ActionPerformed
         {
             add
             {
                 this.ThrowIfStillWorking();
 
-                if (this.ActionPerformedInternal != null)
+                if (this.actionPerformedInternal != null)
                 {
                     throw new InvalidOperationException(BeeBase.AlreadyHasBeehiveLinked);
                 }
 
-                this.ActionPerformedInternal = value;
+                this.actionPerformedInternal = value;
             }
             remove
             {
-                if (this.ActionPerformedInternal != value)
+                if (this.actionPerformedInternal != value)
                 {
                     return;
                 }
 
                 this.ThrowIfStillWorking();
-                this.ActionPerformedInternal = null;
+                this.actionPerformedInternal = null;
             }
         }
 
         /// <summary>
         /// Внешняя точка доступа с событию запроса пчелой каких-либо данных из улья.
         /// </summary>
-        public event EventHandler<BeeRequestEventArgs> RequestForBeehiveData
+        public event EventHandler<BeeRequest> RequestForBeehiveData
         {
             add
             {
                 this.ThrowIfStillWorking();
 
-                if (this.RequestForBeehiveDataInternal != null)
+                if (this.requestForBeehiveDataInternal != null)
                 {
                     throw new InvalidOperationException(BeeBase.AlreadyHasBeehiveLinked);
                 }
 
-                this.RequestForBeehiveDataInternal = value;
+                this.requestForBeehiveDataInternal = value;
             }
             remove
             {
-                if (this.RequestForBeehiveDataInternal != value)
+                if (this.requestForBeehiveDataInternal != value)
                 {
                     return;
                 }
 
                 this.ThrowIfStillWorking();
-                this.RequestForBeehiveDataInternal = null;
+                this.requestForBeehiveDataInternal = null;
             }
         }
 
@@ -129,28 +128,28 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// Отправить в улей отчет о действии, если работа еще не остановлена.
         /// </summary>
         /// <param name="args">Описание действия.</param>
-        protected void SafePerformAction(BeeActionEventArgs args)
+        protected void SafePerformAction(BeeActionNotification args)
         {
             if (!this.isWorking)
             {
                 return;
             }
 
-            this.ActionPerformedInternal(this, args);
+            this.actionPerformedInternal(this, args);
         }
 
         /// <summary>
         /// Отправить запрос улью, если работа еще не остановлена.
         /// </summary>
         /// <param name="args">Запрос.</param>
-        protected void SafeSendRequest(BeeRequestEventArgs args)
+        protected void SafeSendRequest(BeeRequest args)
         {
             if (!this.isWorking)
             {
                 return;
             }
 
-            this.RequestForBeehiveDataInternal(this, args);
+            this.requestForBeehiveDataInternal(this, args);
         }
 
         /// <summary>
@@ -158,8 +157,8 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// </summary>
         private void CheckLinkWithBeehive()
         {
-            if (this.ActionPerformedInternal == null
-                || this.RequestForBeehiveDataInternal == null)
+            if (this.actionPerformedInternal == null
+                || this.requestForBeehiveDataInternal == null)
             {
                 throw new InvalidOperationException(
                     "Пчела не связана с ульем.");

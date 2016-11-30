@@ -297,7 +297,7 @@ namespace Apiary.Tests.FunctionalTests.MathematicalApiary
                 beehive.SingleIteration();
             }
 
-            beehive.Stop();
+            beehive.Validate();
 
             return beehive;
         }

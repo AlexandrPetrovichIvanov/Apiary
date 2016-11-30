@@ -24,12 +24,12 @@ namespace Apiary.BeeWorkflowApiary.Interfaces
         /// <summary>
         /// Событие выполнения пчелой какого-либо действия.
         /// </summary>
-        event EventHandler<BeeActionEventArgs> ActionPerformed;
+        event EventHandler<BeeActionNotification> ActionPerformed;
 
         /// <summary>
         /// Делегат запроса пчелой каких-либо данных из улья.
         /// </summary>
-        event EventHandler<BeeRequestEventArgs> RequestForBeehiveData;
+        event EventHandler<BeeRequest> RequestForBeehiveData;
 
         /// <summary>
         /// Начать работу.

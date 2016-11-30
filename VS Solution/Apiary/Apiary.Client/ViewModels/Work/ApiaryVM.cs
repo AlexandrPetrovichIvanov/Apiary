@@ -8,7 +8,6 @@
     using System.Windows.Input;
 
     using Apiary.Client.XmlStates;
-    using Apiary.Client.Commands;
     using Apiary.Client.Mvvm;
     using Apiary.Interfaces;
     using Apiary.Utilities;
@@ -101,9 +100,9 @@
         /// </summary>
         private void InitializeCommands()
         {
-            this.StartCommand = new StartCommand(this.Start, this.CanStart);
-            this.StopCommand = new StopCommand(this.Stop, this.CanStop);
-            this.HarvestHoneyCommand = new HarvestHoneyCommand(
+            this.StartCommand = new SimpleCommand(this.Start, this.CanStart);
+            this.StopCommand = new SimpleCommand(this.Stop, this.CanStop);
+            this.HarvestHoneyCommand = new SimpleCommand(
                 this.HarvestHoney,
                 this.CanHarvestHoney);
         }
@@ -177,10 +176,7 @@
         {
             IApiaryState state = this.GetStateForRefresh(options);
 
-            if (options == RefreshApiaryVmOptions.ShowTempSavedState)
-            {
-                this.tempHoneyCount = state.HoneyCount;
-            }
+            this.tempHoneyCount = state.HoneyCount;
 
             this.RefreshBeehives(state.BeehiveStates);
             this.RaiseMainPropertiesChanged();
@@ -267,6 +263,10 @@
             if (args.PropertyName == nameof(beehive.BeesTotalCount))
             {
                 this.RaisePropertyChanged(nameof(this.BeesCount));
+            }
+            else if (args.PropertyName == nameof(beehive.HoneyCount))
+            {
+                this.HarvestHoneyCommand.RefreshCanExecute();
             }
         }
 

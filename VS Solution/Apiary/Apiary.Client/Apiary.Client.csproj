@@ -95,9 +95,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\HarvestHoneyCommand.cs" />
-    <Compile Include="Commands\StartCommand.cs" />
-    <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Mvvm\AppSuspendingCommandBinding.cs" />
     <Compile Include="Mvvm\SimpleCommand.cs" />
     <Compile Include="Mvvm\Dispatcher.cs" />

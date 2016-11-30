@@ -3,7 +3,6 @@ namespace Apiary.Tests.TestDoubles.Bees
     using System;
     using System.Threading.Tasks;
     using Apiary.BeeWorkflowApiary.BeeActions;
-    using Apiary.BeeWorkflowApiary.BeeRequests;
     using Apiary.BeeWorkflowApiary.Bees;
     using Apiary.BeeWorkflowApiary.Interfaces;
 
@@ -39,7 +38,7 @@ namespace Apiary.Tests.TestDoubles.Bees
         private async void SendMessageAndRequest()
         {
             this.SafePerformAction(
-                new BeeActionEventArgs
+                new BeeActionNotification
                 {
                     SenderBee = this,
                     RelatedBee = null,
@@ -48,7 +47,7 @@ namespace Apiary.Tests.TestDoubles.Bees
 
             await Task.Delay(TimeSpan.FromMilliseconds(EmptyBaseBee.IntervalMs));
 
-            Task.Factory.StartNew(this.SendMessageAndRequest);
+            await Task.Factory.StartNew(this.SendMessageAndRequest);
         }
     }
 }

@@ -49,6 +49,7 @@
 
                 await Task.Delay(500);
             }
+            // ReSharper disable once FunctionNeverReturns так и надо для тестовой view-модели
         }
 
         public void StopRaisingEvents()

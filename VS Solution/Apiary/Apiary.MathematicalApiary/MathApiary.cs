@@ -78,7 +78,6 @@
                         "Пасека и так не работает.");
                 }
 
-                this.beehives.ForEach(bh => bh.Stop());
                 this.isWorking = false;
             }
 

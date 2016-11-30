@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Windows.Input;
 
-    using Apiary.Client.Commands;
     using Apiary.Client.Mvvm;
     using Apiary.Client.XmlStates;
 
@@ -32,9 +31,9 @@
                 new BeehiveVmDesignMode(4)
             });
 
-            this.StartCommand = new StartCommand(this.Start, this.CanStart);
-            this.StopCommand = new StopCommand(this.Stop, this.CanStop);
-            this.HarvestHoneyCommand = new HarvestHoneyCommand(
+            this.StartCommand = new SimpleCommand(this.Start, this.CanStart);
+            this.StopCommand = new SimpleCommand(this.Stop, this.CanStop);
+            this.HarvestHoneyCommand = new SimpleCommand(
                 this.HarvestHoney,
                 this.CanHarvestHoney);
 

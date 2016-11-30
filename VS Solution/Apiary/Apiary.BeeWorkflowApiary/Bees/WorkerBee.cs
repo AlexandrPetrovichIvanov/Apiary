@@ -68,7 +68,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 return;
             }
 
-            this.SafePerformAction(new BeeActionEventArgs
+            this.SafePerformAction(new BeeActionNotification
             {
                 SenderBee = this,
                 ActionType = BeeActionType.LeftBeehiveToHarvestHoney
@@ -89,7 +89,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 return;
             }
 
-            this.SafePerformAction(new BeeActionEventArgs
+            this.SafePerformAction(new BeeActionNotification
             {
                 SenderBee = this,
                 ActionType = BeeActionType.EnterGuardPost
@@ -110,7 +110,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 return;
             }
 
-            BeeRequestEventArgs request = new BeeRequestEventArgs
+            BeeRequest request = new BeeRequest
             {
                 RequestType = BeeRequestType.RequestToEnterBeehive
             };
@@ -121,12 +121,12 @@ namespace Apiary.BeeWorkflowApiary.Bees
             // предотвращения возможного зацикливания
             if (request.Succeed)
             {
-                Task.Factory.StartNew(this.GoToRest);
+                await Task.Factory.StartNew(this.GoToRest);
             }
             else
             {
                 await Task.Delay(this.balance.GuardBalance.TimeToCheckOneBee);
-                Task.Factory.StartNew(this.RequestToEnterBeehive);
+                await Task.Factory.StartNew(this.RequestToEnterBeehive);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 return;
             }
 
-            this.SafePerformAction(new BeeActionEventArgs
+            this.SafePerformAction(new BeeActionNotification
             {
                 SenderBee = this,
                 ActionType = BeeActionType.EnterBeehiveWithHoney

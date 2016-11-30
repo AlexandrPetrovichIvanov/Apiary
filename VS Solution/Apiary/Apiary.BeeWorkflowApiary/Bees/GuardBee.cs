@@ -51,7 +51,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
         /// </summary>
         private void RequestGuardPostQueue()
         {
-            var request = new BeeRequestEventArgs<GuardPostQueue>
+            var request = new BeeRequest<GuardPostQueue>
             {
                 RequestType = BeeRequestType.RequestGuardPostQueue
             };
@@ -61,6 +61,11 @@ namespace Apiary.BeeWorkflowApiary.Bees
             if (!request.Succeed
                 || request.TypedResponse == null)
             {
+                if (!this.isWorking)
+                {
+                    return; 
+                }
+
                 throw new InvalidOperationException(
                     "Не удалось получить очередь поста охраны пчёл.");
             }
@@ -87,7 +92,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
             if (nextBee != null 
                 && nextBee.BeehiveNumber == this.BeehiveNumber)
             {
-                this.SafePerformAction(new BeeActionEventArgs
+                this.SafePerformAction(new BeeActionNotification
                 {
                     SenderBee = this,
                     RelatedBee = nextBee,
@@ -95,7 +100,7 @@ namespace Apiary.BeeWorkflowApiary.Bees
                 });
             }   
 
-            Task.Factory.StartNew(this.CheckOneBee);
+            await Task.Factory.StartNew(this.CheckOneBee);
         }
     }
 }

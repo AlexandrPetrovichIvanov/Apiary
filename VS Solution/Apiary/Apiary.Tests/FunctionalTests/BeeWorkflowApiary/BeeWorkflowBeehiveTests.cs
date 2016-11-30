@@ -225,7 +225,9 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
             BeeWorkflowBeehive beehive = new BeeWorkflowBeehive();
             beehive.Start(initialState);
             Task.Delay(5000).GetAwaiter().GetResult();
-            return beehive.Stop();
+            IBeehiveState state = beehive.Stop();
+            state.Validate();
+            return state;
         }
 
         /// <summary>
@@ -242,7 +244,7 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
                     + (int)this.balance.WorkerBalance.TimeToRestInBeehive.TotalMilliseconds
                     + (int)this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
 
-                return (int)(5000 / timeForOnePortionMs);
+                return (5000 / timeForOnePortionMs);
             }
         }
 
@@ -257,7 +259,7 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
                 int timeForOneChild = 
                     (int)this.balance.QueenBalance.TimeToProduceBee.TotalMilliseconds;
 
-                return (int)(5000 / timeForOneChild); // при завершении работы пчела заканчивает производство пчелы.
+                return 5000 / timeForOneChild; // при завершении работы пчела заканчивает производство пчелы.
             }
         }
 
@@ -272,7 +274,7 @@ namespace Apiary.Tests.FunctionalTests.BeeWorkflowApiary
                 int timeToCheckOneBee = 
                     (int)this.balance.GuardBalance.TimeToCheckOneBee.TotalMilliseconds;
 
-                return (int)(5000 / timeToCheckOneBee);
+                return 5000 / timeToCheckOneBee;
             }
         }
     }

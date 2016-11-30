@@ -5,9 +5,9 @@ namespace Apiary.BeeWorkflowApiary.BeeActions
     using Apiary.BeeWorkflowApiary.Interfaces;
 
     /// <summary>
-    /// Аргументы любого действия пчелы.
+    /// Оповещение о действии пчелы.
     /// </summary>
-    public class BeeActionEventArgs : EventArgs
+    public class BeeActionNotification : EventArgs
     {
         /// <summary>
         /// Пчела-инициатор действия.

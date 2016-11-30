@@ -34,13 +34,13 @@
         [TestMethod]
         public void CreateMillionTasks()
         {
-            Task[] tasks = new Task[TasksNumber];
+            Task[] tasks = new Task[MillionTasksTest.TasksNumber];
 
-            for (int i = 0; i < TasksNumber; i++)
+            for (int i = 0; i < MillionTasksTest.TasksNumber; i++)
             {
                 tasks[i] = Task.Factory.StartNew(() =>
                 {
-                    for (int j = 0; j < IterationsInsideSingleTask; j++)
+                    for (int j = 0; j < MillionTasksTest.IterationsInsideSingleTask; j++)
                     {
                         Interlocked.Add(ref this.counter, 1);
                     }
@@ -49,7 +49,7 @@
 
             Task.Delay(3000).Wait(TimeSpan.FromMilliseconds(3500));
 
-            Assert.IsTrue(this.counter == TasksNumber * (long)IterationsInsideSingleTask);
+            Assert.IsTrue(this.counter == MillionTasksTest.TasksNumber * (long)MillionTasksTest.IterationsInsideSingleTask);
             tasks.ToList().ForEach(task => Assert.IsTrue(task.IsCompleted));
         }
     }

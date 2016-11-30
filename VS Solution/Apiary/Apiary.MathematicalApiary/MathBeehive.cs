@@ -17,7 +17,6 @@
         /// Признаки состояния работы улья.
         /// </summary>
         private bool isIterationRunning;
-        private bool isStopped;
 
         /// <summary>
         /// Количество пчёл, которые в каждой конкретной итерации переходят из 
@@ -70,11 +69,6 @@
         private double newQueensAccumulator;
 
         /// <summary>
-        /// Количество пчёл внутри улья (может быть отрицательным).
-        /// </summary>
-        private int beesInsideCount;
-
-        /// <summary>
         /// Создать улей, работающий на основе итерационных
         /// математических вычислений.
         /// </summary>
@@ -124,8 +118,7 @@
         /// <summary>
         /// Количество пчёл внутри улья.
         /// </summary>
-        public int BeesInsideCount => this.beesInsideCount >= 0
-            ? this.beesInsideCount : 0;
+        public int BeesInsideCount { get; set; }
 
         /// <summary>
         /// Количество рабочих пчёл.
@@ -150,8 +143,6 @@
         /// </summary>
         public void SingleIteration()
         {
-            this.ThrowIfAlreadyStopped();
-
             if (this.isIterationRunning)
             {
                 throw new InvalidOperationException(
@@ -160,6 +151,7 @@
 
             this.isIterationRunning = true;
 
+            this.CalculateBeesInside();
             this.ProduceBees();
             this.DequeueAllQueuesForIteration();
             this.RestingToWorking();
@@ -167,23 +159,6 @@
             this.WorkingToHavingCheck();
 
             this.isIterationRunning = false;
-        }
-
-        /// <summary>
-        /// Остановить работу улья.
-        /// </summary>
-        public void Stop()
-        {
-            this.ThrowIfAlreadyStopped();
-
-            if (this.isIterationRunning)
-            {
-                throw new InvalidOperationException(
-                    "Нельзя остановить улей. Текущая итерация еще не завершена.");
-            }
-
-            this.FullDequeueAllQueues();
-            this.isStopped = true;
         }
 
         #region Initialization
@@ -198,7 +173,7 @@
             this.GuardsCount = state.GuardsCount;
             this.QueensCount = state.QueensCount;
             this.WorkerBeesCount = state.WorkerBeesCount;
-            this.beesInsideCount = state.BeesInsideCount;
+            this.BeesInsideCount = state.BeesInsideCount;
             this.HoneyCount = state.HoneyCount;
         }
 
@@ -267,6 +242,26 @@
         #endregion
 
         /// <summary>
+        /// Вычислить количество пчёл внутри улья.
+        /// </summary>
+        private void CalculateBeesInside()
+        {
+            int result = this.waitingForWork + this.waitingForRest
+                + this.GuardsCount + this.QueensCount;
+
+            int maximalRatio = this.maximalInterval / this.minimalInterval;
+
+            for (int i = 0; i < maximalRatio; i++)
+            {
+                int currentResting = this.resting.Dequeue();
+                result += currentResting;
+                this.resting.Enqueue(currentResting);
+            }
+
+            this.BeesInsideCount = result;
+        }
+
+        /// <summary>
         /// Имитировать воспроизводство пчёл в рамках одной итерации.
         /// </summary>
         private void ProduceBees()
@@ -279,7 +274,6 @@
             this.newQueensAccumulator += producedQueens;
             int currentQueensProduced = (int)this.newQueensAccumulator;
             this.QueensCount += currentQueensProduced;
-            this.beesInsideCount += currentQueensProduced;
             this.newQueensAccumulator -= currentQueensProduced;
 
             double producedGuards = allBeeProduced
@@ -287,7 +281,6 @@
             this.newGuardsAccumulator += producedGuards;
             int currentGuardsProduced = (int)this.newGuardsAccumulator;
             this.GuardsCount += currentGuardsProduced;
-            this.beesInsideCount += currentGuardsProduced;
             this.newGuardsAccumulator -= currentGuardsProduced;
 
             double producedWorkers = allBeeProduced
@@ -296,7 +289,6 @@
             int currentWorkersProduced = (int)this.newWorkersAccumulator;
             this.WorkerBeesCount += currentWorkersProduced;
             this.waitingForWork += currentWorkersProduced;
-            this.beesInsideCount += currentWorkersProduced;
             this.newWorkersAccumulator -= currentWorkersProduced;
         }
 
@@ -311,41 +303,17 @@
             for (int i = 0; i < this.restingQueeRatio; i++)
             {
                 int finishedResting = this.resting.Dequeue();
-                this.beesInsideCount -= finishedResting;
                 this.waitingForWork += finishedResting;
             }
 
             for (int i = 0; i < this.havingCheckQueeRatio; i++)
             {
                 int goInside = this.havingCheck.Dequeue();
-                this.beesInsideCount += goInside;
                 this.waitingForRest += goInside;
             }
 
             for (int i = 0; i < this.workingQueeRatio; i++)
             {
-                this.waitingForCheck += this.working.Dequeue();
-            }
-        }
-
-        /// <summary>
-        /// Полностью очистить специальные очереди и соответствующим
-        /// образом обновить состояние.
-        /// </summary>
-        private void FullDequeueAllQueues()
-        {
-            int maximalRatio = this.maximalInterval / this.minimalInterval;
-
-            for (int i = 0; i < maximalRatio; i++)
-            {
-                int finishedResting = this.resting.Dequeue();
-                this.beesInsideCount -= finishedResting;
-                this.waitingForWork += finishedResting;
-
-                int goInside = this.havingCheck.Dequeue();
-                this.beesInsideCount += goInside;
-                this.waitingForRest += goInside;
-
                 this.waitingForCheck += this.working.Dequeue();
             }
         }
@@ -408,18 +376,6 @@
             for (int i = 1; i < this.havingCheckQueeRatio; i++)
             {
                 this.havingCheck.Enqueue(0);
-            }
-        }
-
-        /// <summary>
-        /// Сгенерировать исключение, если работа улья была остановлена.
-        /// </summary>
-        private void ThrowIfAlreadyStopped()
-        {
-            if (this.isStopped)
-            {
-                throw new InvalidOperationException(
-                    "Работа улья уже остановлена.");
             }
         }
     }
